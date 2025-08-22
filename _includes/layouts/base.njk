@@ -49,19 +49,30 @@
       
       
       <!-- Icon Bar (Sidebar - hidden on small screens) -->
-<nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center">
-  <!-- Avatar image in top left corner -->
-  <img src="{{ '/img/w3images/avatar_smoke.jpg' | url }}" style="width:100%">
+<nav class="w3-sidebar w3-bar-block w3-small w3-center" style="z-index:3">
+  <!-- Home (كما هو) -->
+  <a href="/#" class="w3-bar-item w3-button sidebar-link" title="Home" aria-label="Home">
+    <i class="fa fa-home"></i>
+    <p>Home</p>
+  </a>
 
-  {#- Read more about `eleventy-navigation` at https://www.11ty.dev/docs/plugins/navigation/ #}
-  {%- for entry in collections.all | eleventyNavigation %}
-    
-    <a href="{{ entry.url | url }}" class="w3-bar-item w3-button w3-padding-large {% if entry.url == page.url %} w3-black {% else %} w3-hover-black {% endif %}">
-      <i class="fa {{ navFA[entry.title]}} w3-xxlarge"></i>
-      <p>{{ entry.title }}</p>
-    </a>
-    
-  {%- endfor %}
+  <!-- About (أيقونة id-card) -->
+  <a href="/#about" class="w3-bar-item w3-button sidebar-link" title="About" aria-label="About">
+    <i class="fa fa-id-card" aria-hidden="true"></i>
+    <p>About</p>
+  </a>
+
+  <!-- Projects (كان Photos) — أيقونة film -->
+  <a href="/#photos" class="w3-bar-item w3-button sidebar-link" title="Projects" aria-label="Projects">
+    <i class="fa fa-film" aria-hidden="true"></i>
+    <p>Projects</p>
+  </a>
+
+  <!-- Contact — أيقونة commenting -->
+  <a href="/#contact" class="w3-bar-item w3-button sidebar-link" title="Contact" aria-label="Contact">
+    <i class="fa fa-commenting" aria-hidden="true"></i>
+    <p>Contact</p>
+  </a>
 </nav>
       
       <!-- Navbar on small screens (Hidden on medium and large screens) -->
