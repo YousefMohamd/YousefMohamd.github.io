@@ -1,115 +1,133 @@
 <!doctype html>
 <html lang="en">
- <head>
-  <meta charset="utf-8">
-  <title>{{ title or metadata.title }}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title or metadata.title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  {# و3CSS / ستايلات القالب — لو كانت موجودة سيبها #}
-  <link rel="stylesheet" href="{{ '/css/w3.css' | url }}">
-  <link rel="stylesheet" href="{{ '/css/style.css' | url }}">
+    {# ستايلات القالب #}
+    <link rel="stylesheet" href="{{ '/css/w3.css' | url }}">
+    <link rel="stylesheet" href="{{ '/css/style.css' | url }}">
 
-  {# Font Awesome للأيقونات #}
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    {# Font Awesome للأيقونات #}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-  {# Favicon (اختياري) #}
-  <link rel="icon" href="{{ '/img/favicon.png' | url }}">
+    {# Favicon (اختياري) #}
+    <link rel="icon" href="{{ '/img/favicon.png' | url }}">
 
-  <!-- إلغاء أي إطار/دائرة/ظل للصورة في الهيدر -->
-  <style>
-    #home img {
-      border: 0 !important;
-      border-radius: 0 !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      outline: 0 !important;
-    }
-  </style>
-</head>
-  <style>
-  body, h1,h2,h3,h4,h5,h6 {font-family: "Montserrat", sans-serif}
-  .w3-row-padding img {margin-bottom: 12px}
-  /* Set the width of the sidebar to 120px */
-  .w3-sidebar {width: 120px;background: #222;}
-  /* Add a left margin to the "page content" that matches the width of the sidebar (120px) */
-  #main {margin-left: 120px}
-  /* Remove margins from "page content" on small screens TODO add back in*/
-  {% raw %}
-  
-  @media only screen and (max-width:600px) {#main { margin-left:0}}
-  
-  {% endraw %}
-  
-  
-  </style>
+    <!-- ستايلات مخصصة (داخل <head>) -->
+    <style>
+      /* الصورة في الهيدر بدون إطار أو دائرة */
+      #home img {
+        border: 0 !important;
+        border-radius: 0 !important;
+        background: transparent !important;
+        box-shadow: none !important;
+        outline: 0 !important;
+      }
+
+      /* العرض الافتراضي للسيدبار والخلفية الأساسية */
+      .w3-sidebar { width: 120px; background: #222; }
+
+      /* محتوى الصفحة يتحرك يمينًا بمقدار عرض السيدبار */
+      #main { margin-left: 120px; }
+
+      /* كسر أي بلاطات/خلفيات رمادي في السايدبار + تصغير الأيقونات */
+      nav.w3-sidebar { background: #111 !important; }
+      nav.w3-sidebar .w3-bar-item {
+        background: transparent !important;
+        border: 0 !important;
+        box-shadow: none !important;
+      }
+      nav.w3-sidebar .w3-bar-item i {
+        font-size: 20px !important;      /* تصغير الأيقونات */
+        display: block;
+        margin: 8px auto 4px;
+      }
+      nav.w3-sidebar .w3-bar-item p {
+        font-size: 12px !important;      /* تصغير النص */
+        margin: 0;
+      }
+      nav.w3-sidebar .w3-bar-item.sidebar-link {
+        padding: 14px 8px !important;    /* تقليل المسافات */
+      }
+      nav.w3-sidebar .w3-dark-grey,
+      nav.w3-sidebar .w3-grey,
+      nav.w3-sidebar .w3-gray {
+        background: transparent !important;
+      }
+      nav.w3-sidebar .w3-bar-item:hover {
+        background: rgba(255,255,255,0.06) !important;
+      }
+
+      /* ميديا كويري للموبايل: ألغِ الإزاحة */
+      {% raw %}
+      @media only screen and (max-width:600px) {
+        #main { margin-left: 0; }
+      }
+      {% endraw %}
+    </style>
+  </head>
+
   <body class="w3-black">
-    
 
-      
-      
-      
-      <!-- Icon Bar (Sidebar - hidden on small screens) -->
-<nav class="w3-sidebar w3-bar-block w3-small w3-center" style="z-index:3">
-  <!-- Home (كما هو) -->
-  <a href="/#" class="w3-bar-item w3-button sidebar-link" title="Home" aria-label="Home">
-    <i class="fa fa-home"></i>
-    <p>Home</p>
-  </a>
+    <!-- Icon Bar (Sidebar - hidden on small screens) -->
+    <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center" style="z-index:3">
+      <!-- Home (كما هو) -->
+      <a href="/#" class="w3-bar-item w3-button sidebar-link" title="Home" aria-label="Home">
+        <i class="fa fa-home"></i>
+        <p>Home</p>
+      </a>
 
-  <!-- About (أيقونة id-card) -->
-  <a href="/#about" class="w3-bar-item w3-button sidebar-link" title="About" aria-label="About">
-    <i class="fa fa-id-card" aria-hidden="true"></i>
-    <p>About</p>
-  </a>
+      <!-- About (id-card) -->
+      <a href="/#about" class="w3-bar-item w3-button sidebar-link" title="About" aria-label="About">
+        <i class="fa fa-id-card" aria-hidden="true"></i>
+        <p>About</p>
+      </a>
 
-  <!-- Projects (كان Photos) — أيقونة film -->
-  <a href="/#photos" class="w3-bar-item w3-button sidebar-link" title="Projects" aria-label="Projects">
-    <i class="fa fa-film" aria-hidden="true"></i>
-    <p>Projects</p>
-  </a>
+      <!-- Projects (كان Photos) — film -->
+      <a href="/#photos" class="w3-bar-item w3-button sidebar-link" title="Projects" aria-label="Projects">
+        <i class="fa fa-film" aria-hidden="true"></i>
+        <p>Projects</p>
+      </a>
 
-  <!-- Contact — أيقونة commenting -->
-  <a href="/#contact" class="w3-bar-item w3-button sidebar-link" title="Contact" aria-label="Contact">
-    <i class="fa fa-commenting" aria-hidden="true"></i>
-    <p>Contact</p>
-  </a>
-</nav>
-      
-      <!-- Navbar on small screens (Hidden on medium and large screens) -->
-      <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
-        <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
+      <!-- Contact — commenting -->
+      <a href="/#contact" class="w3-bar-item w3-button sidebar-link" title="Contact" aria-label="Contact">
+        <i class="fa fa-commenting" aria-hidden="true"></i>
+        <p>Contact</p>
+      </a>
+    </nav>
+
+    <!-- Navbar on small screens (Hidden on medium and large screens) -->
+    <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
+      <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
         {%- for entry in collections.all | eleventyNavigation %}
-        <a href="{{ entry.url | url }}" class="w3-bar-item w3-button" style="width:20% !important">{{ entry.title}}</a>
+          <a href="{{ entry.url | url }}" class="w3-bar-item w3-button" style="width:20% !important">{{ entry.title }}</a>
         {%- endfor %}
-        </div>
       </div>
+    </div>
+
     <div class="w3-padding-large" id="main">
- 
-
-    <main {% if templateClass %} class="{{ templateClass }}"{% endif %}>
-      <div class="warning">
-        <ol>
-          <li>Edit the <code>_data/metadata.json</code> with your blog’s information.</li>
-          <li>(Optional) Edit <code>.eleventy.js</code> with your <a href="https://www.11ty.dev/docs/config/">configuration preferences</a>.</li>
-          <li>Delete this message from <code>_includes/layouts/base.njk</code>.</li>
-        </ol>
-        <p><em>This is an <a href="https://www.11ty.io/">Eleventy project</a> created from the <a href="https://github.com/11ty/eleventy-base-blog"><code>eleventy-base-blog</code> repo</a>.</em></p>
-      </div>
-
-      {{ content | safe }}
-    </main>
+      <main {% if templateClass %} class="{{ templateClass }}"{% endif %}>
+        {# تم إزالة رسالة التحذير الافتراضية للـ Eleventy base-blog #}
+        {{ content | safe }}
+      </main>
 
       <!-- Footer -->
-  <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
-    <i class="fa fa-facebook-official w3-hover-opacity"></i>
-    <i class="fa fa-instagram w3-hover-opacity"></i>
-    <i class="fa fa-snapchat w3-hover-opacity"></i>
-    <i class="fa fa-pinterest-p w3-hover-opacity"></i>
-    <i class="fa fa-twitter w3-hover-opacity"></i>
-    <i class="fa fa-linkedin w3-hover-opacity"></i>
-    <p class="w3-medium">Powered by <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a></p>
-  <!-- End footer -->
-  </footer>
+      <footer class="w3-content w3-padding-64 w3-text-grey w3-xlarge">
+        <i class="fa fa-facebook-official w3-hover-opacity"></i>
+        <i class="fa fa-instagram w3-hover-opacity"></i>
+        <i class="fa fa-snapchat w3-hover-opacity"></i>
+        <i class="fa fa-pinterest-p w3-hover-opacity"></i>
+        <i class="fa fa-twitter w3-hover-opacity"></i>
+        <i class="fa fa-linkedin w3-hover-opacity"></i>
+        <p class="w3-medium">
+          Powered by
+          <a href="https://www.w3schools.com/w3css/default.asp" target="_blank" class="w3-hover-text-green">w3.css</a>
+        </p>
+      </footer>
+      <!-- End footer -->
+    </div>
 
     <!-- Current page: {{ page.url | url }} -->
   </body>
