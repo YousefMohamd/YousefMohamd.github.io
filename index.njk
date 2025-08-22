@@ -10,11 +10,11 @@ eleventyNavigation:
   <h1 class="w3-jumbo">{{ metadata.title }}</h1>
   <p>{{ metadata.description }}</p>
 
-  <!-- صورتك بدون إطار أو دوران -->
+  <!-- صورتك — بدون إطار أو دائرة -->
   <img
     src="{{ '/img/w3images/profile/myphoto.jpg' | url }}"
     alt="{{ metadata.author.name }}"
-    style="width:260px;max-width:260px;height:auto;border-radius:0;border:0!important;background:transparent;box-shadow:none;margin-top:16px;display:inline-block;"
+    style="width:300px;max-width:300px;height:auto;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;margin-top:16px;display:inline-block;"
   >
 </header>
 
@@ -23,6 +23,8 @@ eleventyNavigation:
   <h2 class="w3-text-light-grey">About Me</h2>
   <hr style="width:200px" class="w3-opacity">
   <p>{{ metadata.author.summary }}</p>
+  <!-- DEBUG marker للتأكيد -->
+  <div style="font-size:12px;color:#bbb;">[about-block from <b>index.njk</b>]</div>
 </div>
 
 <!-- Social -->
@@ -38,7 +40,7 @@ eleventyNavigation:
   </p>
 </div>
 
-<!-- Portfolio placeholder -->
+<!-- Portfolio placeholder (نملّيه لاحقاً) -->
 <div class="w3-padding-64 w3-content" id="photos">
   <h2 class="w3-text-light-grey">My Works</h2>
   <hr style="width:200px" class="w3-opacity">
