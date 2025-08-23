@@ -1,214 +1,112 @@
 ---
 layout: layouts/home.njk
-fa-icon: 'fa-home'
 eleventyNavigation:
   key: Home
   order: 1
-  url: /#
 ---
+
+<!-- DEBUG: this is index.njk (must appear in page) -->
+<div style="background:#ff0066;color:#fff;padding:8px;text-align:center;">DEBUG from index.njk</div>
+
+<!-- Header -->
 <header class="w3-container w3-padding-32 w3-center w3-black" id="home">
- <h1 class="w3-jumbo"><span class="w3-hide-small">I'm</span> {{ metadata.title }}.</h1>
-  <p>Photographer and Web Designer.</p>
-  <img src="{{ 'img/w3images/man_smoke.jpg' | url }}" alt="boy" class="w3-image" width="992" height="1108">
+  <h1 class="w3-jumbo">{{ metadata.title }}</h1>
+  <p>{{ metadata.description }}</p>
+
+  <!-- صورتك — بدون أي إطار -->
+  <img
+    src="{{ '/img/w3images/profile/myphoto.jpg' | url }}"
+    alt="{{ metadata.author.name }}"
+    class="profile-img"
+    style="width:320px;max-width:320px;height:auto;margin-top:16px;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;"
+  >
 </header>
 
-
+<!-- About -->
 <!-- About Section -->
-  <div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
-    <h2 class="w3-text-light-grey">My Name</h2>
-    <hr style="width:200px" class="w3-opacity">
-    <p>Some text about me. Some text about me. I am lorem ipsum consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-      ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum consectetur
-      adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-    </p>
-    <h3 class="w3-padding-16 w3-text-light-grey">My Skills</h3>
-    <p class="w3-wide">Photography</p>
-    <div class="w3-white">
-      <div class="w3-dark-grey" style="height:28px;width:95%"></div>
-    </div>
-    <p class="w3-wide">Web Design</p>
-    <div class="w3-white">
-      <div class="w3-dark-grey" style="height:28px;width:85%"></div>
-    </div>
-    <p class="w3-wide">Photoshop</p>
-    <div class="w3-white">
-      <div class="w3-dark-grey" style="height:28px;width:80%"></div>
-    </div><br>
-    
-    <div class="w3-row w3-center w3-padding-16 w3-section w3-light-grey">
-      <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">11+</span><br>
-        Partners
-      </div>
-      <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">55+</span><br>
-        Projects Done
-      </div>
-      <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">89+</span><br>
-        Happy Clients
-      </div>
-      <div class="w3-quarter w3-section">
-        <span class="w3-xlarge">150+</span><br>
-        Meetings
-      </div>
-    </div>
+<div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
+  <h2 class="w3-text-light-grey">About Me</h2>
+  <hr style="width:200px" class="w3-opacity">
+  <p>{{ metadata.author.summary }}</p>
 
-    <button class="w3-button w3-light-grey w3-padding-large w3-section" onclick="window.open('{{ 'files/resume.pdf' | url}}')">
-      <i class="fa fa-download"></i> Download Resume
-    </button>
-    
-    <!-- Grid for pricing tables -->
-    <h3 class="w3-padding-16 w3-text-light-grey">My Price</h3>
-    <div class="w3-row-padding" style="margin:0 -16px">
-      <div class="w3-half w3-margin-bottom">
-        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-dark-grey w3-xlarge w3-padding-32">Basic</li>
-          <li class="w3-padding-16">Web Design</li>
-          <li class="w3-padding-16">Photography</li>
-          <li class="w3-padding-16">5GB Storage</li>
-          <li class="w3-padding-16">Mail Support</li>
-          <li class="w3-padding-16">
-            <h2>$ 10</h2>
-            <span class="w3-opacity">per month</span>
-          </li>
-          <li class="w3-light-grey w3-padding-24">
-            <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
-          </li>
-        </ul>
-      </div>
-
-      <div class="w3-half">
-        <ul class="w3-ul w3-white w3-center w3-opacity w3-hover-opacity-off">
-          <li class="w3-dark-grey w3-xlarge w3-padding-32">Pro</li>
-          <li class="w3-padding-16">Web Design</li>
-          <li class="w3-padding-16">Photography</li>
-          <li class="w3-padding-16">50GB Storage</li>
-          <li class="w3-padding-16">Endless Support</li>
-          <li class="w3-padding-16">
-            <h2>$ 25</h2>
-            <span class="w3-opacity">per month</span>
-          </li>
-          <li class="w3-light-grey w3-padding-24">
-            <button class="w3-button w3-white w3-padding-large w3-hover-black">Sign Up</button>
-          </li>
-        </ul>
-      </div>
-    <!-- End Grid/Pricing tables -->
-    </div>
-    
-    <!-- Testimonials -->
-    <h3 class="w3-padding-24 w3-text-light-grey">My Reputation</h3>  
-    <img src="{{ '/img/w3images/bandmember.jpg' | url}}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:80px">
-    <p><span class="w3-large w3-margin-right">Chris Fox.</span> CEO at Mighty Schools.</p>
-    <p>Jane Doe saved us from a web disaster.</p><br>
-    
-    <img src="{{ '/img/w3images/avatar_g2.jpg' | url }}" alt="Avatar" class="w3-left w3-circle w3-margin-right" style="width:80px">
-    <p><span class="w3-large w3-margin-right">Rebecca Flex.</span> CEO at Company.</p>
-    <p>No one is better than Jane Doe.</p>
-  <!-- End About Section -->
-  </div>
-
-
-<!-- Portfolio Section -->
-  <div class="w3-padding-64 w3-content" id="photos">
-    <h2 class="w3-text-light-grey">My Photos</h2>
-    <hr style="width:200px" class="w3-opacity">
-
-    <!-- Grid for photos -->
-    <div class="w3-row-padding" style="margin:0 -16px">
-
-  {#  <div class="w3-half">
-    {% for post in collections.photo | head(-8) %}
-      {% if loop.index==4 %}
-      </div><div class="w3-half">
-      {% endif %}
-        <a href="{{ post.url | url}}"><img src = "{{ post.data.image | url }}" style="width:100%" > </a>
-        
-    {% endfor %}
-    
-    </div>
-#}
-    
-<style>
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 4px;
-}
-
-/* Create two equal columns that sit next to each other */
-.column {
-  flex: 50%;
-  max-width: 50%;
-  padding: 0 4px;
-}
-
-.column img {
-  margin-top: 8px;
-  vertical-align: middle;
-}
-  {% raw %}
-@media (max-width: 600px) {
-  .column {
-    flex: 100%;
-    max-width: 100%;
-  }
-  {% endraw %}
-
-</style>
-<div class="row"> 
-  <div class="column">
-   {% for post in collections.photo | head(-8) %}
-   {% if loop.index==4 %}
-      </div><div class="column">
-      {% endif %}
-  
-    <a href="{{ post.url | url}}"><img src = "{{ post.data.image | url }}" style="width:100%;margin-bottom:0px" > </a>
-  
-  {% endfor %}
-  </div>
-  </div>
-
-
-     
-    <!-- End photo grid -->
-    </div>
-  <!-- End Portfolio Section -->
-  </div>
- <div class="w3-content w3-justify w3-text-grey w3-padding-64">
-<h1>Latest 3 Posts</h1>
-
-{% set postslist = collections.posts | head(-3) %}
-{% set postslistCounter = collections.posts | length %}
-{% include "postslist.njk" %}
-
-<p>More posts can be found in <a href="{{ '/posts/' | url }}">the archive</a>.</p>
+  <!-- CV Button -->
+ <p style="margin-top:14px">
+  <a class="w3-button w3-light-grey w3-padding-large w3-round"
+     href="{{ '/files/Yousef%20Mohamed%20-%20Multidisciplinary%20Visual%20Artist%20.pdf' | url }}"
+     target="_blank" rel="noopener">
+    CV
+  </a>
+</p>
 </div>
-<!-- Contact Section -->
-  <div class="w3-padding-64 w3-content w3-text-grey" id="contact">
-    <h2 class="w3-text-light-grey">Contact Me</h2>
-    <hr style="width:200px" class="w3-opacity">
 
-    <div class="w3-section">
-      <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Chicago, US</p>
-      <p><i class="fa fa-phone fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> Phone: +00 151515</p>
-      <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"> </i> Email: mail@mail.com</p>
-    </div><br>
-    <p>Lets get in touch. Send me a message:</p>
+</div>
 
-    <form action="/action_page.php" target="_blank">
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Name" required name="Name"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Email" required name="Email"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Subject" required name="Subject"></p>
-      <p><input class="w3-input w3-padding-16" type="text" placeholder="Message" required name="Message"></p>
-      <p>
-        <button class="w3-button w3-light-grey w3-padding-large" type="submit">
-          <i class="fa fa-paper-plane"></i> SEND MESSAGE
-        </button>
-      </p>
-    </form>
-  <!-- End Contact Section -->
+<!-- Social -->
+<div class="w3-content w3-justify w3-text-grey w3-padding-32" id="social">
+  <h2 class="w3-text-light-grey">Find Me Online</h2>
+  <hr style="width:200px" class="w3-opacity">
+  <p class="w3-large">
+    <a href="{{ metadata.social.linkedin }}" target="_blank" rel="noopener"><i class="fa fa-linkedin w3-xlarge"></i></a>&nbsp;&nbsp;
+    <a href="{{ metadata.social.behance }}" target="_blank" rel="noopener"><i class="fa fa-behance w3-xlarge"></i></a>&nbsp;&nbsp;
+    <a href="{{ metadata.social.instagram }}" target="_blank" rel="noopener"><i class="fa fa-instagram w3-xlarge"></i></a>&nbsp;&nbsp;
+    <a href="{{ metadata.social.vimeo }}" target="_blank" rel="noopener"><i class="fa fa-vimeo w3-xlarge"></i></a>&nbsp;&nbsp;
+    <a href="{{ metadata.social.youtube }}" target="_blank" rel="noopener"><i class="fa fa-youtube-play w3-xlarge"></i></a>
+  </p>
+</div>
+
+<!-- Portfolio placeholder -->
+<!-- Tools / Software Experience -->
+<div class="w3-padding-64 w3-content" id="tools">
+  <!-- نفس ستايل العناوين الأخرى: h2 + hr -->
+  <h2 class="w3-text-light-grey">Software Experience</h2>
+  <hr style="width:200px" class="w3-opacity">
+
+  <p class="w3-text-grey">
+    Started on mobile and produced some projects using mobile apps.
+  </p>
+
+  <!-- Mobile apps: نص فقط بدون أيقونات -->
+  <h3 class="w3-text-light-grey" style="margin-top:20px;">Mobile apps</h3>
+  <ul class="tools-list">
+    <li><span>Snapseed</span></li>
+    <li><span>ibisPaint X</span></li>
+    <li><span>Video Maker</span></li>
+  </ul>
+
+  <!-- Desktop apps: أيقونات مؤكدة فقط -->
+  <h3 class="w3-text-light-grey" style="margin-top:22px;">Desktop apps (macOS / Windows)</h3>
+<ul class="tools-list">
+  <li><img src="/img/icons/microsoft-word.svg" alt=""><span>Microsoft Word</span></li>
+  <li><img src="/img/icons/microsoft-powerpoint.svg" alt=""><span>Microsoft PowerPoint</span></li>
+
+  <li><img src="/img/icons/adobe-photoshop.svg" alt=""><span>Adobe Photoshop — Master</span></li>
+  <li><img src="https://cdn.simpleicons.org/krita" alt=""><span>Krita — Master</span></li>
+
+  <li><img src="/img/icons/pureref.svg" alt=""><span>PureRef — Reference tool</span></li>
+
+  <li><img src="/img/icons/darktable.svg" alt=""><span>Darktable</span></li>
+  <li><img src="/img/icons/shotcut.svg" alt=""><span>Shotcut</span></li>
+  <li><img src="https://cdn.simpleicons.org/davinciresolve" alt=""><span>DaVinci Resolve — Master (editing &amp; color grading)</span></li>
+
+  <li><img src="/img/icons/opentoonz.svg" alt=""><span>OpenToonz — 2D animation</span></li>
+  <li><img src="/img/icons/natron.svg" alt=""><span>Natron — Node-based compositing</span></li>
+
+  <!-- مفيش أيقونة جاهزة لـ Waveform دلوقتي: نص فقط -->
+  <li><span>Waveform 13 (audio editing / DAW)</span></li>
+
+  <li><img src="/img/icons/cinema4d.svg" alt=""><span>Cinema 4D (1 year, 2023)</span></li>
+  <li><img src="https://cdn.simpleicons.org/blender" alt=""><span>Blender — Basic</span></li>
+  <li><img src="https://cdn.simpleicons.org/inkscape" alt=""><span>Inkscape — Basic</span></li>
+</ul>
+</div>
+
+
+<!-- Contact -->
+<div class="w3-padding-64 w3-content w3-text-grey" id="contact">
+  <h2 class="w3-text-light-grey">Contact Me</h2>
+  <hr style="width:200px" class="w3-opacity">
+  <div class="w3-section">
+    <p><i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> {{ metadata.author.location }}</p>
+    <p><i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"></i> {{ metadata.author.email }}</p>
   </div>
-
-
+</div>
