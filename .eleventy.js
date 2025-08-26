@@ -18,7 +18,7 @@ module.exports = function(eleventyConfig) {
     new Date(d).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
   );
 
-  // Tags utilities (زي Eleventy Base Blog)
+  // Tags utilities زي Eleventy Base Blog
   const EXCLUDED = new Set(["all","nav","post","posts"]);
   eleventyConfig.addFilter("filterTagList", (tags) => (tags || []).filter((t) => !EXCLUDED.has(t)));
   eleventyConfig.addCollection("tagList", (api) => {
