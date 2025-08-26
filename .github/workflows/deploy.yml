@@ -1,7 +1,8 @@
-name: Build & Deploy (Eleventy)
+name: Deploy Eleventy to GitHub Pages
+
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main" ]   # لو بتدفع على dev غيّرها لـ ["dev"]
   workflow_dispatch:
 
 permissions:
@@ -23,7 +24,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - run: npx @11ty/eleventy
       - run: touch _site/.nojekyll
       - uses: actions/upload-pages-artifact@v3
         with:
