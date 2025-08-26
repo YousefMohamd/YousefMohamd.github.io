@@ -1,8 +1,7 @@
 name: Build & Deploy (Eleventy)
-
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -18,25 +17,15 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: '18'
-
-      - name: Install deps
-        run: npm ci || npm install
-
-      - name: Build Eleventy
-        run: npm run build
-
-      - name: Disable Jekyll on Pages
-        run: touch _site/.nojekyll
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: touch _site/.nojekyll
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
@@ -47,6 +36,5 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Deploy to GitHub Pages
-        id: deployment
+      - id: deployment
         uses: actions/deploy-pages@v4
