@@ -1,15 +1,18 @@
 {
-  "title": "John Doe",
-  "url": "https://myurl.com/",
-  "description": "Photographer and Web Designer",
-  "feed": {
-    "subtitle": "I am writing about my experiences as a naval navel-gazer.",
-    "filename": "feed.xml",
-    "path": "/feed/feed.xml",
-    "id": "https://myurl.com/"
-  },
+  "title": "Yousef Mohamed",
+  "description": "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist",
+  "url": "https://YousefMohamd.github.io",
   "author": {
-    "name": "Your Name Here",
-    "email": "youremailaddress@example.com"
+    "name": "Yousef Mohamed",
+    "email": "Mohamedyou1357@gmail.com",
+    "location": "Cairo",
+    "summary": "I am a Multidisciplinary Visual Artist with strong skills in Concept Art, Graphic Design, Animation, Editing, and VFX. My main focus is environment design and perspective drawing (up to 6-point). I combine traditional art basics with digital tools to create creative and clear visual ideas. I have experience in both personal projects and team collaborations, making storyboards, demo sequences, and design works. I am a fast learner, flexible, and problem solver, always improving my art and technical skills every day. I started academic learning and gained my practical experience from 2022 until now."
+  },
+  "social": {
+    "linkedin": "https://www.linkedin.com/in/yousef-mohamed",
+    "behance": "https://www.behance.net/yousefmohamed2004",
+    "instagram": "https://www.instagram.com/_Yousefmohamed",
+    "vimeo": "https://vimeo.com/yousefmohamed2004",
+    "youtube": "https://youtube.com/@Usif_mohamd2004"
   }
 }

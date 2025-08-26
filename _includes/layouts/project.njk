@@ -1,0 +1,20 @@
+---
+layout: layouts/home.njk
+---
+<article class="project-page w3-content">
+  <header class="project-header">
+    <h2 class="w3-text-light-grey">{{ title }}</h2>
+    {# تم إلغاء الميتا أسفل العنوان: تاريخ/أدوات/القسم #}
+  </header>
+
+  {% if vimeoId %}
+  <div class="video-wrap">
+    <iframe src="https://player.vimeo.com/video/{{ vimeoId }}" frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+  </div>
+  {% endif %}
+
+  <div class="project-body">
+    {{ content | safe }}
+  </div>
+</article>
