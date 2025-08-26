@@ -30,7 +30,7 @@ jobs:
         run: npm ci || npm install
 
       - name: Build Eleventy
-        run: npx @11ty/eleventy --input=. --output=_site
+        run: npm run build
 
       - name: Disable Jekyll on Pages
         run: touch _site/.nojekyll
