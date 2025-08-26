@@ -1,10 +1,14 @@
+const pluginRss = require("@11ty/eleventy-plugin-rss");
+
 module.exports = function(eleventyConfig) {
-  // مرّر الملفات الساكنة زي ما هي
+  // Plugins
+  eleventyConfig.addPlugin(pluginRss);
+
+  // Static passthrough
   eleventyConfig.addPassthroughCopy({ "img": "img" });
   eleventyConfig.addPassthroughCopy({ "css": "css" });
   eleventyConfig.addPassthroughCopy({ "files": "files" });
 
-  // إعدادات القوالب
   return {
     dir: { input: ".", includes: "_includes", data: "_data", output: "_site" },
     htmlTemplateEngine: "njk",
