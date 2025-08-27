@@ -1,8 +1,8 @@
-name: Deploy Eleventy to GitHub Pages
+name: Deploy Eleventy to Pages
 
 on:
   push:
-    branches: [ "main" ]   # لو بتدفع على dev غيّرها لـ ["dev"]
+    branches: [ "main" ]
   workflow_dispatch:
 
 permissions:
@@ -19,13 +19,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+
+      # مهم: تثبيت devDependencies
       - run: npm ci
+
+      # بنبني الموقع إلى _site
       - run: npx @11ty/eleventy
-      - run: touch _site/.nojekyll
+
+      # نرفع الأرتيفاكت بتاع _site للنشر
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site
