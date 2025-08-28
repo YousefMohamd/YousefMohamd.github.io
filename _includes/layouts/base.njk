@@ -5,28 +5,27 @@
     <title>{{ title or metadata.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    {# ستايلات القالب #}
+    <!-- Google Search Console Verification -->
+    <meta name="google-site-verification" content="xOWsgbdzrIUsA4Xf_0osfrpJo1n7IA3FgJ_B-KX1xfs" />
+
+    <!-- ستايلات القالب -->
     <link rel="stylesheet" href="{{ '/css/w3.css' | url }}">
     <link rel="stylesheet" href="{{ '/css/style.css?v=11' | url }}">
 
-    {# Font Awesome للأيقونات #}
+    <!-- Font Awesome للأيقونات -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    {# Favicon (اختياري) #}
+    <!-- Favicon -->
     <link rel="icon" href="{{ '/img/favicon.png' | url }}">
 
     <!-- Google Analytics -->
-  <!-- Google Search Console Verification -->
-  <meta name="google-site-verification" content="xOWsgbdzrIUsA4Xf_0osfrpJo1n7IA3FgJ_B-KX1xfs" />
-  
-  <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QS8CQJ3F5"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-5QS8CQJ3F5');
-  </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QS8CQJ3F5"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-5QS8CQJ3F5');
+    </script>
 
     <style>
       /* الصورة في الهيدر بدون إطار أو دائرة */
@@ -74,7 +73,9 @@
 
       {% raw %}
       /* موبايل: ألغِ الإزاحة */
-      @media only screen and (max-width:600px) { #main { margin-left: 0; } }
+      @media only screen and (max-width:600px) { 
+        #main { margin-left: 0; } 
+      }
       {% endraw %}
     </style>
   </head>
@@ -94,7 +95,7 @@
         <p>About</p>
       </a>
 
-      <!-- Projects (بدل Photos) -->
+      <!-- Projects -->
       <a href="/projects/" class="w3-bar-item w3-button sidebar-link" title="Projects" aria-label="Projects">
         <i class="fa fa-film" aria-hidden="true"></i>
         <p>Projects</p>
@@ -117,13 +118,14 @@
       </div>
     </div>
 
+    <!-- Main content -->
     <div class="w3-padding-large" id="main">
       <main {% if templateClass %} class="{{ templateClass }}"{% endif %}>
         {{ content | safe }}
       </main>
-
     </div>
 
     <!-- Current page: {{ page.url | url }} -->
   </body>
 </html>
+
