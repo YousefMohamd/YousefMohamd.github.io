@@ -633,3 +633,36 @@ nav.w3-sidebar .w3-bar-item:hover {
     display: none !important;
   }
 }
+
+
+
+/* إخفاء Archive & Photos من navigation في الموبايل - حل أقوى */
+@media screen and (max-width: 768px) {
+  /* إخفاء أي link فيه كلمة Archive */
+  a:contains("Archive"),
+  .w3-bar a:contains("Archive"),
+  .w3-sidebar a:contains("Archive"),
+  nav a:contains("Archive") {
+    display: none !important;
+  }
+  
+  /* إخفاء أي link فيه كلمة Photos */
+  a:contains("Photos"),
+  .w3-bar a:contains("Photos"), 
+  .w3-sidebar a:contains("Photos"),
+  nav a:contains("Photos") {
+    display: none !important;
+  }
+  
+  /* حل إضافي - إخفاء حسب النص */
+  [data-nav="Archive"],
+  [data-nav="Photos"] {
+    display: none !important;
+  }
+  
+  /* حل عام - إخفاء navigation items اللي ترتيبهم 3 و 5 */
+  .w3-bar a:nth-child(4), /* Photos - order 3 */
+  .w3-bar a:nth-child(6)  /* Archive - order 5 */ {
+    display: none !important;
+  }
+}
