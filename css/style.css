@@ -617,3 +617,19 @@ nav.w3-sidebar .w3-bar-item:hover {
   padding-bottom:8px !important;      /* يقرّب النص من أسفل الكارت */
 }
 
+/* إخفاء Archive & Photos من navigation في الموبايل */
+@media screen and (max-width: 768px) {
+  /* إخفاء Archive link */
+  nav a[href*="Archive"],
+  .w3-bar a[href*="Archive"],
+  .w3-sidebar a[href*="Archive"] {
+    display: none !important;
+  }
+  
+  /* إخفاء Photos link */
+  nav a[href*="Photos"],
+  .w3-bar a[href*="Photos"], 
+  .w3-sidebar a[href*="Photos"] {
+    display: none !important;
+  }
+}
