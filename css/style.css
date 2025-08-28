@@ -691,3 +691,38 @@ nav.w3-sidebar .w3-bar-item:hover {
     max-width: 80% !important;
   }
 }
+
+
+
+
+/* إصلاح زر Contact في الموبايل */
+@media (max-width: 600px) {
+  /* تأكد إن mobile navigation يظهر */
+  #myNavbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* تأكد إن كل أزرار navigation تظهر */
+  #myNavbar .w3-bar-item {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 25% !important;
+  }
+  
+  /* تأكد إن Contact button مش مخفي */
+  a[href*="#contact"] {
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+}
+
+/* للديسكتوب - تأكد إن sidebar contact يظهر */
+@media (min-width: 601px) {
+  nav.w3-sidebar a[href*="#contact"] {
+    display: block !important;
+    visibility: visible !important;
+  }
+}
