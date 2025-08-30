@@ -1,15 +1,12 @@
 const fs = require("fs");
 const path = require("path");
-
 function extractNumber(basename) {
   const m = basename.match(/\d+/);
   return m ? parseInt(m[0], 10) : -Infinity;
 }
-
 module.exports = function () {
   const dir = "img/projects/concept-art";
   if (!fs.existsSync(dir)) return [];
-
   const exts = new Set([".jpg", ".jpeg", ".png", ".webp", ".gif", ".svg"]);
   const files = fs
     .readdirSync(dir)
@@ -30,7 +27,5 @@ module.exports = function () {
       if (b.num !== a.num) return b.num - a.num;
       return a.name.localeCompare(b.name);
     });
-
   return files;
 };
-
