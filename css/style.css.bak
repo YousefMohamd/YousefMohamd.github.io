@@ -727,54 +727,65 @@ nav.w3-sidebar .w3-bar-item:hover {
   }
 }
 
-/* === View More Button - إضافة جديدة بدون تعديل الأصل === */
+
+/* === View More Button Animation - نسخة محسنة === */
 .project-overlay {
-  position: absolute !important;
-  top: 0 !important;
-  left: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   opacity: 0;
   background: rgba(0, 0, 0, 0.6);
   transition: all 0.4s ease;
-  z-index: 10;
 }
 
 .project-card:hover .project-overlay {
   opacity: 1;
 }
 
+.project-overlay i.fa-link {
+  display: none !important;
+}
+
 .view-more-btn {
-  position: absolute !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) translateY(20px) !important;
-  display: block !important;
-  padding: 10px 24px;
+  display: inline-block;
+  padding: 8px 16px;  /* أصغر من قبل */
   background: transparent;
   color: white;
   text-decoration: none;
-  border: 1px solid white;
-  font-family: 'Helvetica Neue', 'Arial', sans-serif;
-  font-size: 12px;
-  font-weight: 300;
-  letter-spacing: 1.5px;
+  border: 1px solid white;  /* أنحف من قبل */
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;  /* خط أخف */
+  font-size: 10px;  /* أصغر */
+  font-weight: 300;  /* خفيف جداً */
+  letter-spacing: 1.2px;
   text-transform: uppercase;
   transition: all 0.3s ease;
   opacity: 0;
-  border-radius: 2px;
-  white-space: nowrap;
-  margin: 0 !important;
+  transform: translateY(20px);
+  border-radius: 2px;  /* زوايا خفيفة */
 }
 
 .project-card:hover .view-more-btn {
   opacity: 1;
-  transform: translate(-50%, -50%) translateY(0) !important;
+  transform: translateY(0);
 }
 
 .view-more-btn:hover {
   background: white;
   color: #333;
-  transform: translate(-50%, -50%) translateY(-2px) !important;
+  transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* تكبير حجم السكشن شوية */
+.project-card {
+  min-height: 280px !important;
+}
+
+.project-thumb {
+  min-height: 220px !important;
 }
