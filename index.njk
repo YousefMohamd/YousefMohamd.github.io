@@ -1,117 +1,39 @@
 ---
-layout: layouts/home.njk
+layout: layouts/base.njk
 eleventyNavigation:
   key: Home
   order: 1
+hero:
+  name: "Yousef Mohamed"
+  role: "Filmmaker"
+  subrole: "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist"
 ---
-
-<!-- Header -->
-<header class="w3-container w3-padding-32 w3-center w3-black" id="home">
-  <h1 class="w3-jumbo">{{ metadata.title }}</h1>
-  <p>{{ metadata.description }}</p>
-
-  <!-- صورتك — بدون أي إطار -->
-  <img
-    src="{{ '/img/w3images/profile/myphoto.jpg' | url }}"
-    alt="{{ metadata.author.name }}"
-    class="profile-img"
-    style="width:320px;max-width:320px;height:auto;margin-top:16px;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;outline:0!important;"
-  >
-</header>
-
-<!-- About -->
-<div class="w3-content w3-justify w3-text-grey w3-padding-64" id="about">
-  <h2 class="w3-text-light-grey">About Me</h2>
-  <hr style="width:200px" class="w3-opacity">
-  <p>{{ metadata.author.summary }}</p>
-
-  <!-- CV Button -->
-  <p style="margin-top:14px">
-    <a class="w3-button w3-light-grey w3-padding-large w3-round"
-       href="{{ '/files/Yousef%20Mohamed%20-%20Multidisciplinary%20Visual%20Artist%20.pdf' | url }}"
-       target="_blank" rel="noopener">
-      <i class="fa fa-file-pdf-o w3-margin-right" aria-hidden="true"></i> CV
-    </a>
-  </p>
-</div>
-
-<!-- Tools / Software Experience -->
-<!-- Tools / Software Experience -->
-<div class="w3-padding-64 w3-content" id="tools">
-  <h2 class="w3-text-light-grey">Software Experience</h2>
-  <hr style="width:200px" class="w3-opacity">
-  <p class="w3-text-grey">
-    Started on mobile and produced some projects using mobile apps.
-  </p>
-
-  <!-- Mobile apps -->
-  <h3 class="w3-text-light-grey" style="margin-top:22px;">Mobile apps</h3>
-  <ul class="tools-list">
-    <li><span>Snapseed</span></li>
-    <li><span>ibisPaint X</span></li>
-    <li><span>Video Maker</span></li>
-  </ul>
-
-  <!-- Desktop apps -->
-  <h3 class="w3-text-light-grey" style="margin-top:32px;">Desktop apps (macOS / Windows)</h3>
-  <ul class="tools-list">
-    <li><img src="{{ '/img/icons/microsoft-word.svg' | url }}" alt=""><span>Microsoft Word</span></li>
-    <li><img src="{{ '/img/icons/microsoft-powerpoint.svg' | url }}" alt=""><span>Microsoft PowerPoint</span></li>
-    <li><img src="{{ '/img/icons/adobe-photoshop.svg' | url }}" alt=""><span>Adobe Photoshop — Master</span></li>
-    <li><img src="https://cdn.simpleicons.org/krita" alt=""><span>Krita — Master</span></li>
-    <li><img src="{{ '/img/icons/pureref.svg' | url }}" alt=""><span>PureRef — Reference tool</span></li>
-    <li><img src="{{ '/img/icons/darktable.svg' | url }}" alt=""><span>Darktable</span></li>
-    <li><img src="{{ '/img/icons/shotcut.svg' | url }}" alt=""><span>Shotcut</span></li>
-    <li><img src="https://cdn.simpleicons.org/davinciresolve" alt=""><span>DaVinci Resolve — Master (editing &amp; color grading)</span></li>
-    <li><img src="https://cdn.simpleicons.org/opentoonz" alt=""><span>OpenToonz — 2D animation</span></li>
-    <li><img src="{{ '/img/icons/natron.svg' | url }}" alt=""><span>Natron — Node-based compositing</span></li>
-    <li><span>Waveform 13 (audio editing / DAW)</span></li>
-    <li><img src="{{ '/img/icons/cinema4d.svg' | url }}" alt=""><span>Cinema 4D (1 year, 2023)</span></li>
-    <li><img src="https://cdn.simpleicons.org/blender" alt=""><span>Blender — Basic</span></li>
-    <li><img src="https://cdn.simpleicons.org/inkscape" alt=""><span>Inkscape — Basic</span></li>
-  </ul>
-</div>
-
-<!-- Social -->
-<div class="w3-content w3-justify w3-text-grey w3-padding-32" id="social">
-  <h2 class="w3-text-light-grey">Find Me Online</h2>
-  <hr style="width:200px" class="w3-opacity">
-
-  <p class="w3-large social-icons">
-    {% if metadata.social.linkedin %}
-      <a href="{{ metadata.social.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin"></i></a>
-    {% endif %}
-    {% if metadata.social.behance %}
-      <a href="{{ metadata.social.behance }}" target="_blank" rel="noopener" aria-label="Behance"><i class="fa fa-behance"></i></a>
-    {% endif %}
-    {% if metadata.social.instagram %}
-      <a href="{{ metadata.social.instagram }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa fa-instagram"></i></a>
-    {% endif %}
-    {% if metadata.social.vimeo %}
-      <a href="{{ metadata.social.vimeo }}" target="_blank" rel="noopener" aria-label="Vimeo"><i class="fa fa-vimeo"></i></a>
-    {% endif %}
-    {% if metadata.social.youtube %}
-      <a href="{{ metadata.social.youtube }}" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube-play"></i></a>
-    {% endif %}
-  </p>
-</div>
-
-<!-- Contact -->
-<div class="w3-padding-64 w3-content w3-text-grey" id="contact">
-  <h2 class="w3-text-light-grey">Contact Me</h2>
-  <hr style="width:200px" class="w3-opacity">
-  <div class="w3-section">
-    {% if metadata.author.location %}
-      <p>
-        <i class="fa fa-map-marker fa-fw w3-text-white w3-xxlarge w3-margin-right"></i>
-        {{ metadata.author.location }}
-      </p>
-    {% endif %}
-    {% if metadata.author.email %}
-      <p>
-        <i class="fa fa-envelope fa-fw w3-text-white w3-xxlarge w3-margin-right"></i>
-        <a href="mailto:{{ metadata.author.email }}" class="w3-text-grey">{{ metadata.author.email }}</a>
-      </p>
-    {% endif %}
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-media" id="showreel">
+      {% for item in showreel %}
+        {% if item.type == "video" %}
+          <div class="slide" data-type="video" data-src="{{ item.src | url }}">
+            <video playsinline muted preload="metadata">
+              <source src="{{ item.src | url }}">
+            </video>
+          </div>
+        {% else %}
+          <div class="slide" data-type="image" data-src="{{ item.src | url }}" style="background-image:url('{{ item.src | url }}')"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
   </div>
-</div>
+  <div class="hero-copy">
+    <h1 class="hero-title">{{ hero.name }}</h1>
+    <p class="hero-role">{{ hero.role }}</p>
+    <div class="hero-subrole">{{ hero.subrole }}</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+{% include "home-projects-sections.html" %}
+
+<!-- SOFTWARE EXPERIENCE -->
+{% include "home-software-section.html" %}

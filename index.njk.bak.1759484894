@@ -1,0 +1,110 @@
+---
+layout: layouts/base.njk
+eleventyNavigation:
+  key: Home
+  order: 1
+hero:
+  name: "Yousef Mohamed"
+  role: "Filmmaker"
+  subrole: "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist"
+---
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="showreel">
+    {% for item in showreel %}
+      {% if item.type == "video" %}
+        <video class="slide{% if loop.index0 == 0 %} active{% endif %}"
+               {% if loop.index0 == 0 %}data-initial="1" preload="auto"{% else %}preload="metadata"{% endif %}
+               src="{{ item.src | url }}" muted playsinline></video>
+      {% else %}
+        {% if loop.index0 == 0 %}
+          <!-- أول صورة كـ <img> عشان تتحمل بسرعة وتظهر فورًا -->
+          <img class="slide{% if loop.index0 == 0 %} active{% endif %}"
+               data-initial="1"
+               src="{{ item.src | url }}"
+               alt=""
+               fetchpriority="high"
+               decoding="async"
+               loading="eager" />
+        {% else %}
+          <!-- باقي الصور يفضلوا background زي ما هم -->
+          <div class="slide"
+               data-src="{{ item.src | url }}"
+               style="background-image:url('{{ item.src | url }}')"></div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="hero-copy">
+    <h1 class="hero-title">{{ hero.name }}</h1>
+    <p class="hero-role">{{ hero.role }}</p>
+    <div class="hero-subrole">{{ hero.subrole }}</div>
+  </div>
+</section>
+
+<!-- SLIDER SCRIPT -->
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const slides = Array.from(document.querySelectorAll("#showreel .slide"));
+  if (!slides.length) return;
+
+  const IMAGE_MS = 4000;
+  const FIRST_IMAGE_MS = 3900; // فرق بسيط جدًا لأول سلايد
+  let current = 0;
+  let timer = null;
+
+  function clear(prev){
+    if (timer) { clearTimeout(timer); timer=null; }
+    if (prev && prev.tagName === "VIDEO") {
+      prev.onended = prev.onerror = prev.onabort = null;
+      prev.pause();
+    }
+  }
+
+  // قلل التأخير: حضّر السلايد الجاية لو كانت صورة background
+  function preloadNext(i){
+    const next = slides[(i+1) % slides.length];
+    if (!next || next.tagName === "VIDEO") return;
+    if (next.tagName === "IMG") return; // imgs نفسها هتتعامل
+    const src = next.dataset.src || (next.style.backgroundImage||"").match(/url\(["']?(.+?)["']?\)/)?.[1];
+    if (src && !next.dataset.preloaded){
+      const im = new Image();
+      im.src = src;
+      next.dataset.preloaded = "1";
+    }
+  }
+
+  function show(n){
+    const prev = slides[current];
+    clear(prev);
+    prev?.classList.remove("active");
+
+    current = (n + slides.length) % slides.length;
+    const el = slides[current];
+    el.classList.add("active");
+
+    // شيل إلغاء الترانزيشن بعد أول عرض للسلايد الأولى
+    if (el.hasAttribute("data-initial")) {
+      requestAnimationFrame(()=> el.removeAttribute("data-initial"));
+    }
+
+    preloadNext(current);
+
+    if (el.tagName === "VIDEO") {
+      el.onended = () => show(current+1);
+      el.onerror = el.onabort = () => show(current+1);
+      const p = el.play();
+      if (p && p.catch) p.catch(()=> { timer = setTimeout(()=>show(current+1), IMAGE_MS); });
+    } else {
+      const ms = current===0 ? FIRST_IMAGE_MS : IMAGE_MS;
+      timer = setTimeout(()=>show(current+1), ms);
+    }
+  }
+
+  // ابدأ فورًا وخلّي التحميل القادم مجهّز
+  preloadNext(0);
+  show(0);
+});
+</script>

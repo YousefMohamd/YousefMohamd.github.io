@@ -4,128 +4,51 @@
     <meta charset="utf-8">
     <title>{{ title or metadata.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Google Search Console Verification -->
-    <meta name="google-site-verification" content="xOWsgbdzrIUsA4Xf_0osfrpJo1n7IA3FgJ_B-KX1xfs" />
-
-    <!-- ستايلات القالب -->
-    <link rel="stylesheet" href="{{ '/css/w3.css' | url }}">
-    <link rel="stylesheet" href="{{ '/css/style.css?v=11' | url }}">
-
-    <!-- Font Awesome للأيقونات -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
-    <!-- Favicon -->
-    <link rel="icon" href="{{ '/img/favicon.png' | url }}">
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5QS8CQJ3F5"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-5QS8CQJ3F5');
-    </script>
-
-    <style>
-      /* الصورة في الهيدر بدون إطار أو دائرة */
-      #home img {
-        border: 0 !important;
-        border-radius: 0 !important;
-        background: transparent !important;
-        box-shadow: none !important;
-        outline: 0 !important;
-      }
-
-      /* العرض الافتراضي للسيدبار والخلفية الأساسية */
-      .w3-sidebar { width: 120px; background: #222; }
-
-      /* محتوى الصفحة يتحرك يمينًا بمقدار عرض السيدبار */
-      #main { margin-left: 120px; }
-
-      /* تنظيف السايدبار وتصغير الأيقونات */
-      nav.w3-sidebar { background: #111 !important; }
-      nav.w3-sidebar .w3-bar-item {
-        background: transparent !important;
-        border: 0 !important;
-        box-shadow: none !important;
-      }
-      nav.w3-sidebar .w3-bar-item i {
-        font-size: 20px !important;
-        display: block;
-        margin: 8px auto 4px;
-      }
-      nav.w3-sidebar .w3-bar-item p {
-        font-size: 12px !important;
-        margin: 0;
-      }
-      nav.w3-sidebar .w3-bar-item.sidebar-link {
-        padding: 14px 8px !important;
-      }
-      nav.w3-sidebar .w3-dark-grey,
-      nav.w3-sidebar .w3-grey,
-      nav.w3-sidebar .w3-gray {
-        background: transparent !important;
-      }
-      nav.w3-sidebar .w3-bar-item:hover {
-        background: rgba(255,255,255,0.06) !important;
-      }
-
-      {% raw %}
-      /* موبايل: ألغِ الإزاحة */
-      @media only screen and (max-width:600px) { 
-        #main { margin-left: 0; } 
-      }
-      {% endraw %}
-    </style>
+    <link rel="stylesheet" href="{{ '/css/modern.css' | url }}">
   </head>
+  <body class="site-body">
+    <header class="site-header">
+      <nav class="container nav-row">
+        <ul class="main-nav">
+          <li><a href="{{ '/' | url }}">Home</a></li>
+          <li><a href="{{ '/about/' | url }}">About</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
 
-  <body class="w3-black">
-    <!-- Sidebar -->
-    <nav class="w3-sidebar w3-bar-block w3-small w3-hide-small w3-center" style="z-index:3">
-      <!-- Home -->
-      <a href="/#" class="w3-bar-item w3-button sidebar-link" title="Home" aria-label="Home">
-        <i class="fa fa-home"></i>
-        <p>Home</p>
-      </a>
+    <main id="main" class="container">
+      {{ content | safe }}
+    </main>
 
-      <!-- About -->
-      <a href="/#about" class="w3-bar-item w3-button sidebar-link" title="About" aria-label="About">
-        <i class="fa fa-id-card" aria-hidden="true"></i>
-        <p>About</p>
-      </a>
-
-      <!-- Projects -->
-      <a href="/projects/" class="w3-bar-item w3-button sidebar-link" title="Projects" aria-label="Projects">
-        <i class="fa fa-film" aria-hidden="true"></i>
-        <p>Projects</p>
-      </a>
-
-      <!-- Contact -->
-      <a href="/#contact" class="w3-bar-item w3-button sidebar-link" title="Contact" aria-label="Contact">
-        <i class="fa fa-commenting" aria-hidden="true"></i>
-        <p>Contact</p>
-      </a>
-    </nav>
-
-    <!-- Navbar on small screens -->
-    <div class="w3-top w3-hide-large w3-hide-medium" id="myNavbar">
-      <div class="w3-bar w3-black w3-opacity w3-hover-opacity-off w3-center w3-small">
-        <a href="/#" class="w3-bar-item w3-button" style="width:25% !important">Home</a>
-        <a href="/#about" class="w3-bar-item w3-button" style="width:25% !important">About</a>
-        <a href="/projects/" class="w3-bar-item w3-button" style="width:25% !important">Projects</a>
-        <a href="/#contact" class="w3-bar-item w3-button" style="width:25% !important">Contact</a>
+    <footer class="site-footer" id="contact">
+      <div class="container footer-grid">
+        <div>
+          <h4 class="footer-title">Contact Me</h4>
+          <ul class="contact-list">
+            <li><i class="fa fa-envelope"></i> <a href="mailto:{{ metadata.author.email }}">{{ metadata.author.email }}</a></li>
+            <li><i class="fa fa-phone"></i> <a href="tel:+201154907557">+20 1154907557</a></li>
+            <li><i class="fa fa-map-marker"></i> {{ metadata.author.location }}</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title">Find Me Online</h4>
+          <p class="social-icons">
+            {% if metadata.social.linkedin %}<a href="{{ metadata.social.linkedin }}" target="_blank"><i class="fa fa-linkedin"></i></a>{% endif %}
+            {% if metadata.social.behance %}<a href="{{ metadata.social.behance }}" target="_blank"><i class="fa fa-behance"></i></a>{% endif %}
+            {% if metadata.social.instagram %}<a href="{{ metadata.social.instagram }}" target="_blank"><i class="fa fa-instagram"></i></a>{% endif %}
+            {% if metadata.social.vimeo %}<a href="{{ metadata.social.vimeo }}" target="_blank"><i class="fa fa-vimeo"></i></a>{% endif %}
+            {% if metadata.social.youtube %}<a href="{{ metadata.social.youtube }}" target="_blank"><i class="fa fa-youtube-play"></i></a>{% endif %}
+          </p>
+        </div>
       </div>
-    </div>
+      <div class="footer-copyright">
+        <p>&copy; 2025 Yousef Mohamed. All rights reserved.</p>
+      </div>
+    </footer>
 
-    <!-- Main content -->
-    <div class="w3-padding-large" id="main">
-      <main {% if templateClass %} class="{{ templateClass }}"{% endif %}>
-        {{ content | safe }}
-      </main>
-    </div>
-
-    <!-- Current page: {{ page.url | url }} -->
+    <script src="{{ '/js/site.js' | url }}" defer></script>
   </body>
 </html>
-

@@ -1,0 +1,903 @@
+/* === override profile image styles on home === */
+#home img,
+.profile-img,
+.w3-circle {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+
+* === overrides: profile image on home (force no frame/circle) === */
+#home img,
+.profile-img,
+.w3-circle {
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  outline: 0 !important;
+}
+/* ===== Custom Sidebar Overrides ===== */
+
+/* الخلفية الأساسية */
+nav.w3-sidebar { background: #111 !important; }
+
+/* إزالة الخلفيات/الإطارات/الظلال */
+nav.w3-sidebar .w3-bar-item {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* تصغير الأيقونات */
+nav.w3-sidebar .w3-bar-item i {
+  font-size: 20px !important;
+  display: block;
+  margin: 8px auto 4px;
+}
+
+/* تصغير النص */
+nav.w3-sidebar .w3-bar-item p {
+  font-size: 12px !important;
+  margin: 0;
+}
+
+/* تقليل البادينج */
+nav.w3-sidebar .w3-bar-item.sidebar-link {
+  padding: 14px 8px !important;
+}
+
+/* إزالة أي درجات رمادي جايه من W3 */
+nav.w3-sidebar .w3-dark-grey,
+nav.w3-sidebar .w3-grey,
+nav.w3-sidebar .w3-gray {
+  background: transparent !important;
+}
+
+/* هوفر بسيط */
+nav.w3-sidebar .w3-bar-item:hover {
+  background: rgba(255,255,255,0.06) !important;
+}
+
+
+/* ===== Projects grid ===== */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:10px}
+.project-card{text-decoration:none;color:inherit}
+.project-thumb{position:relative;background:#1a1a1a;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.project-thumb img{width:100%;height:auto;display:block}
+.project-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;background:rgba(0,0,0,.25);transition:opacity .2s}
+.project-card:hover .project-overlay{opacity:1}
+.project-overlay i{font-size:18px}
+.project-meta{margin-top:8px}
+.project-title{font-size:15px;color:#e5e5e5}
+.project-sub{font-size:12px;color:#aaa;margin-top:2px}
+.project-desc{font-size:12px;color:#9a9a9a;margin-top:6px;line-height:1.5}
+
+/* ===== Project page ===== */
+.project-page{max-width:900px}
+.project-header{margin:20px 0 14px}
+.project-meta{font-size:13px;color:#bcbcbc}
+.project-meta .chip{display:inline-block;padding:2px 8px;margin:0 6px 0 0;border-radius:99px;background:rgba(255,255,255,.08);font-size:11px;color:#ddd}
+.project-meta .dot{margin:0 6px;color:#777}
+.project-body{margin-top:16px;color:#cfcfcf}
+
+/* Vimeo/YouTube responsive */
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#000;margin:14px 0}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%}
+
+/* ===== Projects grid ===== */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px;margin-top:10px}
+.project-card{text-decoration:none;color:inherit}
+.project-thumb{position:relative;background:#1a1a1a;border-radius:10px;overflow:hidden;border:1px solid rgba(255,255,255,.06)}
+.project-thumb img{width:100%;height:auto;display:block}
+.project-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;background:rgba(0,0,0,.25);transition:opacity .2s}
+.project-card:hover .project-overlay{opacity:1}
+.project-overlay i{font-size:18px}
+.project-meta{margin-top:8px}
+.project-title{font-size:15px;color:#e5e5e5}
+.project-sub{font-size:12px;color:#aaa;margin-top:2px}
+.project-desc{font-size:12px;color:#9a9a9a;margin-top:6px;line-height:1.5}
+
+/* ===== Project page ===== */
+.project-page{max-width:900px}
+.project-header{margin:20px 0 14px}
+.project-meta{font-size:13px;color:#bcbcbc}
+.project-meta .chip{display:inline-block;padding:2px 8px;margin:0 6px 0 0;border-radius:99px;background:rgba(255,255,255,.08);font-size:11px;color:#ddd}
+.project-meta .dot{margin:0 6px;color:#777}
+.project-body{margin-top:16px;color:#cfcfcf}
+
+/* Vimeo/YouTube responsive */
+.video-wrap{position:relative;padding-bottom:56.25%;height:0;overflow:hidden;border-radius:10px;border:1px solid rgba(255,255,255,.08);background:#000;margin:14px 0}
+.video-wrap iframe{position:absolute;inset:0;width:100%;height:100%}
+/* ===== Software / Tools list ===== */
+.tools-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+}
+.tools-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #151515;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 8px 10px;
+}
+.tools-list img {
+  width: 22px;
+  height: 22px;
+  display: inline-block;
+  vertical-align: middle;
+  opacity: 0.95;
+}
+.tools-list .tool-fallback.fa {
+  font-size: 18px;
+  opacity: 0.85;
+  width: 22px; height: 22px;
+  display: inline-flex; align-items: center; justify-content: center;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.06);
+}
+.tools-list .tool-fallback.fa-mobile {
+  font-size: 20px;
+}
+
+/* Fix: stop alt text from overlapping with labels */
+.tools-list img {
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  object-fit: contain;
+  flex-shrink: 0;
+  font-size: 0; /* prevent showing alt text if icon fails */
+}
+
+/* align text properly */
+.tools-list li span {
+  font-size: 13px;
+  color: #cfcfcf;
+  line-height: 1.4;
+}
+
+/* ==== Compact Software Experience section ==== */
+#tools { margin-top: 32px; }
+#tools h2 { font-size: 26px; line-height: 1.2; }
+#tools p { font-size: 13px; margin: 6px 0 10px; color: #bdbdbd; }
+
+#tools h3 {
+  font-size: 18px;
+  line-height: 1.2;
+  margin: 14px 0 6px;
+  color: #dfdfdf;
+}
+
+/* badges/grid smaller */
+#tools .tools-list {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); /* أصغر من قبل */
+  gap: 8px;                      /* تقليل المسافات */
+}
+
+#tools .tools-list li {
+  padding: 6px 8px;              /* أصغر */
+  border-radius: 8px;
+  background: #141414;
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+/* icons smaller + fix alt text overlap */
+#tools .tools-list img {
+  width: 16px;                   /* كان 20-22px */
+  height: 16px;
+  display: inline-block;
+  object-fit: contain;
+  flex-shrink: 0;
+  font-size: 0;                  /* يمنع ظهور alt لو الأيقونة فشلت */
+}
+
+#tools .tools-list .tool-fallback.fa {
+  font-size: 14px;               /* أصغر */
+  width: 16px; height: 16px;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+
+#tools .tools-list span {
+  font-size: 12px;               /* نص أصغر */
+  line-height: 1.35;
+  color: #cfcfcf;
+}
+
+/* ==== Software Experience — tuned sizing & spacing ==== */
+#tools { margin-top: 40px; }
+
+/* خليه زي باقي العناوين: ما نقاطش حجم مختلف */
+#tools h2 { font-size: inherit; line-height: inherit; }
+
+#tools p { font-size: 14px; margin: 8px 0 14px; color: #bdbdbd; }
+
+#tools h3 {
+  font-size: 19px;
+  line-height: 1.25;
+  margin: 14px 0 8px;
+  color: #e0e0e0;
+}
+
+/* badges/grid slightly larger than compact */
+#tools .tools-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+#tools .tools-list li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: #151515;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 9px;
+  padding: 8px 10px;
+}
+
+/* icons: حجم متوسط ومنع alt-text */
+#tools .tools-list img {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  object-fit: contain;
+  flex-shrink: 0;
+  font-size: 0; /* يمنع ظهور alt إذا فشل التحميل */
+}
+
+/* النص */
+#tools .tools-list span {
+  font-size: 13.5px;
+  line-height: 1.35;
+  color: #cfcfcf;
+}
+
+/* خلي عنوان Software Experience زي باقي العناوين */
+#tools h2 {
+  font-size: 30px;  /* نفس حجم Find Me Online */
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+/* خلي عنوان Software Experience نفس حجم Find Me Online */
+#tools h2 {
+  font-size: 32px;     /* عدّلها لـ 34/36 لو لسه أصغر درجة بسيطة */
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  margin-bottom: 6px;
+}
+
+/* تأكيد تنسيق الأيقونات */
+#tools .tools-list img {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  object-fit: contain;
+  flex-shrink: 0;
+  font-size: 0; /* يمنع ظهور alt كنص */
+}
+
+#about .w3-button {
+  border: 1px solid rgba(255,255,255,0.15);
+  font-size: 14px;
+}
+#about .w3-button:hover {
+  border-color: rgba(255,255,255,0.35);
+}
+
+/* Social icons – reset any auto markers and tidy spacing */
+.social-icons a { display:inline-block; margin-right:16px; font-size:28px; text-decoration:none; }
+.social-icons a:last-child { margin-right:0; }
+.social-icons a::after { content:none !important; } /* يشيل أي سهم/شرطة مضافة تلقائياً */
+.social-icons i { line-height:1; vertical-align:middle; }
+
+/* اخفاء أي سطر صغير تحت الكارت (لو فاضل من استايلات قديمة) */
+.projects-grid .project-card .project-meta small,
+.projects-grid .project-card .project-meta .project-sub,
+.projects-grid .project-card .project-meta .project-date,
+.projects-grid .project-card .project-meta .project-tools-inline {
+  display: none !important;
+}
+
+/* تأكيد أن الكارت يعرض العنوان فقط بشكل نظيف */
+.projects-grid .project-card .project-meta {
+  padding: 8px 0 0;
+}
+.projects-grid .project-card .project-title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+/* == Projects grid == */
+.projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.project-card{display:block;text-decoration:none;border:1px solid rgba(255,255,255,.08);border-radius:10px;overflow:hidden;background:#111}
+.project-thumb{position:relative;aspect-ratio:16/9;background:#000}
+.project-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.project-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;background:rgba(0,0,0,.25);transition:opacity .2s}
+.project-card:hover .project-overlay{opacity:1}
+.project-overlay i{font-size:18px}
+.project-meta{padding:10px}
+.project-title{font-size:15px;color:#e5e5e5}
+
+/* كروت السكاشن الرئيسية في صفحة Projects */
+.projects-grid .project-card {
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.projects-grid .project-card:hover {
+  transform: scale(1.04); /* تكبير بسيط عند الهوفر */
+  box-shadow: 0 6px 18px rgba(0,0,0,.4);
+}
+
+/* حجم أكبر شوية للكروت نفسها */
+.projects-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); /* كان 220px مثلاً */
+  gap: 22px; /* مسافة أكبر بين الكروت */
+}
+
+/* العناوين جوه الكارت */
+.project-meta .project-title {
+  font-size: 18px;  /* كبر الخط */
+  font-weight: 600;
+  letter-spacing: .5px;
+  text-align: center;
+  color: #f5f5f5;
+  margin: 10px 0 12px;
+}
+
+/* اتأكد ان الصور واخدة شكل نظيف */
+.project-thumb {
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.project-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+
+.project-card:hover .project-thumb img {
+  transform: scale(1.05);
+}
+
+/* تعديل على الكروت الرئيسية */
+.projects-grid .project-card {
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.projects-grid .project-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(0,0,0,.4);
+}
+
+/* حجم الكارت */
+.projects-grid {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 22px;
+}
+
+/* العنوان الجديد */
+.project-meta {
+  padding: 10px 14px;
+  text-align: left; /* خلي الكلام على الشمال */
+}
+
+.project-meta .project-title {
+  font-size: 17px;
+  font-weight: 700; /* بولد */
+  color: #ccc;      /* رمادي هادي بدل الأبيض */
+  margin: 8px 0 4px;
+  line-height: 1.4;
+}
+
+/* استايل الكارت */
+.projects-grid .project-card {
+  border: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #111;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.projects-grid .project-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 15px rgba(0,0,0,.4);
+}
+
+/* حجم الكارت */
+.projects-grid {
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); /* أوسع شوية */
+  gap: 24px;
+}
+
+/* العنوان تحت الصورة */
+.project-meta {
+  padding: 12px 16px;
+  text-align: left; /* محاذاة لليسار */
+}
+
+/* تنسيق العنوان */
+.project-meta .project-title {
+  font-family: "Montserrat", "Roboto", Arial, sans-serif; /* نوع خط أنظف */
+  font-size: 19px;   /* أكبر شوية */
+  font-weight: 700;  /* بولد */
+  color: #d0d0d0;    /* رمادي أهدى */
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* العنوان أسفل الكارت */
+.project-meta {
+  padding: 14px 18px;   /* مسافة من الحواف */
+  text-align: left;     /* عالشمال */
+}
+
+/* تنسيق عنوان الكارت */
+.project-meta .project-title {
+  font-family: "Montserrat", "Roboto", Arial, sans-serif;
+  font-size: 22px;        /* أكبر */
+  font-weight: 700;       /* بولد */
+  color: #f0f0f0;         /* رمادي فاتح قريب من الأبيض */
+  margin: 0;
+  line-height: 1.5;
+}
+
+
+
+/* ====== Fix category cards caption (left, bigger, lighter) ====== */
+.projects-grid .project-card .project-meta{
+  text-align: left !important;
+  padding: 16px 20px 18px !important;  /* مسافة من الحواف */
+}
+
+.projects-grid .project-card .project-meta .project-title{
+  font-family: "Montserrat", "Roboto", Arial, sans-serif;
+  font-size: 22px !important;          /* أكبر شوية */
+  font-weight: 700 !important;         /* Bold */
+  color: #f0f0f0 !important;           /* أبيض فاتح/رمادي فاتح */
+  letter-spacing: .2px;
+  margin: 0 !important;
+  line-height: 1.4 !important;
+}
+
+@media (min-width: 1024px){
+  .projects-grid .project-card .project-meta .project-title{
+    font-size: 23px !important;
+  }
+}
+
+/* ====== تكبير الكاردز شوية ====== */
+.projects-grid .project-card{
+  flex: 1 1 320px;         /* الحجم الأساسي بدل 250px */
+  max-width: 360px;        /* أقصى عرض */
+  min-height: 260px;       /* أطول شوية */
+}
+
+/* ====== تعديل العنوان جوه الكارد ====== */
+.projects-grid .project-card .project-meta{
+  text-align: left !important;
+  padding: 16px 22px 20px !important;
+}
+
+.projects-grid .project-card .project-meta .project-title{
+  font-size: 20px !important;
+  font-weight: 500 !important;    /* أخف من البولد */
+  color: #e6e6e6 !important;      /* رمادي فاتح مش أبيض صريح */
+  margin-left: 2px !important;
+  text-align: left !important;
+}
+
+/* ====== تقليل المسافة بين الخط والحافة ====== */
+.projects-grid .project-card .project-meta{
+  padding: 12px 16px 16px !important;  /* كان 16px 22px */
+}
+
+.projects-grid .project-card .project-meta .project-title{
+  margin-left: 0 !important;          /* شيل المسافة الزيادة */
+}
+
+/* ====== ضبط عناوين السكاشن (Concept / Graphic / Short Film) ====== */
+.projects-grid h3 {
+  margin-top: 12px !important;     /* كان 24px */
+  margin-bottom: 12px !important;  /* أقل شوية */
+  font-size: 28px !important;      /* يكبر خط العنوان */
+  font-weight: 600 !important;     /* شبه Bold */
+  color: #f0f0f0 !important;       /* أفتح شوية من الأبيض */
+  text-align: left !important;     /* محاذاة شمال */
+}
+
+/* قلل المسافة بين عنوان السكشن (h3) والجريد اللي تحته */
+.w3-content h3.w3-text-light-grey {
+  margin-top: 6px !important;    /* كان كبير، خليناه صغير */
+  margin-bottom: 8px !important; /* قللنا البوتوم */
+  padding: 0 !important;
+  text-align: left !important;
+}
+
+/* كمان نتأكد إن الجريد نفسه مش عامل padding زيادة */
+.projects-grid {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* تقليل المسافة بين الصورة واسم الكارد */
+.project-card .project-title {
+  margin-top: 6px !important;     /* المسافة بين الصورة والعنوان */
+  margin-bottom: 4px !important;  /* المسافة بين العنوان وحافة الكارد */
+  text-align: left !important;    /* شمال */
+  font-size: 16px !important;     /* أكبر سنة */
+  font-weight: 500 !important;    /* أخف من Bold */
+  color: #e0e0e0 !important;      /* رمادي فاتح مش أبيض */
+  padding-left: 8px !important;   /* مسافة بسيطة من الحافة الشمال */
+}
+/* === ضبط كروت السكاشن (Concept / Graphic / Short Film) === */
+
+/* صغّر الفراغ تحت الصورة */
+.projects-grid .project-card .project-thumb{
+  margin-bottom: 6px !important;
+}
+
+/* كابشن الكارد (اسم السكشن) */
+.projects-grid .project-card .project-meta{
+  padding: 6px 10px 6px 10px !important; /* قرّب النص من الحافة السفلية وشمال */
+}
+
+.projects-grid .project-card .project-title{
+  margin: 0 !important;                 /* شيل أي مسافات إضافية */
+  text-align: left !important;          /* شمال */
+  font-size: 17px !important;           /* أكبر سنة */
+  font-weight: 500 !important;          /* أهدى من Bold */
+  color: #e6e6e6 !important;            /* أفتح شوية من الأبيض */
+  letter-spacing: .2px !important;
+}
+/* ===== Section cards tuning (Concept/Graphic/Short Film) ===== */
+.section-card .project-thumb{
+  margin-bottom: 6px !important;      /* قرب الصورة من العنوان */
+}
+.section-card .project-meta{
+  padding: 6px 12px 6px 12px !important;  /* قلل المسافة وخلّيها أقرب للحافة السفلية */
+}
+.section-card .project-title{
+  margin: 0 !important;
+  text-align: left !important;        /* على الشمال */
+  font-size: 18px !important;         /* أكبر سنة */
+  font-weight: 500 !important;        /* أهدى من Bold */
+  color: #e8e8e8 !important;          /* أفتح شوية */
+  letter-spacing: .2px !important;
+}
+
+/* لو فيه أي Padding سفلي على الكارد نفسه قلّله */
+.section-card{
+  padding-bottom: 6px !important;
+}
+/* ==== Force section cards captions (Projects page) ==== */
+.projects-grid .project-card .project-thumb{
+  margin-bottom:6px !important;      /* يقلل المسافة بين الصورة والعنوان */
+}
+
+.projects-grid .project-card .project-meta{
+  text-align:left !important;         /* يخلي العنوان على الشمال */
+  padding:6px 10px 6px 10px !important;  /* قرّب العنوان من إطار الكارت */
+}
+
+.projects-grid .project-card .project-title{
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif !important;
+  font-size:18px !important;          /* أكبر شوية */
+  font-weight:600 !important;         /* بولد هادي */
+  color:#e9e9e9 !important;           /* أفتح سنة */
+  margin:0 !important;
+  letter-spacing:.2px !important;
+}
+
+.projects-grid .project-card{
+  padding-bottom:8px !important;      /* يقرّب النص من أسفل الكارت */
+}
+
+/* إخفاء Archive & Photos من navigation في الموبايل */
+@media screen and (max-width: 768px) {
+  /* إخفاء Archive link */
+  nav a[href*="Archive"],
+  .w3-bar a[href*="Archive"],
+  .w3-sidebar a[href*="Archive"] {
+    display: none !important;
+  }
+  
+  /* إخفاء Photos link */
+  nav a[href*="Photos"],
+  .w3-bar a[href*="Photos"], 
+  .w3-sidebar a[href*="Photos"] {
+    display: none !important;
+  }
+}
+
+
+
+/* إخفاء Archive & Photos من navigation في الموبايل - حل أقوى */
+@media screen and (max-width: 768px) {
+  /* إخفاء أي link فيه كلمة Archive */
+  a:contains("Archive"),
+  .w3-bar a:contains("Archive"),
+  .w3-sidebar a:contains("Archive"),
+  nav a:contains("Archive") {
+    display: none !important;
+  }
+  
+  /* إخفاء أي link فيه كلمة Photos */
+  a:contains("Photos"),
+  .w3-bar a:contains("Photos"), 
+  .w3-sidebar a:contains("Photos"),
+  nav a:contains("Photos") {
+    display: none !important;
+  }
+  
+  /* حل إضافي - إخفاء حسب النص */
+  [data-nav="Archive"],
+  [data-nav="Photos"] {
+    display: none !important;
+  }
+  
+  /* حل عام - إخفاء navigation items اللي ترتيبهم 3 و 5 */
+  .w3-bar a:nth-child(4), /* Photos - order 3 */
+  .w3-bar a:nth-child(6)  /* Archive - order 5 */ {
+    display: none !important;
+  }
+}
+
+
+/* تصليح الصورة الشخصية - تكون في النص على كل الشاشات */
+.profile-img {
+  display: block !important;
+  margin: 16px auto 0 auto !important;
+  width: 320px !important;
+  max-width: 90% !important;
+  height: auto !important;
+}
+
+/* للشاشات الصغيرة */
+@media (max-width: 600px) {
+  .profile-img {
+    width: 280px !important;
+    max-width: 85% !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .profile-img {
+    width: 240px !important;
+    max-width: 80% !important;
+  }
+}
+
+
+
+
+/* إصلاح زر Contact في الموبايل */
+@media (max-width: 600px) {
+  /* تأكد إن mobile navigation يظهر */
+  #myNavbar {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  
+  /* تأكد إن كل أزرار navigation تظهر */
+  #myNavbar .w3-bar-item {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    width: 25% !important;
+  }
+  
+  /* تأكد إن Contact button مش مخفي */
+  a[href*="#contact"] {
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+}
+
+/* للديسكتوب - تأكد إن sidebar contact يظهر */
+@media (min-width: 601px) {
+  nav.w3-sidebar a[href*="#contact"] {
+    display: block !important;
+    visibility: visible !important;
+  }
+}
+
+/* === View More Button - إضافة جديدة بدون تعديل الأصل === */
+.project-overlay {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  opacity: 0;
+  background: rgba(0, 0, 0, 0.6);
+  transition: all 0.4s ease;
+  z-index: 10;
+}
+
+.project-card:hover .project-overlay {
+  opacity: 1;
+}
+
+.view-more-btn {
+  position: absolute !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) translateY(20px) !important;
+  display: block !important;
+  padding: 10px 24px;
+  background: transparent;
+  color: white;
+  text-decoration: none;
+  border: 1px solid white;
+  font-family: 'Helvetica Neue', 'Arial', sans-serif;
+  font-size: 12px;
+  font-weight: 300;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  opacity: 0;
+  border-radius: 2px;
+  white-space: nowrap;
+  margin: 0 !important;
+}
+
+.project-card:hover .view-more-btn {
+  opacity: 1;
+  transform: translate(-50%, -50%) translateY(0) !important;
+}
+
+.view-more-btn:hover {
+  background: white;
+  color: #333;
+  transform: translate(-50%, -50%) translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+/* === Slider Fix === */
+#showreel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#showreel .slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 1s ease;
+}
+
+#showreel .slide.active {
+  opacity: 1;
+}
+
+/* === Showreel (contain, no-crop, no first-flash) === */
+.hero{position:relative;min-height:70vh;display:grid;place-items:center;overflow:hidden;background:#000}
+.hero-bg{position:absolute;inset:0}
+
+#showreel{position:absolute;inset:0;overflow:hidden}
+#showreel .slide{
+  position:absolute;inset:0;
+  opacity:0; transition:opacity .45s ease; /* أسرع لتقليل إحساس التأخير */
+  background:#000;
+}
+#showreel .slide.active{opacity:1}
+/* أول سلايد: لا ترانزيشن لتفادي الفلاش */
+
+/* الصور كخلفية: اعرضها كاملة بدون قص */
+#showreel .slide[style*="background-image"],
+#showreel .slide[data-src]{
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:contain; /* أهم سطر لضمان عدم القص */
+}
+
+/* الفيديوهات: كاملة بدون قص */
+#showreel video{
+  width:100%; height:100%;
+  object-fit:contain;       /* لا قص */
+  background:#000;
+  display:block;
+}
+
+#showreel .slide { opacity:0; transition: opacity .45s ease; background:#000; position:absolute; inset:0 }
+#showreel .slide.active { opacity:1 }
+
+/* أول صورة كـ <img> + الفيديوهات: كامل بدون قص */
+
+/* باقي الصور كخلفية: بدون قص */
+#showreel .slide[style*="background-image"] {
+  background-repeat:no-repeat;
+  background-position:center center;
+  background-size:contain;
+}
+
+/* === Hero sizing so slider is visible === */
+.hero{ position:relative; min-height:70vh; display:grid; place-items:center; overflow:hidden; background:#000; }
+.hero .hero-bg{ position:absolute; inset:0; }
+
+/* (تأكيد) السلايدز تظهر/تختفي بنعومة */
+#showreel{ position:absolute; inset:0; overflow:hidden; }
+#showreel .slide{ position:absolute; inset:0; opacity:0; transition:opacity .6s ease; }
+#showreel .slide.active{ opacity:1; }
+
+/* خلى الفيديو يملأ الإطار بدون قص */
+#showreel video{ width:100%; height:100%; object-fit:contain; background:#000; display:block; }
+
+
+/* ====== Hero + Slider (داخل مساحة محددة) ====== */
+.hero{
+  position:relative;
+  margin: 0 auto;
+  max-width: 1200px;          /* نفس عرض المحتوى الرئيسي */
+  min-height: clamp(340px, 42vw, 520px);
+  border-radius: 12px;
+  overflow:hidden;
+  background:#000;
+}
+.hero-bg{ position:absolute; inset:0; }
+.hero-media{ position:absolute; inset:0; overflow:hidden; }
+
+/* السلايدز: Fade ناعم */
+#showreel .slide{
+  position:absolute; inset:0;
+  opacity:0; transition:opacity .35s ease;
+  background:#000;
+}
+#showreel .slide.active{ opacity:1; }
+
+/* الصور كخلفية: كاملة بدون قص داخل الإطار */
+#showreel .slide[style*="background-image"]{
+  background-position:center center;
+  background-repeat:no-repeat;
+  background-size:contain; /* ما يتقصش */
+}
+
+/* الفيديوهات: كاملة بدون قص داخل الإطار */
+#showreel video{
+  width:100%; height:100%;
+  object-fit:contain;        /* ما يتقصش */
+  display:block;
+  background:#000;
+}
+
+/* نص الـHero فوق الميديا */
+.hero-copy{
+  position:relative; z-index:2;
+  pointer-events:none;        /* عشان ما توقّفش تشغيل الفيديو */
+  padding: clamp(16px, 4vw, 28px);
+}
+.hero-title{ font-size: clamp(32px, 6vw, 64px); margin: 0 0 .15em; }
+.hero-role{  margin: 0 0 .25em; opacity: .9; }
+.hero-subrole{ opacity: .8; max-width: 70ch; }
+
+/* مسافة بسيطة تحت الـHero تفصل عن باقي الصفحة */
+section.hero { margin-bottom: 28px; }
+

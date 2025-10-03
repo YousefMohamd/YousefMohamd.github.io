@@ -1,0 +1,90 @@
+<style id="hs-inline-style">
+/* === Home Projects — self-contained styles === */
+.home-sections{max-width:1200px;margin:28px auto 0;padding:0 16px;}
+.home-sections-title{
+  margin:0 0 14px 2px; font-size:28px; font-weight:700; letter-spacing:.2px;
+  font-family: Inter, system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif; color:#f0f0f0;
+  text-align:left;
+}
+.hs-row{display:flex;gap:28px;justify-content:flex-start;align-items:stretch;flex-wrap:wrap}
+
+.hs-card{position:relative;display:block;width:min(38vw,520px);height:min(22vw,320px);
+  min-width:320px;min-height:240px;background:#111;overflow:hidden;border:none;
+  box-shadow:0 6px 24px rgba(0,0,0,.20);isolation:isolate;
+  transition:transform .35s cubic-bezier(.5,1,.5,1), box-shadow .35s}
+.hs-card, .hs-card * { text-decoration:none !important; }
+.hs-card:hover{transform:scale(1.02);box-shadow:0 12px 34px rgba(0,0,0,.38)}
+
+.hs-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;
+  filter:brightness(.82) saturate(1.05);transform:scale(1.0);
+  transition:transform .6s cubic-bezier(.2,.7,.2,1), filter .35s ease;z-index:1}
+.hs-card:hover .hs-bg{transform:scale(1.05);filter:brightness(1.02) saturate(1.12)}
+
+.hs-overlay{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;
+  justify-content:center;align-items:flex-start;padding:32px;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.18) 0%,rgba(0,0,0,.64) 100%)}
+
+.hs-heading{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  font-size:clamp(20px,2.6vw,28px);line-height:1.1;font-weight:700;letter-spacing:.4px;
+  margin:0 0 14px 0;transform:translateY(8px);opacity:.96;
+  transition:transform .33s cubic-bezier(.46,.16,.36,.82),opacity .33s;color:#fff}
+.hs-btn{display:inline-block;pointer-events:auto;border:1px solid rgba(255,255,255,.86);
+  padding:8px 20px;border-radius:4px;background:transparent;color:#fff;
+  font:600 12px/1 Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  letter-spacing:1.5px;text-transform:uppercase;transform:translateY(18px);opacity:0;
+  transition:transform .35s cubic-bezier(.46,.16,.36,.82),opacity .35s,background .2s,color .2s}
+.hs-card:hover .hs-heading{transform:translateY(0);opacity:1}
+.hs-card:hover .hs-btn{transform:translateY(0);opacity:1}
+.hs-btn:hover{background:#fff;color:#222}
+
+@media (max-width:980px){ .hs-card{ width:min(45vw,520px); height:min(27vw,320px) } }
+@media (max-width:720px){ .hs-row{gap:22px} .hs-card{width:100%;height:260px} .hs-overlay{padding:24px} }
+</style>
+
+<section class="home-sections">
+  <h2 class="home-sections-title">Projects</h2>
+  <div class="hs-row">
+    <a class="hs-card" href="{{ '/projects/concept-art/' | url }}">
+      <img class="hs-bg" src="{{ '/img/projects/sections/concept-art.jpg' | url }}" alt="Concept Art">
+      <div class="hs-overlay">
+        <h3 class="hs-heading">Concept Art</h3>
+        <span class="hs-btn">View more</span>
+      </div>
+    </a>
+
+    <a class="hs-card" href="{{ '/projects/graphic-design/' | url }}">
+      <img class="hs-bg" src="{{ '/img/projects/sections/graphic-design.jpg' | url }}" alt="Graphic Design">
+      <div class="hs-overlay">
+        <h3 class="hs-heading">Graphic Design</h3>
+        <span class="hs-btn">View more</span>
+      </div>
+    </a>
+
+    <a class="hs-card" href="{{ '/projects/short-film-projects/' | url }}">
+      <img class="hs-bg" src="{{ '/img/projects/sections/short-films.jpg' | url }}" alt="Short Film Projects">
+      <div class="hs-overlay">
+        <h3 class="hs-heading">Short Film Projects</h3>
+        <span class="hs-btn">View more</span>
+      </div>
+    </a>
+  </div>
+</section>
+<style>
+@media (min-width: 1024px){
+  .hs-row{
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(260px, 1fr)) !important;
+    gap: 26px !important;
+    align-items: stretch !important;
+  }
+  .hs-card{
+    width: auto !important;
+    min-width: 0 !important;
+    height: 240px !important;
+  }
+}
+@media (min-width: 1280px){
+  .hs-row{ gap: 28px !important; }
+  .hs-card{ height: 260px !important; }
+}
+</style>

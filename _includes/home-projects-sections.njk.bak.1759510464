@@ -1,0 +1,26 @@
+<section class="home-section projects-home">
+  <h2 class="section-title">Projects</h2>
+
+  <div class="projects-sections-row">
+    <!-- Concept Art -->
+    <figure class="snip1273">
+      <img src="{{ '/img/projects/sections/concept-art.jpg' | url }}" alt="Concept Art">
+      <figcaption><h3>Concept Art</h3></figcaption>
+      <a href="{{ '/projects/concept-art/' | url }}">Concept Art</a>
+    </figure>
+
+    <!-- Graphic Design -->
+    <figure class="snip1273">
+      <img src="{{ '/img/projects/sections/graphic-design.jpg' | url }}" alt="Graphic Design">
+      <figcaption><h3>Graphic Design</h3></figcaption>
+      <a href="{{ '/projects/graphic-design/' | url }}">Graphic Design</a>
+    </figure>
+
+    <!-- Short Film Projects -->
+    <figure class="snip1273">
+      <img src="{{ '/img/projects/sections/short-films.jpg' | url }}" alt="Short Film Projects">
+      <figcaption><h3>Short Film Projects</h3></figcaption>
+      <a href="{{ '/projects/short-film-projects/' | url }}">Short Film Projects</a>
+    </figure>
+  </div>
+</section>

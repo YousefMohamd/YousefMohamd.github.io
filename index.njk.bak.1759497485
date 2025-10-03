@@ -1,0 +1,147 @@
+---
+layout: layouts/base.njk
+eleventyNavigation:
+  key: Home
+  order: 1
+hero:
+  name: "Yousef Mohamed"
+  role: "Filmmaker"
+  subrole: "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist"
+---
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-media" id="showreel">
+      {% for item in showreel %}
+        {% if item.type == "video" %}
+          <!-- فيديو: خليه بدون autoplay. هنشغّله بالـJS، وننتقل عند ended -->
+          <div class="slide" data-type="video" data-src="{{ item.src | url }}">
+            <video playsinline muted preload="metadata">
+              <!-- السماح لـ .mov أو أي امتداد — المتصفح اللي يقدر يشغّله هيشغّله -->
+              <source src="{{ item.src | url }}">
+            </video>
+          </div>
+        {% else %}
+          <!-- صورة: هنعدّي عليها 1 ثانية -->
+          <div class="slide" data-type="image" style="background-image:url('{{ item.src | url }}')"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="hero-copy">
+    <h1 class="hero-title">{{ hero.name }}</h1>
+    <p class="hero-role">{{ hero.role }}</p>
+    <div class="hero-subrole">{{ hero.subrole }}</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="home-section">
+  <h2 class="section-title">Projects</h2>
+  <div class="cards-3">
+    <a class="section-card" href="{{ '/projects/concept-art/' | url }}">
+      <div class="thumb" style="background-image:url('{{ '/img/projects/sections/concept-art.jpg' | url }}')"><span class="overlay">View more</span></div>
+      <h3>Concept Art</h3>
+    </a>
+    <a class="section-card" href="{{ '/projects/graphic-design/' | url }}">
+      <div class="thumb" style="background-image:url('{{ '/img/projects/sections/graphic-design.jpg' | url }}')"><span class="overlay">View more</span></div>
+      <h3>Graphic Design</h3>
+    </a>
+    <a class="section-card" href="{{ '/projects/short-film-projects/' | url }}">
+      <div class="thumb" style="background-image:url('{{ '/img/projects/sections/short-films.jpg' | url }}')"><span class="overlay">View more</span></div>
+      <h3>Short Film Projects</h3>
+    </a>
+  </div>
+</section>
+
+<!-- SOFTWARE -->
+<section class="home-section">
+  <button class="soft-toggle" aria-expanded="false" aria-controls="soft-wrap">
+    <span>Software Experience</span><i class="fa fa-chevron-down"></i>
+  </button>
+  <div id="soft-wrap" class="soft-wrap" hidden>
+    <p class="soft-note">Started on mobile and produced some projects using mobile apps.</p>
+    <h4>Mobile apps</h4>
+    <ul class="badges"><li>Snapseed</li><li>ibisPaint X</li><li>Video Maker</li></ul>
+    <h4>Desktop apps (macOS / Windows)</h4>
+    <ul class="badges icons">
+      <li>Microsoft Word</li><li>Microsoft PowerPoint</li><li>Adobe Photoshop — Master</li><li>Krita — Master</li>
+      <li>PureRef</li><li>Darktable</li><li>Shotcut</li><li>DaVinci Resolve — Master</li>
+      <li>OpenToonz</li><li>Natron</li><li>Waveform 13 (DAW)</li><li>Cinema 4D (2023)</li><li>Blender — Basic</li><li>Inkscape — Basic</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SLIDER SCRIPT (بالترتيب، Loop، صورة=1s، فيديو=لحد ما يخلص) -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const slides = Array.from(document.querySelectorAll("#showreel .slide"));
+  if (!slides.length) return;
+
+  // إظهار أول شريحة فورًا (بدون فلاش)
+  slides[0].classList.add("active");
+
+  let i = 0;
+  let timer = null;
+
+  function clearPending(v) {
+    if (timer) { clearTimeout(timer); timer = null; }
+    if (v) {
+      v.onended = null;
+      v.onloadedmetadata = null;
+    }
+  }
+
+  function nextIndex(idx){ return (idx + 1) % slides.length; }
+
+  function show(idx) {
+    // أخفي القديمة
+    slides[i].classList.remove("active");
+    const oldVid = slides[i].querySelector("video");
+    if (oldVid) { try { oldVid.pause(); oldVid.currentTime = 0; } catch(e){} }
+
+    // فعّل الجديدة
+    i = idx;
+    const slide = slides[i];
+    slide.classList.add("active");
+    const type = slide.dataset.type;
+
+    clearPending();
+
+    if (type === "image") {
+      // صورة: 1 ثانية
+      timer = setTimeout(() => show(nextIndex(i)), 1000);
+    } else {
+      // فيديو: شغّل ومنتقل مع ended
+      const v = slide.querySelector("video");
+      if (!v) { timer = setTimeout(() => show(nextIndex(i)), 1000); return; }
+
+      // تأكيد من البداية وتشغيل صامت
+      try { v.currentTime = 0; } catch(e){}
+      v.muted = true;
+      v.playsInline = true;
+
+      const goNext = () => { clearPending(v); show(nextIndex(i)); };
+
+      v.onended = goNext;
+
+      // fallback لو المتصفح ما أدّاش ended
+      v.onloadedmetadata = () => {
+        // لو مدة الفيديو معطوبة أو 0، فوت بعد 1s
+        const dur = isFinite(v.duration) && v.duration > 0 ? v.duration : 1;
+        timer = setTimeout(goNext, Math.ceil(dur * 1000));
+      };
+
+      v.play().catch(() => {
+        // لو فشل التشغيل لأي سبب، فوت بعد ثانية
+        timer = setTimeout(goNext, 1000);
+      });
+    }
+  }
+
+  // ابدأ من الشريحة 2 مباشرة بعد 1s (عشان أول واحدة ظهرت فورًا)
+  setTimeout(() => show(1 % slides.length), 1000);
+});
+</script>

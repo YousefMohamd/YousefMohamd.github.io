@@ -1,0 +1,40 @@
+---
+layout: layouts/home.njk
+title: Short Film Projects
+---
+
+<div class="w3-padding-64 w3-content">
+  <h2 class="w3-text-light-grey">Short Film Projects</h2>
+  <!-- <hr style="width:200px" class="w3-opacity"> -->
+
+  {# بنمشي على كل المشاريع المعلّمة tag "project" ونعكس الترتيب عشان الأحدث يظهر الأول #}
+  {% for p in (collections.project or []) | reverse %}
+    {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
+      <div class="film-project w3-margin-bottom">
+
+        <h3 class="w3-text-light-grey" style="margin:18px 0 8px;">{{ p.data.title }}</h3>
+
+        {% if p.data.vimeoId %}
+          <div class="video-wrapper" style="margin:12px 0;">
+            <iframe
+              src="https://player.vimeo.com/video/{{ p.data.vimeoId }}"
+              width="100%" height="420" frameborder="0"
+              allow="autoplay; fullscreen; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+        {% endif %}
+
+        {# لو محتوى الصفحة فيه تفاصيل نصية (التاريخ/الأدوات/ملاحظات) هتظهر هنا #}
+        {% if p.templateContent %}
+          <div class="w3-text-grey" style="line-height:1.7;">
+            {{ p.templateContent | safe }}
+          </div>
+        {% endif %}
+
+        <hr class="w3-opacity">
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+

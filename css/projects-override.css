@@ -1,0 +1,98 @@
+:root {
+  --proj-w: 320px;
+  --proj-h: 210px;
+  --gap: 34px;
+  --title-size: 22px;
+}
+
+/* Container Flex Row */
+.projects-sections-row {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: var(--gap) !important;
+  justify-content: center !important;
+  align-items: flex-start !important;
+  margin-top: 38px !important;
+  flex-wrap: wrap !important;
+}
+
+/* Make the card itself clickable and fixed size */
+.snip1273 {
+  width: var(--proj-w) !important;
+  min-width: var(--proj-w) !important;
+  max-width: var(--proj-w) !important;
+  height: var(--proj-h) !important;
+  position: relative !important;
+  display: block !important;
+  overflow: hidden !important;
+  border-radius: 14px !important;
+  background: #111 !important;
+  box-shadow: 0 6px 18px rgba(0,0,0,.22) !important;
+  margin: 0 !important;
+  text-decoration: none !important;
+  transition: box-shadow .25s, transform .25s !important;
+}
+
+.snip1273:hover {
+  box-shadow: 0 12px 32px rgba(0,0,0,.32) !important;
+  transform: scale(1.045) !important;
+}
+
+.snip1273 img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  filter: saturate(1.08) brightness(.87) !important;
+  transition: filter .32s, opacity .32s !important;
+}
+
+.snip1273:hover img {
+  opacity: .33 !important;
+  filter: grayscale(.08) brightness(1.13) saturate(1.2) !important;
+}
+
+/* Overlay for animated caption */
+.caption-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  z-index: 2 !important;
+  pointer-events: none !important;
+  background: none !important;
+}
+
+.caption-overlay span {
+  font-size: var(--title-size) !important;
+  font-weight: 700 !important;
+  color: #fff !important;
+  background: rgba(0,0,0,0.7) !important;
+  border-radius: 8px !important;
+  padding: 12px 32px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 1.2px !important;
+  box-shadow: 0 8px 26px rgba(0,0,0,.18) !important;
+  opacity: 0 !important;
+  transform: translateY(20px) scale(.98) !important;
+  transition:
+    opacity .38s cubic-bezier(.46,.16,.36,.82) !important,
+    transform .38s cubic-bezier(.46,.16,.36,.82) !important,
+    background .22s !important;
+}
+
+.snip1273:hover .caption-overlay span {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+  background: rgba(34,34,34,0.92) !important;
+}
+
+/* Responsive fixes */
+@media (max-width: 980px) {
+  :root{ --proj-w: 260px; --proj-h:170px; --title-size:18px; --gap:18px; }
+}
+@media (max-width: 600px) {
+  .projects-sections-row { flex-direction: column !important; gap: 18px !important; align-items: center !important; }
+  :root{ --proj-w: 95vw; --proj-h:180px; --title-size:18px; }
+}

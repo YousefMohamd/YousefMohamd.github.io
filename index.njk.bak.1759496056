@@ -1,0 +1,127 @@
+---
+layout: layouts/base.njk
+eleventyNavigation:
+  key: Home
+  order: 1
+hero:
+  name: "Yousef Mohamed"
+  role: "Filmmaker"
+  subrole: "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist"
+---
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg" id="showreel">
+    {% for item in showreel %}
+      {% if item.type == "video" %}
+        <video class="slide{% if loop.index0 == 0 %} active{% endif %}" preload="auto" muted playsinline>
+          <source src="{{ item.src | url }}" type="{{ item.mime or 'video/mp4' }}">
+        </video>
+      {% else %}
+        <img class="slide{% if loop.index0 == 0 %} active{% endif %}" src="{{ item.src | url }}" alt="showreel {{ loop.index }}" loading="{% if loop.index0 == 0 %}eager{% else %}lazy{% endif %}">
+      {% endif %}
+    {% endfor %}
+  </div>
+
+  <div class="hero-copy">
+    <h1 class="hero-title">{{ hero.name }}</h1>
+    <p class="hero-role">{{ hero.role }}</p>
+    <div class="hero-subrole">{{ hero.subrole }}</div>
+  </div>
+</section>
+
+<!-- SLIDER: صورة=1s | فيديو=لنهايته | ترتيب ثابت | Loop | أول سلايد فوري -->
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const slides = Array.from(document.querySelectorAll("#showreel .slide"));
+  if (!slides.length) return;
+
+  const IMAGE_MS = 1000;   // مدة الصورة
+  const FADE_MS  = 200;    // ترانزيشن بسيط
+  let i = 0, timer = null, locking = false;
+
+  // قياسات بدون قص
+  slides.forEach(el => {
+    if (el.tagName === "IMG") {
+      el.style.objectFit = "contain";
+      el.style.width = "100%";
+      el.style.height = "100%";
+      el.decoding = "async";
+    } else if (el.tagName === "VIDEO") {
+      el.style.objectFit = "contain";
+      el.style.width = "100%";
+      el.style.height = "100%";
+      el.muted = true;
+      el.playsInline = true;
+      el.preload = "auto";
+    }
+  });
+
+  const clear = (el) => {
+    if (timer) { clearTimeout(timer); timer = null; }
+    if (el && el.tagName === "VIDEO") {
+      el.onended = el.onerror = el.onabort = el.onplaying = null;
+    }
+  };
+
+  // حمّل السلايد التالي (للصور) لتقليل الانتظار
+  const preloadNext = (k) => {
+    const n = slides[(k+1) % slides.length];
+    if (!n || n.tagName !== "IMG") return;
+    if (!n.dataset.preloaded && n.getAttribute("src")) {
+      const im = new Image();
+      im.src = n.getAttribute("src");
+      n.dataset.preloaded = "1";
+    }
+  };
+
+  function activate(n){
+    if (locking) return;
+    locking = true;
+
+    const prev = slides[i];
+    clear(prev);
+    prev && prev.classList.remove("active");
+
+    i = (n + slides.length) % slides.length;
+    const el = slides[i];
+    el.classList.add("active");
+
+    // افتح القفل بعد انتهاء الفيد
+    setTimeout(() => { locking = false; }, FADE_MS);
+
+    preloadNext(i);
+
+    if (el.tagName === "VIDEO") {
+      try { el.currentTime = 0; el.load(); } catch(_) {}
+      el.onplaying = () => { if (timer) { clearTimeout(timer); timer = null; } };
+      el.onended = el.onerror = el.onabort = () => activate(i+1);
+      const p = el.play?.();
+      if (p && p.catch) {
+        // لو autoplay اترفض، اديله 3 ثواني وامشي للسلايد اللي بعده
+        p.catch(() => { timer = setTimeout(() => activate(i+1), 3000); });
+      }
+    } else {
+      timer = setTimeout(() => activate(i+1), IMAGE_MS);
+    }
+  }
+
+  // أول سلايد يُفَعَّل فورًا من غير انتظار
+  activate(0);
+});
+</script>
+
+<style>
+/* === Slider minimal CSS (no crop) === */
+.hero{position:relative;min-height:70vh;display:grid;place-items:center;overflow:hidden;background:#000}
+.hero .hero-bg{position:absolute;inset:0}
+
+#showreel{position:absolute;inset:0;overflow:hidden}
+#showreel .slide{
+  position:absolute;inset:0;
+  opacity:0; transition:opacity .2s ease;
+  background:#000; display:block;
+}
+#showreel .slide.active{opacity:1}
+#showreel img.slide, #showreel video.slide{width:100%;height:100%;object-fit:contain;background:#000;display:block}
+</style>

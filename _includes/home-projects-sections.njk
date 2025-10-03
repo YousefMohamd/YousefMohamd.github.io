@@ -1,0 +1,56 @@
+<section class="home-sections" aria-label="Projects">
+  <style>
+    /* ==== Self-contained styles for home sections ==== */
+    .home-sections{margin:28px 0 4px}
+    .hs-row{
+      display:flex; gap:34px; justify-content:center; align-items:stretch;
+      flex-wrap:wrap;
+    }
+    .hs-card{
+      position:relative; display:block; text-decoration:none;
+      width:320px; height:220px; border-radius:16px; overflow:hidden;
+      background:#111;
+      box-shadow:0 6px 24px rgba(0,0,0,.18);
+      transition:transform .22s cubic-bezier(.5,1,.5,1), box-shadow .22s;
+      outline:0; border:0;
+    }
+    .hs-card:hover{ transform:scale(1.04); box-shadow:0 12px 32px rgba(0,0,0,.32) }
+    .hs-card > img{
+      position:absolute; inset:0; width:100%; height:100%;
+      object-fit:cover; display:block;
+      filter:brightness(.84) saturate(1.02);
+      transition:transform .45s, filter .35s, opacity .35s;
+    }
+    .hs-title{
+      position:absolute; left:50%; bottom:24px; transform:translate(-50%,18px);
+      background:rgba(12,12,12,.58); color:#fff;
+      font-size:22px; font-weight:700; letter-spacing:1px;
+      padding:12px 28px; border-radius:10px;
+      box-shadow:0 8px 32px rgba(0,0,0,.14);
+      opacity:0; pointer-events:none;
+      transition:opacity .34s, transform .34s, background .2s;
+      white-space:nowrap;
+    }
+    .hs-card:hover > img{ transform:scale(1.05); filter:brightness(1.06) saturate(1.12); opacity:.78 }
+    .hs-card:hover .hs-title{ opacity:1; transform:translate(-50%,0); background:rgba(44,44,44,.92) }
+    @media (max-width:860px){ .hs-card{width:300px; height:210px} }
+    @media (max-width:640px){ .hs-card{width:100%; max-width:520px; height:220px} }
+  </style>
+
+  <div class="hs-row">
+    <a class="hs-card" href="{{ '/projects/concept-art/' | url }}" aria-label="Concept Art">
+      <img src="{{ '/img/projects/sections/concept-art.jpg' | url }}" alt="Concept Art">
+      <span class="hs-title">Concept Art</span>
+    </a>
+
+    <a class="hs-card" href="{{ '/projects/graphic-design/' | url }}" aria-label="Graphic Design">
+      <img src="{{ '/img/projects/sections/graphic-design.jpg' | url }}" alt="Graphic Design">
+      <span class="hs-title">Graphic Design</span>
+    </a>
+
+    <a class="hs-card" href="{{ '/projects/short-film-projects/' | url }}" aria-label="Short Film Projects">
+      <img src="{{ '/img/projects/sections/short-films.jpg' | url }}" alt="Short Film Projects">
+      <span class="hs-title">Short Film Projects</span>
+    </a>
+  </div>
+</section>

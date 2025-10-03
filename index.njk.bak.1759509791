@@ -1,0 +1,39 @@
+---
+layout: layouts/base.njk
+eleventyNavigation:
+  key: Home
+  order: 1
+hero:
+  name: "Yousef Mohamed"
+  role: "Filmmaker"
+  subrole: "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist"
+---
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-media" id="showreel">
+      {% for item in showreel %}
+        {% if item.type == "video" %}
+          <div class="slide" data-type="video" data-src="{{ item.src | url }}">
+            <video playsinline muted preload="metadata">
+              <source src="{{ item.src | url }}">
+            </video>
+          </div>
+        {% else %}
+          <div class="slide" data-type="image" data-src="{{ item.src | url }}" style="background-image:url('{{ item.src | url }}')"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div class="hero-copy">
+    <h1 class="hero-title">{{ hero.name }}</h1>
+    <p class="hero-role">{{ hero.role }}</p>
+    <div class="hero-subrole">{{ hero.subrole }}</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+{% include "home-projects-sections.html" %}
+
+<!-- باقي الصفحة زي ما تحب تضيف -->

@@ -1,0 +1,116 @@
+<style>
+.sw-section{max-width:1200px;margin:100px auto 0;padding:0 16px;}
+.sw-header{cursor:pointer;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.12);transition:border-color .3s;}
+.sw-section:hover .sw-header{border-color:rgba(255,255,255,0.22);}
+.sw-title{font-size:24px;font-weight:700;margin:0 0 9px 0;color:#f0f0f0;}
+.sw-desc{font-size:13.5px;color:#b0b0b0;margin:0;line-height:1.6;}
+
+.sw-content{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .4s ease;margin-top:0;}
+.sw-section:hover .sw-content{max-height:700px;opacity:1;margin-top:30px;}
+
+.sw-group{margin-bottom:32px;}
+.sw-group-title{font-size:15px;font-weight:600;margin:0 0 14px 0;color:#e0e0e0;}
+.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px;}
+
+.sw-item{display:flex;align-items:center;gap:10px;background:#151515;border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:8px 12px;transition:background .2s,border-color .2s;}
+.sw-item:hover{background:#1a1a1a;border-color:rgba(255,255,255,.12);}
+
+.sw-icon{width:17px;height:17px;flex-shrink:0;object-fit:contain;}
+
+.sw-name{font-size:12.5px;color:#cfcfcf;line-height:1.4;}
+
+/* تطبيقات الموبايل - أصغر بكتير */
+.sw-group.mobile{margin-bottom:28px;}
+.sw-group.mobile .sw-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px;}
+.sw-group.mobile .sw-item{padding:6px 10px;}
+.sw-group.mobile .sw-name{font-size:12px;}
+
+@media (max-width:720px){
+  .sw-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
+  .sw-item{padding:7px 11px;}
+}
+</style>
+
+<section class="sw-section">
+  <div class="sw-header">
+    <h2 class="sw-title">Software Experience</h2>
+    <p class="sw-desc">Started on mobile and produced some projects using mobile apps.</p>
+  </div>
+  
+  <div class="sw-content">
+    <div class="sw-group mobile">
+      <h3 class="sw-group-title">Mobile apps</h3>
+      <div class="sw-grid">
+        <div class="sw-item">
+          <span class="sw-name">Snapseed</span>
+        </div>
+        <div class="sw-item">
+          <span class="sw-name">ibisPaint X</span>
+        </div>
+        <div class="sw-item">
+          <span class="sw-name">Video Maker</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sw-group">
+      <h3 class="sw-group-title">Desktop apps (macOS / Windows)</h3>
+      <div class="sw-grid">
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/microsoft-word.svg' | url }}" alt="">
+          <span class="sw-name">Microsoft Word</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/microsoft-powerpoint.svg' | url }}" alt="">
+          <span class="sw-name">Microsoft PowerPoint</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/adobe-photoshop.svg' | url }}" alt="">
+          <span class="sw-name">Adobe Photoshop — Master</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/krita.svg" alt="">
+          <span class="sw-name">Krita — Master</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/pureref.svg' | url }}" alt="">
+          <span class="sw-name">PureRef — Reference tool</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/darktable.svg' | url }}" alt="">
+          <span class="sw-name">Darktable</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/shotcut.svg' | url }}" alt="">
+          <span class="sw-name">Shotcut</span>
+        </div>
+        <div class="sw-item">
+          <span class="sw-name">DaVinci Resolve — Master</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/opentoonz.svg' | url }}" alt="">
+          <span class="sw-name">OpenToonz — 2D animation</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/natron.svg' | url }}" alt="">
+          <span class="sw-name">Natron — Node-based compositing</span>
+        </div>
+        <div class="sw-item">
+          <span class="sw-name">Waveform 13 (audio editing)</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="{{ '/img/icons/cinema4d.svg' | url }}" alt="">
+          <span class="sw-name">Cinema 4D (1 year, 2023)</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/blender.svg" alt="">
+          <span class="sw-name">Blender — Basic</span>
+        </div>
+        <div class="sw-item">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/inkscape.svg" alt="">
+          <span class="sw-name">Inkscape — Basic</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

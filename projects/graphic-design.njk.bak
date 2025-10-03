@@ -1,0 +1,22 @@
+---
+layout: layouts/home.njk
+title: Graphic Design
+---
+
+<div class="w3-padding-64 w3-content">
+  <h2 class="w3-text-light-grey" style="font-size:42px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:18px;margin-bottom:0;">Graphic Design</h2>
+  <!-- <hr style="width:200px" class="w3-opacity"> -->
+
+  <p class="w3-text-grey" style="margin-top:24px;margin-bottom:32px;">
+    Note: The following works are ordered from the most recent to the oldest, covering the period from 2022 until now.
+  </p>
+
+  <div class="w3-grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    {% for f in graphic %}
+      <div class="bg-neutral-900 rounded-2xl shadow p-3">
+        <img src="{{ f.url | url }}" alt="{{ f.name }}" style="width:100%;height:auto;object-fit:contain;">
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
