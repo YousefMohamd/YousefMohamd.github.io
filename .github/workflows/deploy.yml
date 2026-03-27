@@ -1,38 +1,55 @@
 name: Deploy Eleventy to Pages
+
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   workflow_dispatch:
+
+# 🔥 حل مشكلة تكرار الـ deploy
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+# 🔥 نخلي الأكشنز تستخدم Node 24 بدل 20
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 permissions:
   contents: read
   pages: write
   id-token: write
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
-          node-version: 20
-          # مسحنا الـ cache line عشان مفيش package-lock.json
-      # استخدام npm install بدلاً من npm ci
-      - run: npm install
-      # بنبني الموقع إلى _site
-      - run: npx @11ty/eleventy
-      # نرفع الأرتيفاكت بتاع _site للنشر
-      - uses: actions/upload-pages-artifact@v3
+          node-version: 22   # 👈 غيرناها من 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Eleventy
+        run: npx @11ty/eleventy
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
           path: _site
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+
     steps:
-      - id: deployment
+      - name: Deploy to Pages
+        id: deployment
         uses: actions/deploy-pages@v4
