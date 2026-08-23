@@ -15,8 +15,8 @@ hero:
       {% for item in showreel %}
         {% if item.type == "video" %}
           <div class="slide" data-type="video" data-src="{{ item.src | url }}">
-            <video playsinline muted preload="metadata">
-              <source src="{{ item.src | url }}">
+            <video class="lazyload" playsinline muted preload="metadata">
+              <source data-src="{{ item.src | url }}">
             </video>
           </div>
         {% else %}
