@@ -12,9 +12,9 @@ title: Short Film Projects
         <h3 class="w3-text-light-grey" style="margin:18px 0 8px;">{{ p.data.title }}</h3>
 
         {% if p.data.vimeoId %}
-          <div class="video-wrapper" style="aspect-ratio: 16 / 9; width: 100%; background-image: url('https://vumbnail.com/{{ p.data.vimeoId }}.jpg'); background-size: cover; background-position: center; cursor: pointer; position: relative;">
+          <div class="video-wrapper" style="background-image: url('https://vumbnail.com/{{ p.data.vimeoId }}.jpg');">
 
-            <!-- زر التشغيل بالتصميم الزجاجي الجديد -->
+            <!-- زر التشغيل بالتصميم الزجاجي والموجة الزجزاجية -->
             <button class="facade-play-btn" type="button" aria-label="Play video">
               <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
                 <path d="M8 5.2v13.6L19 12z" fill="currentColor"/>
@@ -44,7 +44,29 @@ title: Short Film Projects
 </div>
 
 <style>
-/* التصميم الزجاجي والموجة الزجزاجية (Glassmorphism & Zigzag Wave) */
+/* Video Wrapper Styling with Curved Edges & Isolation */
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  border-radius: 16px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* Glassmorphism Play Button */
 .facade-play-btn {
   position: absolute;
   top: 50%;
@@ -71,7 +93,7 @@ title: Short Film Projects
   transform: translate(-50%, -50%) scale(1.08);
 }
 
-/* تأثير الموجة الكلاسيكية خلف الزر */
+/* Classic Zigzag Wave Animation */
 .facade-play-btn::before {
   content: '';
   position: absolute;
@@ -104,5 +126,22 @@ title: Short Film Projects
 
 .facade-play-btn svg {
   fill: currentColor;
+}
+
+/* Cinematic Ambient Glow & Poster Removal on Play */
+.video-wrapper.is-playing {
+  background-image: none !important;
+}
+
+.video-wrapper.is-playing::before {
+  content: '';
+  position: absolute;
+  inset: -10px;
+  background: radial-gradient(closest-side, oklch(1 0 0 / 0.2), transparent);
+  filter: blur(25px);
+  z-index: -1;
+  opacity: 0.6;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
 }
 </style>
