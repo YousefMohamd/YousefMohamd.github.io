@@ -47,6 +47,14 @@
     <link rel="icon" href="/img/icons/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="/img/icons/logo-512x512.png">
 
+    <!-- Preload Fonts -->
+    <link rel="preload" href="/fonts/Roboto-Regular.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+    <link rel="preload" href="/fonts/Roboto-Bold.woff2" as="font" type="font/woff2" crossorigin="anonymous">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="{{ '/css/modern.css' | url }}" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="{{ '/css/modern.css' | url }}"></noscript>
+
     <!-- Sitemap Reference -->
     <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
 
@@ -54,16 +62,31 @@
     <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_TOKEN">
     <meta name="bing-site-verification" content="YOUR_BING_VERIFICATION_TOKEN">
 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ '/css/modern.css' | url }}">
+    <!-- Font Display Optimization -->
+    <style>
+      @font-face {
+        font-family: 'Roboto';
+        src: url('/fonts/Roboto-Regular.woff2') format('woff2');
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+      }
+      @font-face {
+        font-family: 'Roboto';
+        src: url('/fonts/Roboto-Bold.woff2') format('woff2');
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+      }
+    </style>
   </head>
   <body class="site-body">
     <header class="site-header">
       <nav class="container nav-row">
         <ul class="main-nav">
-          <li><a href="{{ '/' | url }}">Home</a></li>
-          <li><a href="{{ '/about/' | url }}">About</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="{{ '/' | url }}" aria-label="Navigate to Home">Home</a></li>
+          <li><a href="{{ '/about/' | url }}" aria-label="Navigate to About">About</a></li>
+          <li><a href="#contact" aria-label="Navigate to Contact">Contact</a></li>
         </ul>
       </nav>
     </header>
@@ -72,23 +95,24 @@
       {{ content | safe }}
     </main>
 
+    <footer class="site-footer" id="contact">
       <div class="container footer-grid">
         <div>
           <h4 class="footer-title">Contact Me</h4>
           <ul class="contact-list">
-            <li><i class="fa fa-envelope"></i> <a href="mailto:mohamedyou1357@gmail.com">mohamedyou1357@gmail.com</a></li>
-            <li><i class="fa fa-phone"></i> <a href="tel:+201154907557">+20 1154907557</a></li>
+            <li><i class="fa fa-envelope"></i> <a href="mailto:mohamedyou1357@gmail.com" aria-label="Send an email to Yousef Mohamed">mohamedyou1357@gmail.com</a></li>
+            <li><i class="fa fa-phone"></i> <a href="tel:+201154907557" aria-label="Call Yousef Mohamed">+20 1154907557</a></li>
             <li><i class="fa fa-map-marker"></i> Cairo, Egypt</li>
           </ul>
         </div>
         <div>
           <h4 class="footer-title">Find Me Online</h4>
           <p class="social-icons">
-            <a href="https://www.linkedin.com/in/yousef-mohamed-2932a6251" target="_blank" rel="noopener"><i class="fa fa-linkedin"></i></a>
-            <a href="https://www.behance.net/yousefmohamed2004#" target="_blank" rel="noopener"><i class="fa fa-behance"></i></a>
-            <a href="https://instagram.com/_yousefmohamad" target="_blank" rel="noopener"><i class="fa fa-instagram"></i></a>
-            <a href="https://vimeo.com/yousefmohamed2004" target="_blank" rel="noopener"><i class="fa fa-vimeo"></i></a>
-            <a href="https://youtube.com/@Usif_mohamd2004" target="_blank" rel="noopener"><i class="fa fa-youtube-play"></i></a>
+            <a href="https://www.linkedin.com/in/yousef-mohamed-2932a6251" target="_blank" rel="noopener" aria-label="Visit Yousef Mohamed's LinkedIn profile"><i class="fa fa-linkedin"></i></a>
+            <a href="https://www.behance.net/yousefmohamed2004#" target="_blank" rel="noopener" aria-label="Visit Yousef Mohamed's Behance profile"><i class="fa fa-behance"></i></a>
+            <a href="https://instagram.com/_yousefmohamad" target="_blank" rel="noopener" aria-label="Visit Yousef Mohamed's Instagram profile"><i class="fa fa-instagram"></i></a>
+            <a href="https://vimeo.com/yousefmohamed2004" target="_blank" rel="noopener" aria-label="Visit Yousef Mohamed's Vimeo profile"><i class="fa fa-vimeo"></i></a>
+            <a href="https://youtube.com/@Usif_mohamd2004" target="_blank" rel="noopener" aria-label="Visit Yousef Mohamed's YouTube channel"><i class="fa fa-youtube-play"></i></a>
           </p>
         </div>
       </div>
@@ -97,6 +121,7 @@
       </div>
     </footer>
 
+    <!-- Scripts -->
     <script src="{{ '/js/site.js' | url }}" defer></script>
   </body>
 </html>
