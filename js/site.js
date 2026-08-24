@@ -1,43 +1,118 @@
 // Showreel slider
+
 (function() {
+
   const container = document.getElementById('showreel');
+
   if (!container) return;
 
+
   const slides = Array.from(container.querySelectorAll('.slide'));
+
   if (slides.length === 0) return;
+
 
   let currentIndex = 0;
 
-  // Show first slide immediately
+
+// إظهار أول شريحة فوراً
+
   slides[0].classList.add('active');
-  
-  // Preload first video if exists
+
+
+// تشغيل أول فيديو لو موجود
+
   const firstVideo = slides[0].querySelector('video');
+
   if (firstVideo) {
-    firstVideo.load();
+
     firstVideo.play().catch(() => {});
+
   }
+
 
   function showSlide(index) {
+
     slides.forEach((s, i) => {
+
       s.classList.toggle('active', i === index);
+
       const video = s.querySelector('video');
+
+
       if (video) {
+
         if (i === index) {
+
+// تشغيل الفيديو للشريحة النشطة فقط
+
           video.currentTime = 0;
+
           video.play().catch(() => {});
+
         } else {
+
+// إيقاف الفيديوهات في الشرائح المخفية لتوفير الأداء
+
           video.pause();
+
         }
+
       }
+
     });
+
   }
+
 
   function nextSlide() {
+
     currentIndex = (currentIndex + 1) % slides.length;
+
     showSlide(currentIndex);
+
   }
 
-  // Start rotation after 5 seconds
+
+// تغيير الشريحة كل 5 ثواني
+
   setInterval(nextSlide, 5000);
+
 })();
+
+
+// Facade Pattern for Vimeo videos
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  const videoWrappers = document.querySelectorAll(".video-wrapper");
+
+
+  videoWrappers.forEach((wrapper) => {
+
+    const playButton = wrapper.querySelector(".facade-play-btn");
+
+    const iframe = wrapper.querySelector("iframe");
+
+
+    if (playButton) {
+
+      playButton.addEventListener("click", function () {
+
+        playButton.style.display = "none"; // إخفاء الزر
+
+        if (iframe) {
+
+          iframe.src = iframe.dataset.src; // تعيين src للإطار
+
+        }
+
+        wrapper.style.cursor = "default";
+
+      });
+
+    }
+
+  });
+
+})
