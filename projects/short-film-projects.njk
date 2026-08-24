@@ -13,11 +13,14 @@ title: Short Film Projects
 
         {% if p.data.vimeoId %}
           <div class="video-wrapper" style="aspect-ratio: 16 / 9; width: 100%; background-image: url('https://vumbnail.com/{{ p.data.vimeoId }}.jpg'); background-size: cover; background-position: center; cursor: pointer; position: relative;">
+
+            <!-- زر التشغيل بالتصميم الزجاجي الجديد -->
             <button class="facade-play-btn" type="button" aria-label="Play video">
-              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
                 <path d="M8 5.2v13.6L19 12z" fill="currentColor"/>
               </svg>
             </button>
+
             <iframe
               data-src="https://player.vimeo.com/video/{{ p.data.vimeoId }}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0"
               width="100%" height="100%" frameborder="0"
@@ -41,6 +44,7 @@ title: Short Film Projects
 </div>
 
 <style>
+/* التصميم الزجاجي والموجة الزجزاجية (Glassmorphism & Zigzag Wave) */
 .facade-play-btn {
   position: absolute;
   top: 50%;
@@ -48,23 +52,57 @@ title: Short Film Projects
   transform: translate(-50%, -50%);
   width: 70px;
   height: 70px;
-  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid oklch(1 0 0 / 0.35);
   border-radius: 50%;
+  background: oklch(1 0 0 / 0.14);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 2;
-  border: none;
-  transition: transform 0.3s ease, background-color 0.3s ease;
+  color: #ffffff;
+  transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.5, 1), background 0.25s;
 }
 
 .facade-play-btn:hover {
-  transform: translate(-50%, -50%) scale(1.15);
-  background-color: rgba(0, 0, 0, 0.9);
+  background: oklch(1 0 0 / 0.24);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+/* تأثير الموجة الكلاسيكية خلف الزر */
+.facade-play-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid oklch(1 0 0 / 0.2);
+  animation: zigzag-wave 1.2s infinite;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.facade-play-btn:hover::before {
+  opacity: 1;
+}
+
+@keyframes zigzag-wave {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0.3;
+  }
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
 }
 
 .facade-play-btn svg {
-  fill: #fff;
+  fill: currentColor;
 }
 </style>
