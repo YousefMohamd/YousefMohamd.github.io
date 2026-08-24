@@ -4,23 +4,58 @@
     <meta charset="utf-8">
     <title>{{ title or metadata.title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="{{ '/css/modern.css' | url }}">
-
-    <!-- SEO Meta Tags -->
     <meta name="description" content="Portfolio of Yousef Mohamed, an Environment & Prop Concept Artist specializing in Graphic Design, 2D Animation, Editing, and VFX.">
-    <meta name="keywords" content="Yousef Mohamed, Concept Artist, Graphic Designer, 2D Animator, Editor, VFX, Portfolio">
+    <meta name="author" content="Yousef Mohamed">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="en">
+    <link rel="canonical" href="https://yousefmohamed.studio{{ page.url | url }}" />
+
     <!-- Open Graph Meta Tags -->
-    <meta property="og:title" content="Yousef Mohamed - Environment & Prop Concept Artist">
+    <meta property="og:title" content="{{ title or metadata.title }}">
     <meta property="og:description" content="Explore the portfolio of Yousef Mohamed, showcasing expertise in Concept Art, Graphic Design, Animation, and more.">
     <meta property="og:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.png">
-    <meta property="og:url" content="https://yousefmohamed.studio">
+    <meta property="og:url" content="https://yousefmohamed.studio{{ page.url | url }}">
     <meta property="og:type" content="website">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ title or metadata.title }}">
+    <meta name="twitter:description" content="Explore the portfolio of Yousef Mohamed, showcasing expertise in Concept Art, Graphic Design, Animation, and more.">
+    <meta name="twitter:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.png">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Yousef Mohamed",
+      "url": "https://yousefmohamed.studio",
+      "sameAs": [
+        "https://www.linkedin.com/in/yousef-mohamed-2932a6251",
+        "https://www.behance.net/yousefmohamed2004",
+        "https://instagram.com/_yousefmohamad",
+        "https://vimeo.com/yousefmohamed2004",
+        "https://youtube.com/@Usif_mohamd2004"
+      ],
+      "jobTitle": "Environment & Prop Concept Artist",
+      "description": "Multidisciplinary Visual Artist specializing in Concept Art, Graphic Design, 2D Animation, Editing, and VFX.",
+      "image": "https://yousefmohamed.studio/img/icons/logo-512x512.png"
+    }
+    </script>
 
     <!-- Favicon and Apple Touch Icon -->
     <link rel="icon" href="/img/icons/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" href="/img/icons/logo-512x512.png">
+
+    <!-- Sitemap Reference -->
+    <link rel="sitemap" type="application/xml" title="Sitemap" href="/sitemap.xml">
+
+    <!-- Search Engine Verification -->
+    <meta name="google-site-verification" content="YOUR_GOOGLE_VERIFICATION_TOKEN">
+    <meta name="bing-site-verification" content="YOUR_BING_VERIFICATION_TOKEN">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ '/css/modern.css' | url }}">
   </head>
   <body class="site-body">
     <header class="site-header">
@@ -37,7 +72,6 @@
       {{ content | safe }}
     </main>
 
-    <footer class="site-footer" id="contact">
       <div class="container footer-grid">
         <div>
           <h4 class="footer-title">Contact Me</h4>
