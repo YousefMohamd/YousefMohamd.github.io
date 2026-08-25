@@ -1,3 +1,6 @@
+/* =============================================================
+   1. PROJECTS ARCHITECTURE FIX (Horizontal Lock Protocol)
+   ============================================================= */
 :root {
   --proj-w: 320px;
   --proj-h: 210px;
@@ -5,7 +8,30 @@
   --title-size: 22px;
 }
 
-/* Container Flex Row */
+/* Base Wrapper Fluid Constraint */
+html, body {
+  overflow-x: hidden !important; 
+  width: 100%;
+}
+
+.w3-content {
+  max-width: 1000px; /* Base content limiter fallback for super-wides */
+  width: 100% !important;
+  padding: 0 16px !important;
+  box-sizing: border-box !important;
+}
+
+.project-body img, .project-body iframe, .project-body video {
+  max-width: 100% !important; /* Overriding all child image bounds inherently */
+  height: auto !important;
+  box-sizing: border-box !important;
+  display: block; 
+}
+
+/* =============================================================
+   2. REFORMATTING FLEX & CARD RIGID GRIDS
+   ============================================================= */
+/* Container Flex Row (Using wrap dynamics rather than static pixel jumps) */
 .projects-sections-row {
   display: flex !important;
   flex-direction: row !important;
@@ -14,28 +40,30 @@
   align-items: flex-start !important;
   margin-top: 38px !important;
   flex-wrap: wrap !important;
+  width: 100% !important; 
+  max-width: 100% !important; 
 }
 
-/* Make the card itself clickable and fixed size */
+/* Replacing restrictive fixed pixel definitions with fluid bounding mechanisms */
 .snip1273 {
   width: var(--proj-w) !important;
-  min-width: var(--proj-w) !important;
-  max-width: var(--proj-w) !important;
+  max-width: 100% !important; /* CRITICAL UPDATE: Neutralizes mobile boundary breaches completely */
   height: var(--proj-h) !important;
   position: relative !important;
-  display: block !important;
+  display: flex !important; /* Converted from inline block structure for child scale harmony */
   overflow: hidden !important;
   border-radius: 14px !important;
   background: #111 !important;
   box-shadow: 0 6px 18px rgba(0,0,0,.22) !important;
   margin: 0 !important;
   text-decoration: none !important;
-  transition: box-shadow .25s, transform .25s !important;
+  transition: box-shadow .25s ease-out, transform .25s ease-out !important;
+  flex-shrink: 1 !important; /* Enable internal browser wrap calculations */
 }
 
 .snip1273:hover {
   box-shadow: 0 12px 32px rgba(0,0,0,.32) !important;
-  transform: scale(1.045) !important;
+  transform: translateY(-3px) scale(1.025) !important; 
 }
 
 .snip1273 img {
@@ -44,15 +72,20 @@
   object-fit: cover !important;
   display: block !important;
   filter: saturate(1.08) brightness(.87) !important;
-  transition: filter .32s, opacity .32s !important;
+  transition: filter .35s ease-out, opacity .35s ease-out, transform .35s ease-out !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .snip1273:hover img {
-  opacity: .33 !important;
-  filter: grayscale(.08) brightness(1.13) saturate(1.2) !important;
+  opacity: .55 !important;
+  filter: grayscale(.05) brightness(1.10) saturate(1.15) !important;
+  transform: scale(1.05) !important;
 }
 
-/* Overlay for animated caption */
+/* =============================================================
+   3. INTERNAL POST TEXT (SNIP TITLE LAYERING) 
+   ============================================================= */
 .caption-overlay {
   position: absolute !important;
   inset: 0 !important;
@@ -62,37 +95,76 @@
   z-index: 2 !important;
   pointer-events: none !important;
   background: none !important;
+  width: 100%;
 }
 
 .caption-overlay span {
   font-size: var(--title-size) !important;
   font-weight: 700 !important;
   color: #fff !important;
-  background: rgba(0,0,0,0.7) !important;
+  background: rgba(18, 18, 18, 0.75) !important;
+  backdrop-filter: blur(4px) !important; 
+  -webkit-backdrop-filter: blur(4px) !important;
   border-radius: 8px !important;
-  padding: 12px 32px !important;
+  padding: 12px 28px !important;
   text-transform: uppercase !important;
   letter-spacing: 1.2px !important;
-  box-shadow: 0 8px 26px rgba(0,0,0,.18) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,.2) !important;
   opacity: 0 !important;
-  transform: translateY(20px) scale(.98) !important;
+  transform: translateY(14px) !important;
   transition:
-    opacity .38s cubic-bezier(.46,.16,.36,.82) !important,
-    transform .38s cubic-bezier(.46,.16,.36,.82) !important,
-    background .22s !important;
+    opacity .3s cubic-bezier(.46,.16,.36,.82) !important,
+    transform .3s cubic-bezier(.46,.16,.36,.82) !important,
+    background .25s ease-out !important;
+  white-space: nowrap !important;
+  max-width: 90% !important; 
+  text-overflow: ellipsis !important;
+  overflow: hidden !important; 
 }
 
 .snip1273:hover .caption-overlay span {
   opacity: 1 !important;
-  transform: translateY(0) scale(1) !important;
-  background: rgba(34,34,34,0.92) !important;
+  transform: translateY(0) !important;
+  background: rgba(22, 22, 22, 0.95) !important;
 }
 
-/* Responsive fixes */
-@media (max-width: 980px) {
-  :root{ --proj-w: 260px; --proj-h:170px; --title-size:18px; --gap:18px; }
+/* =============================================================
+   4. DEVICE-RESPONSIVE FAILSAFE TARGETING (Grid Stability Matrices)
+   ============================================================= */
+@media screen and (max-width: 980px) {
+  :root { 
+    --proj-w: 300px; 
+    --proj-h: 200px; 
+    --title-size: 20px; 
+    --gap: 22px; 
+  }
 }
-@media (max-width: 600px) {
-  .projects-sections-row { flex-direction: column !important; gap: 18px !important; align-items: center !important; }
-  :root{ --proj-w: 95vw; --proj-h:180px; --title-size:18px; }
+
+@media screen and (max-width: 768px) {
+  /* Enforce native scrolling axis logic over grid widths for smaller mobile viewports */
+  .project-body { width: 100%; min-width: unset;} 
+}
+
+@media screen and (max-width: 600px) {
+  .projects-sections-row { 
+    flex-direction: column !important; 
+    gap: 22px !important; 
+    align-items: center !important; 
+    width: 100% !important; 
+  }
+  
+  :root { 
+    /* DANGER ROOT RESOLVED: Deleted layout crashing raw 'vw'. Uses universal 100% internal boundaries! */
+    --proj-w: 100%;
+    --proj-h: 240px; 
+    --title-size: 19px; 
+  }
+
+  .snip1273 { 
+    width: 100% !important; /* Fills safe mobile horizontal zone dynamically minus layout borders */
+  }
+
+  .w3-content {
+    padding: 0 10px !important; /* Give slight natural breathing border to internal images to negate screen bleed */
+  }
 }

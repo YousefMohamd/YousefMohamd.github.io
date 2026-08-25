@@ -1,4 +1,5 @@
 const pluginRss = require("@11ty/eleventy-plugin-rss");
+const htmlmin = require("html-minifier-terser");
 
 module.exports = function (eleventyConfig) {
   // Static passthrough
@@ -6,6 +7,7 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy("js");
   eleventyConfig.addPassthroughCopy("img");
   eleventyConfig.addPassthroughCopy("files");
+  eleventyConfig.addPassthroughCopy("fonts"); // Added fonts directory
 
   // Watch targets
   eleventyConfig.addWatchTarget("css");
@@ -47,6 +49,21 @@ module.exports = function (eleventyConfig) {
       (item.data.tags || []).forEach((t) => set.add(t));
     });
     return [...set];
+  });
+
+  // HTML Minifier Transform (Only runs in production)
+  eleventyConfig.addTransform("htmlmin", function (content, outputPath) {
+    if (process.env.ELEVENTY_ENV === "production" && outputPath && outputPath.endsWith(".html")) {
+      let minified = htmlmin.minify(content, {
+        useShortDoctype: true,
+        removeComments: true,
+        collapseWhitespace: true,
+        minifyCSS: true,
+        minifyJS: true
+      });
+      return minified;
+    }
+    return content;
   });
 
   // Eleventy config
