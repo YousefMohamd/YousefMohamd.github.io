@@ -7,4 +7,4 @@ thumb: /img/projects/graphic-design/poster14.jpg
 tags: [project]
 ---
 
-<img src="/img/projects/graphic-design/poster14.jpg" alt="Poster14" style="width:100%;height:auto;object-fit:contain;margin-bottom:20px;">
+<img src="/img/optimized/projects/graphic-design/poster14.webp" alt="Poster14" style="width:100%;height:auto;object-fit:contain;margin-bottom:20px;">

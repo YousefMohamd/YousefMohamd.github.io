@@ -7,4 +7,4 @@ thumb: /img/projects/concept-art/concept21.jpg
 tags: [project]
 ---
 
-<img src="/img/projects/concept-art/concept21.jpg" alt="Concept21" style="width:100%;height:auto;object-fit:contain;margin-bottom:20px;">
+<img src="/img/optimized/projects/concept-art/concept21.webp" alt="Concept21" style="width:100%;height:auto;object-fit:contain;margin-bottom:20px;">

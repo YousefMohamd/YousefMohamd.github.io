@@ -7,4 +7,4 @@ thumb: /img/projects/concept-art/concept08.jpg
 tags: [project]
 ---
 
-<img src="/img/projects/concept-art/concept08.jpg" alt="Concept08" style="width:100%;height:auto;object-fit:contain;margin-bottom:20px;">
+<img src="/img/optimized/projects/concept-art/concept08.webp" alt="Concept08" style="width:100%;height:auto;object-fit:contain;margin-bottom:20px;">

@@ -1,17 +1,19 @@
 <section class="home-sections" aria-label="Projects">
   <div class="hs-row">
+    <!-- HARD TARGET REDIRECT: Engine is now polling from Python Optimized output specifically for WebP -->
     <a class="hs-card" href="{{ '/projects/concept-art/' | url }}" aria-label="Concept Art">
-      <img src="{{ '/img/projects/sections/concept-art.jpg' | url }}" alt="Concept Art">
+      <!-- Mapped to the isolated target directory mirroring tree '/img/optimized/...' -->
+      <img src="{{ '/img/optimized/projects/sections/concept-art.webp' | url }}" alt="Concept Art" fetchpriority="high" loading="eager" width="600" height="400">
       <span class="hs-title">Concept Art</span>
     </a>
 
     <a class="hs-card" href="{{ '/projects/graphic-design/' | url }}" aria-label="Graphic Design">
-      <img src="{{ '/img/projects/sections/graphic-design.jpg' | url }}" alt="Graphic Design">
+      <img src="{{ '/img/optimized/projects/sections/graphic-design.webp' | url }}" alt="Graphic Design" fetchpriority="high" loading="eager" width="600" height="400">
       <span class="hs-title">Graphic Design</span>
     </a>
 
     <a class="hs-card" href="{{ '/projects/short-film-projects/' | url }}" aria-label="Short Film Projects">
-      <img src="{{ '/img/projects/sections/short-films.jpg' | url }}" alt="Short Film Projects">
+      <img src="{{ '/img/optimized/projects/sections/short-films.webp' | url }}" alt="Short Film Projects" loading="lazy" width="600" height="400">
       <span class="hs-title">Short Film Projects</span>
     </a>
   </div>
