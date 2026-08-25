@@ -3,7 +3,7 @@ layout: layouts/project.njk
 title: Concept08
 section: Concept Art
 date: 2022-01-15
-thumb: /img/projects/concept-art/concept08.jpg
+thumb: /img/optimized/projects/concept-art/concept08.webp
 tags: [project]
 ---
 

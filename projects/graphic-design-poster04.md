@@ -3,7 +3,7 @@ layout: layouts/project.njk
 title: Poster04
 section: Graphic Design
 date: 2022-01-12
-thumb: /img/projects/graphic-design/poster04.png
+thumb: /img/optimized/projects/graphic-design/poster04.webp
 tags: [project]
 ---
 

@@ -5,7 +5,7 @@ date: 2018-05-03
 tags:
   - photo
 layout: layouts/post.njk
-image: /img/w3images/sailboat.jpg
+image: /img/w3images/sailboat.webp
 ---
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer condimentum ex elit, quis varius ipsum mollis nec. Fusce dignissim suscipit tempus. Aenean convallis ex vel imperdiet interdum. Fusce sit amet ex ac nisi tristique dictum quis quis felis. Nulla pharetra at dolor non consectetur. Sed fermentum lobortis eros, ut accumsan ligula facilisis sit amet. Integer mollis ullamcorper mauris vitae lobortis. Cras eu justo sed neque pellentesque facilisis ut sed magna. Nunc sed tincidunt mauris, ut varius metus. Praesent molestie orci euismod purus sagittis, sit amet dignissim leo dapibus. Phasellus id mauris ut ipsum imperdiet finibus. Curabitur interdum sapien ac elit viverra vestibulum. Integer rutrum sed odio sit amet ultricies. Suspendisse placerat augue in odio placerat suscipit.
 

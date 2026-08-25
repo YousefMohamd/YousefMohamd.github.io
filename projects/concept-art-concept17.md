@@ -3,7 +3,7 @@ layout: layouts/project.njk
 title: Concept17
 section: Concept Art
 date: 2022-01-06
-thumb: /img/projects/concept-art/concept17.jpg
+thumb: /img/optimized/projects/concept-art/concept17.webp
 tags: [project]
 ---
 

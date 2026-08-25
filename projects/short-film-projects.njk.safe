@@ -12,7 +12,7 @@ title: Short Film Projects
         <h3 class="w3-text-light-grey" style="margin:18px 0 8px;">{{ p.data.title }}</h3>
 
         {% if p.data.vimeoId %}
-          <!-- استخدام _large.jpg لجلب البوستر بأعلى جودة متوفرة -->
+          <!-- تم استخدام _large.jpg لجلب البوستر بأعلى جودة HD -->
           <div class="video-wrapper" style="background-image: url('https://vumbnail.com/{{ p.data.vimeoId }}_large.jpg');">
 
             <!-- زر التشغيل بالتصميم الزجاجي والموجة الزجزاجية -->
@@ -45,7 +45,7 @@ title: Short Film Projects
 </div>
 
 <style>
-/* Video Wrapper Styling with Curved Edges & Cinematic Quality Filters */
+/* Video Wrapper Styling with Curved Edges & Isolation */
 .video-wrapper {
   position: relative;
   width: 100%;
@@ -56,8 +56,6 @@ title: Short Film Projects
   border-radius: 16px;
   overflow: hidden;
   isolation: isolate;
-  /* إضافة فلتر تباين وإشباع لزيادة حدة البوستر وجعله يبدو سينمائياً وواضحاً */
-  filter: contrast(1.05) saturate(1.05);
 }
 
 .video-wrapper iframe {
@@ -134,7 +132,6 @@ title: Short Film Projects
 /* Cinematic Ambient Glow & Poster Removal on Play */
 .video-wrapper.is-playing {
   background-image: none !important;
-  filter: none !important;
 }
 
 .video-wrapper.is-playing::before {
