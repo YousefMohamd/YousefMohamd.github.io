@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Yousef Mohamed's portfolio website built with Eleventy",
   "scripts": {
+    "optimize-assets": "python scripts/optimize_assets.py",
+    "prebuild": "npm run optimize-assets",
+    "prewatch": "npm run optimize-assets",
+    "preserve": "npm run optimize-assets",
+    "preprod": "npm run optimize-assets",
     "build": "eleventy",
     "watch": "eleventy --watch",
     "serve": "eleventy --serve",
