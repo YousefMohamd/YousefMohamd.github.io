@@ -14,6 +14,8 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy("fonts");
 
   eleventyConfig.addPassthroughCopy({ "img/icons": "img/icons" });
+  eleventyConfig.addPassthroughCopy({ "favicon.ico": "favicon.ico" });
+  eleventyConfig.addPassthroughCopy({ "robots.txt": "robots.txt" });
   eleventyConfig.addPassthroughCopy({ "img/optimized": "img/optimized" });
   eleventyConfig.addPassthroughCopy({ "img/showreel": "img/showreel" });
   eleventyConfig.addPassthroughCopy("_includes");
