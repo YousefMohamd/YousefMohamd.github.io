@@ -32,8 +32,10 @@ INPUT_DIR = PROJECT_ROOT / "img" / "projects"
 OUTPUT_DIR = PROJECT_ROOT / "img" / "optimized" / "projects"
 MANIFEST_PATH = PROJECT_ROOT / "node_modules" / ".cache" / "optimize-assets-manifest.json"
 
-FFMPEG = str(PROJECT_ROOT / "ffmpeg")
-FFPROBE = str(PROJECT_ROOT / "ffprobe")
+import shutil
+
+FFMPEG = shutil.which("ffmpeg") or str(PROJECT_ROOT / "ffmpeg")
+FFPROBE = shutil.which("ffprobe") or str(PROJECT_ROOT / "ffprobe")
 
 RASTER_EXTS = {".jpg", ".jpeg", ".png", ".tif", ".tiff", ".bmp", ".heic", ".heif"}
 NATIVE_EXTS = {".webp", ".avif"}
