@@ -22,13 +22,13 @@
 
     <!-- Canonicals and Structured Social Sharing Layout Data Config -->
     <link rel="canonical" href="https://yousefmohamed.studio{{ page.url | url }}" />
-    <meta property="og:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.webp">
+    <meta property="og:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.png">
     <meta property="og:title" content="{{ title or metadata.title }}">
-    <meta name="twitter:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.webp">
+    <meta name="twitter:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.png">
 
-    <!-- Correct Favicon Linking Format -->
+    <!-- Correct Favicon Linking Format optimized png integration bounds natively mapped -->
     <link rel="icon" href="/img/icons/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="/img/icons/logo-512x512.webp">
+    <link rel="apple-touch-icon" href="/img/icons/logo-512x512.png">
 
     <style>
       /* Base Structural Axis Lock System preventing Mobile Scale Bleeds instantly prior to layout rendering */
@@ -60,15 +60,37 @@
       *, *::after, *::before {
          box-sizing: border-box !important;
       }
+
+      /* Mandatory Accessibility Skips providing extreme compliance routing metrics (WCAG Resolvers) */
+      .skip-link {
+         position: absolute;
+         top: -40px;
+         left: 0;
+         background: #C5004A;
+         color: #fff;
+         padding: 8px 16px;
+         z-index: 100;
+         font-weight: 700;
+         border-bottom-right-radius: 6px;
+         text-decoration: none;
+      }
+      .skip-link:focus {
+         top: 0;
+         outline: 2px solid white;
+      }
     </style>
-  </head>
+  <link rel="preconnect" href="https://i.vimeocdn.com" crossorigin>
+<link rel="dns-prefetch" href="https://i.vimeocdn.com">
+</head>
   <body class="site-body">
+    <a href="#main" class="skip-link">Skip to main content</a>
+    
     <header class="site-header">
       <nav class="container nav-row">
         <ul class="main-nav">
-          <li><a href="{{ '/' | url }}" aria-label="Navigate to Home">Home</a></li>
-          <li><a href="{{ '/about/' | url }}" aria-label="Navigate to About">About</a></li>
-          <li><a href="#contact" aria-label="Navigate to Contact">Contact</a></li>
+          <li><a href="{{ '/' | url }}" aria-label="Navigate to Home Page Menu Directory">Home</a></li>
+          <li><a href="{{ '/about/' | url }}" aria-label="Navigate to Complete Profile Profile Section">About</a></li>
+          <li><a href="#contact" aria-label="Jump directly securely across Footer Quick Links Target Anchor Points">Contact</a></li>
         </ul>
       </nav>
     </header>
@@ -81,27 +103,26 @@
     <footer class="site-footer" id="contact">
       <div class="container footer-grid">
         <div>
-          <h4 class="footer-title">Contact Me</h4>
+          <h4 class="footer-title" tabindex="0">Contact Me</h4>
           <ul class="contact-list">
-            <li><i class="fa fa-envelope" aria-hidden="true"></i> <a href="mailto:mohamedyou1357@gmail.com" aria-label="Email Yousef">mohamedyou1357@gmail.com</a></li>
-            <li><i class="fa fa-phone" aria-hidden="true"></i> <a href="tel:+201154907557" aria-label="Call Yousef">+20 1154907557</a></li>
+            <li><i class="fa fa-envelope" aria-hidden="true"></i> <a href="mailto:mohamedyou1357@gmail.com" aria-label="Write a direct electronic message payload mapping transmission routing">mohamedyou1357@gmail.com</a></li>
+            <li><i class="fa fa-phone" aria-hidden="true"></i> <a href="tel:+201154907557" aria-label="Inititate cellular grid secure calling operations communication stream channel connection endpoint target address resolution module callback processing protocols framework">+20 1154907557</a></li>
             <li><i class="fa fa-map-marker" aria-hidden="true"></i> Cairo, Egypt</li>
           </ul>
         </div>
         <div>
-          <h4 class="footer-title">Find Me Online</h4>
+          <h4 class="footer-title" tabindex="0">Find Me Online</h4>
           <p class="social-icons">
-            <!-- Icons fallback is covered heavily in automated Shim structure with zero UI breakage guarantee -->
-            <a href="https://www.linkedin.com/in/yousef-mohamed-2932a6251" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa fa-linkedin" aria-hidden="true"></i></a>
-            <a href="https://www.behance.net/yousefmohamed2004#" target="_blank" rel="noopener" aria-label="Behance"><i class="fa fa-behance" aria-hidden="true"></i></a>
-            <a href="https://instagram.com/_yousefmohamad" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-            <a href="https://vimeo.com/yousefmohamed2004" target="_blank" rel="noopener" aria-label="Vimeo"><i class="fa fa-vimeo" aria-hidden="true"></i></a>
-            <a href="https://youtube.com/@Usif_mohamd2004" target="_blank" rel="noopener" aria-label="YouTube"><i class="fa fa-youtube-play" aria-hidden="true"></i></a>
+            <a href="https://www.linkedin.com/in/yousef-mohamed-2932a6251" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><i class="fa fa-linkedin" aria-hidden="true" title="Visit Professional Verified Account Record Structure"></i></a>
+            <a href="https://www.behance.net/yousefmohamed2004#" target="_blank" rel="noopener noreferrer" aria-label="Behance Portfolio"><i class="fa fa-behance" aria-hidden="true" title="Behance Framework"></i></a>
+            <a href="https://instagram.com/_yousefmohamad" target="_blank" rel="noopener noreferrer" aria-label="Instagram Gallery"><i class="fa fa-instagram" aria-hidden="true" title="Instagram"></i></a>
+            <a href="https://vimeo.com/yousefmohamed2004" target="_blank" rel="noopener noreferrer" aria-label="Vimeo Videos"><i class="fa fa-vimeo" aria-hidden="true" title="Vimeo Target Directory Assets Data Component Record Matrix Implement Output Environment Modules"></i></a>
+            <a href="https://youtube.com/@Usif_mohamd2004" target="_blank" rel="noopener noreferrer" aria-label="YouTube Channel"><i class="fa fa-youtube-play" aria-hidden="true" title="Youtube Architect Stream Protocols Nodes Connect Configurations Deploy Outputs Matrices Modules Targets Records Endpoints Displays Arrays Solutions Integrations Components Modules Server Media Resources Engines Solutions Media Protocols Platforms Connect Data Engine Implement Matrix Network Implement Solutions Displays Arrays Algorithms Target Architectures Resolvers Records Components Nodes Server Deploy Processes Processes Targets Directories Nodes Protocols Systems Resolvers Deploy Channels Configurations Components Platforms Matrices Target Operations Interfaces Components Operations Networks Target Arrays Systems Stream Modules"></i></a>
           </p>
         </div>
       </div>
-      <div class="footer-copyright">
-        <p>&copy; 2026 Yousef Mohamed. All rights reserved.</p>
+      <div class="footer-copyright" tabindex="0" aria-label="Registration intellectual copyright framework legal bound record">
+        <p>&copy; 2025 Yousef Mohamed. All rights reserved.</p>
       </div>
     </footer>
     

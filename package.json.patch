@@ -1,0 +1,8 @@
+# Update your package.json scripts to execute both watchers concurrently during dev
+# Copy the following script definitions into your package.json manually:
+"scripts": {
+    "dev:python": "python3 scripts/optimize_assets.py --watch",
+    "dev:bridge": "node scripts/watch_bridge.js",
+    "dev:11ty": "eleventy --serve",
+    "dev": "npm run dev:python & npm run dev:bridge & npm run dev:11ty"
+}

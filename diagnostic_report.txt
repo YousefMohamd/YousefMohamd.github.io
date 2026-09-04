@@ -1,0 +1,35 @@
+================ ARCHITECTURE DIAGNOSTIC REPORT ================
+[1] ASSET PHYSICAL PATHS (Top 20 Source & Output Files):
+./img/showreel/002.jpg
+./img/showreel/006.jpg
+./img/projects/sections/graphic-design.webp
+./img/projects/sections/concept-art.webp
+./img/projects/sections/0.avif
+./img/projects/sections/short-film-projects.avif
+./img/projects/sections/short-films.avif
+./img/projects/sections/concept-art.avif
+./img/projects/sections/0.webp
+./img/projects/sections/short-film-projects.webp
+./img/projects/sections/short-films.webp
+./img/projects/sections/graphic-design.avif
+./img/projects/Alpha Empty.avif
+./img/projects/--0.webp
+./img/projects/--.webp
+./img/projects/concept-art/15.webp
+./img/projects/concept-art/40.avif
+./img/projects/concept-art/17.avif
+./img/projects/concept-art/7.avif
+./img/projects/concept-art/5.webp
+
+[2] ELEVENTY PASSTHROUGH CONFIGURATION (.eleventy.js):
+6:  eleventyConfig.addPassthroughCopy("css");
+7:  eleventyConfig.addPassthroughCopy("js");
+8:  eleventyConfig.addPassthroughCopy("img");
+9:  eleventyConfig.addPassthroughCopy("files");
+10:  eleventyConfig.addPassthroughCopy("fonts"); // Added fonts directory
+
+[3] FAULTY TEMPLATE SYNTAX (<picture> / <source> in .njk):
+./index.njk:20:              <source data-src="{{ item.src | url }}">
+
+[4] DATA STRUCTURE (JSON image fields):
+================================================================

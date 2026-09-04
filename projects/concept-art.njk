@@ -2,21 +2,20 @@
 layout: layouts/home.njk
 title: Concept Art
 ---
-
-<div class="w3-padding-64 w3-content">
-  <h2 class="w3-text-light-grey" style="font-size:34px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:18px;margin-bottom:0;">Concept Art</h2>
-  <!-- <hr style="width:200px" class="w3-opacity"> -->
-
-  <p class="w3-text-grey" style="margin-top:24px;margin-bottom:32px;">
-    Note: The following works are ordered from the most recent to the oldest, covering the period from 2022 until now.
-  </p>
-
-  <div class="w3-grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-    {% for f in concept %}
-      <div class="bg-neutral-900 rounded-2xl shadow p-3">
-        <img src="{{ f.url | url }}" alt="{{ f.name }}" style="width:100%;height:auto;object-fit:contain;">
-      </div>
-    {% endfor %}
-  </div>
+{% from "optimized-picture-macro.njk" import renderOptimizedImage %}
+<!-- STRICT UI FIX: Massively reduced scale -> clamp(1rem, 2vw, 1.3rem) -->
+<h1 class="page-title w3-animate-opacity" style="font-size: clamp(1.8rem, 4vw, 2.6rem) !important; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 0.75rem; color: #f5ead3; text-shadow: 0 1px 3px rgba(0,0,0,0.3);">Concept Art</h1>
+<p class="w3-text-grey" style="font-size: 0.85rem;">Note: The following works are ordered from the most recent to the oldest, covering the period from 2022 until now.</p>
+<div class="project-gallery">
+{% for f in concept %}
+    {% if f.type == 'video' %}
+        <video autoplay loop muted playsinline 
+               style="display: block; width: 100%; height: auto; max-width: 100%; object-fit: contain; margin-bottom: 20px; border-radius: 8px;">
+            <source src="{{ f.videoUrl | url }}" type="video/webm">
+            Your browser does not support the video tag.
+        </video>
+    {% else %}
+        {{ renderOptimizedImage(f.url, f.name, "1920", "1080") }}
+    {% endif %} 
+{% endfor %}
 </div>
-

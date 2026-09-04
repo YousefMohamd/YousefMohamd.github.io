@@ -1,0 +1,4559 @@
+=== ELEVENTY CONFIGURATION (.eleventy.js) ===
+const pluginRss = require("@11ty/eleventy-plugin-rss");
+const CleanCSS = require("clean-css");
+const Terser = require("terser");
+const htmlmin = require("html-minifier-terser");
+
+module.exports = function(eleventyConfig) {
+  /* ==== Static Passthrough Directory Copy ==== */
+  eleventyConfig.addPassthroughCopy({ "css": "css" });
+  eleventyConfig.addPassthroughCopy({ "js": "js" });
+  eleventyConfig.addPassthroughCopy({ "files": "files" });
+  eleventyConfig.addPassthroughCopy("fonts");
+
+  /* CRITICAL EXPLICIT ROUTING: 
+     Strictly copying only optimized sectors and icons. 
+     The blind 'img' global copy is eliminated to prevent 25MB raw asset leakage! */
+  eleventyConfig.addPassthroughCopy({ "img/icons": "img/icons" });
+  eleventyConfig.addPassthroughCopy({ "img/optimized": "img/optimized" });
+  eleventyConfig.addPassthroughCopy({ "img/showreel": "img/showreel" });
+
+  /* ==== Watch Targets For Reload Triggers ==== */
+  eleventyConfig.addWatchTarget("css");
+  eleventyConfig.addWatchTarget("js");
+  eleventyConfig.addWatchTarget("img/showreel");
+
+  /* ==== RSS Filter Integrations ==== */
+  eleventyConfig.addPlugin(pluginRss);
+  eleventyConfig.addFilter("absoluteUrl", (url, base) => pluginRss.absoluteUrl(url, base));
+  eleventyConfig.addFilter("htmlDateString", (dateObj) => { try { return new Date(dateObj).toISOString(); } catch { return ""; } });
+  eleventyConfig.addFilter("readableDate", (dateObj) => { try { const d = new Date(dateObj); return new Intl.DateTimeFormat("en-GB", { day:"2-digit", month:"short", year:"numeric" }).format(d); } catch { return ""; } });
+
+  /* ==== Tag List Collection Build Strategy ==== */
+  eleventyConfig.addCollection("tagList", (collectionsApi) => {
+    const set = new Set();
+    collectionsApi.getAll().forEach(item => (item.data.tags || []).forEach(t => set.add(t)));
+    return [...set];
+  });
+
+  /* ==== Performance Production Environment Minifications ==== */
+  eleventyConfig.addFilter("cssmin", function(code) { return new CleanCSS({}).minify(code).styles; });
+  eleventyConfig.addFilter("jsmin", function(code) { let min = Terser.minify(code); return min.error ? code : min.code; });
+  eleventyConfig.addTransform("htmlmin", async function(content, outputPath) {
+    if (outputPath && outputPath.endsWith(".html")) {
+      return await htmlmin.minify(content, {
+        useShortDoctype: true, removeComments: true, collapseWhitespace: true, minifyCSS: true, minifyJS: true
+      });
+    }
+    return content;
+  });
+
+  /* ==== Return Path Configurations ==== */
+  return {
+    dir: { input: ".", includes: "_includes", data: "_data", output: "_site" },
+    serverOptions: { liveReload: false, domDiff: false, port: 8087 },
+    templateFormats: ["html", "njk", "md"],
+    htmlTemplateEngine: "njk",
+    markdownTemplateEngine: "njk"
+  };
+};
+
+==================================================
+
+=== ASSET INVENTORY (img/ directory hierarchy) ===
+img/.DS_Store [6.0 KB]
+img/icons/.DS_Store [6.0 KB]
+img/icons/Opentoonz.svg [46.2 KB]
+img/icons/adobe-photoshop.svg [2.2 KB]
+img/icons/cinema4d.svg [1.3 KB]
+img/icons/darktable.svg [38.0 KB]
+img/icons/favicon.ico [173.8 KB]
+img/icons/logo-512x512.png [173.8 KB]
+img/icons/microsoft-powerpoint.svg [1.4 KB]
+img/icons/microsoft-word.svg [2.0 KB]
+img/icons/natron.svg [4.8 KB]
+img/icons/pureref.svg [0.8 KB]
+img/icons/shotcut.svg [1.7 KB]
+img/optimized/.DS_Store [6.0 KB]
+img/projects/--.png [1.5 KB]
+img/projects/--0.png [33.3 KB]
+img/projects/.DS_Store [8.0 KB]
+img/projects/Alpha Empty.png [0.1 KB]
+img/projects/concept-art/.DS_Store [6.0 KB]
+img/projects/concept-art/1.jpg [243.6 KB]
+img/projects/concept-art/10.png [87.3 KB]
+img/projects/concept-art/11.jpg [210.0 KB]
+img/projects/concept-art/12.jpg [106.2 KB]
+img/projects/concept-art/13.jpg [91.0 KB]
+img/projects/concept-art/14.jpg [332.2 KB]
+img/projects/concept-art/15.jpg [209.9 KB]
+img/projects/concept-art/16.png [734.2 KB]
+img/projects/concept-art/17.png [234.5 KB]
+img/projects/concept-art/18.png [211.0 KB]
+img/projects/concept-art/19.png [257.3 KB]
+img/projects/concept-art/2.jpg [277.7 KB]
+img/projects/concept-art/20.png [193.4 KB]
+img/projects/concept-art/21.png [595.1 KB]
+img/projects/concept-art/22.png [598.5 KB]
+img/projects/concept-art/23.gif [2851.0 KB]
+img/projects/concept-art/24.jpg [152.8 KB]
+img/projects/concept-art/25.gif [6924.2 KB]
+img/projects/concept-art/26.jpg [99.4 KB]
+img/projects/concept-art/27.png [7.9 KB]
+img/projects/concept-art/28.gif [2912.8 KB]
+img/projects/concept-art/29.webp [113.0 KB]
+img/projects/concept-art/3.jpg [427.2 KB]
+img/projects/concept-art/30.webm [66.0 KB]
+img/projects/concept-art/30.webp [1107.6 KB]
+img/projects/concept-art/31.png [5.5 KB]
+img/projects/concept-art/32.png [8993.3 KB]
+img/projects/concept-art/33.jpg [1347.1 KB]
+img/projects/concept-art/34.png [1.1 KB]
+img/projects/concept-art/35.png [2733.3 KB]
+img/projects/concept-art/36.jpg [1462.0 KB]
+img/projects/concept-art/37.jpg [1994.4 KB]
+img/projects/concept-art/38-.jpg [1388.6 KB]
+img/projects/concept-art/38.jpg [495.1 KB]
+img/projects/concept-art/39-.jpg [674.6 KB]
+img/projects/concept-art/4.jpg [178.3 KB]
+img/projects/concept-art/40.jpg [1362.8 KB]
+img/projects/concept-art/43.png [18.6 KB]
+img/projects/concept-art/5.jpg [253.3 KB]
+img/projects/concept-art/6.jpg [304.8 KB]
+img/projects/concept-art/7.JPEG [978.9 KB]
+img/projects/concept-art/8.jpg [143.4 KB]
+img/projects/concept-art/9.jpeg [573.2 KB]
+img/projects/graphic-design/.DS_Store [6.0 KB]
+img/projects/graphic-design/1.jpg [518.1 KB]
+img/projects/graphic-design/10.jpeg [490.9 KB]
+img/projects/graphic-design/11.png [311.2 KB]
+img/projects/graphic-design/12.png [460.5 KB]
+img/projects/graphic-design/13.png [2179.3 KB]
+img/projects/graphic-design/14.png [2111.0 KB]
+img/projects/graphic-design/15.jpg [135.3 KB]
+img/projects/graphic-design/16.jpg [2401.1 KB]
+img/projects/graphic-design/17.jpg [1109.9 KB]
+img/projects/graphic-design/2.jpg [69.8 KB]
+img/projects/graphic-design/3.jpg [228.1 KB]
+img/projects/graphic-design/4.jpg [293.8 KB]
+img/projects/graphic-design/5.JPEG [978.9 KB]
+img/projects/graphic-design/6.JPEG [612.8 KB]
+img/projects/graphic-design/7.JPEG [769.5 KB]
+img/projects/graphic-design/8.jpeg [673.2 KB]
+img/projects/graphic-design/9.jpg [881.9 KB]
+img/projects/graphic-design/optimize.py [0.7 KB]
+img/projects/sections/.DS_Store [8.0 KB]
+img/projects/sections/0.jpg [38.4 KB]
+img/projects/sections/concept-art.jpg [135.3 KB]
+img/projects/sections/graphic-design.jpg [53.2 KB]
+img/projects/sections/short-film-projects.jpg [396.6 KB]
+img/projects/sections/short-films.jpg [396.6 KB]
+img/showreel/.DS_Store [6.0 KB]
+img/showreel/001.mp4 [530.3 KB]
+img/showreel/002.jpg [120.1 KB]
+img/showreel/003.gif [290.5 KB]
+img/showreel/004.gif [2851.0 KB]
+img/showreel/005.mp4 [477.7 KB]
+img/showreel/006.jpg [389.9 KB]
+img/showreel/007.mp4 [5802.8 KB]
+
+==================================================
+
+=== TEMPLATE STRUCTURES (.njk files) ===
+--- FILE PATH: _includes/footer.njk ---
+<script src="/js/override-inject.js"></script>
+<script src="/js/override-inject.js"></script>
+
+------------------------------
+
+--- FILE PATH: _includes/home-projects-sections.njk ---
+<section class="home-sections" aria-label="Projects">
+  <div class="hs-row">
+    <!-- HARD TARGET REDIRECT: Engine is now polling from Python Optimized output specifically for WebP -->
+    <a class="hs-card" href="{{ '/projects/concept-art/' | url }}" aria-label="Concept Art">
+      <!-- Mapped to the isolated target directory mirroring tree '/img/optimized/...' -->
+      <img src="{{ '/img/optimized/projects/sections/concept-art.webp' | url }}" alt="Concept Art" fetchpriority="high" loading="eager" width="600" height="400">
+      <span class="hs-title">Concept Art</span>
+    </a>
+
+    <a class="hs-card" href="{{ '/projects/graphic-design/' | url }}" aria-label="Graphic Design">
+      <img src="{{ '/img/optimized/projects/sections/graphic-design.webp' | url }}" alt="Graphic Design" fetchpriority="high" loading="eager" width="600" height="400">
+      <span class="hs-title">Graphic Design</span>
+    </a>
+
+    <a class="hs-card" href="{{ '/projects/short-film-projects/' | url }}" aria-label="Short Film Projects">
+      <img src="{{ '/img/optimized/projects/sections/short-films.webp' | url }}" alt="Short Film Projects" loading="lazy" width="600" height="400">
+      <span class="hs-title">Short Film Projects</span>
+    </a>
+  </div>
+</section>
+
+------------------------------
+
+--- FILE PATH: _includes/layouts/base.njk ---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{{ title or metadata.title }}</title>
+    <!-- Priority Meta & Optimizations to Prevent FOUC & Overflow Scaling -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="description" content="Portfolio of Yousef Mohamed, an Environment & Prop Concept Artist specializing in Graphic Design, 2D Animation, Editing, and VFX.">
+    <meta name="author" content="Yousef Mohamed">
+    
+    <!-- UPGRADED Font Awesome with Backward Shims (100% Fix for Bbox Warnings / Network FOUC Error Drop) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/v4-shims.min.css" crossorigin="anonymous" />
+    
+    <!-- HARD CACHE-BUSTING ENFORCEMENT - Eliminates the old sticky mobile glitch caching "?v=systemOverride3" -->
+    <link rel="stylesheet" href="{{ '/css/modern.css' | url }}?v=systemOverride3">
+    <link rel="stylesheet" href="{{ '/css/index.css' | url }}?v=systemOverride3">
+    <link rel="stylesheet" href="{{ '/css/style.css' | url }}?v=systemOverride3">
+    
+    <!-- Universally Loaded Projects Override (Crucial: NO RESTRICTIVE 'IF STATEMENT' BLOCK TO PREVENT ROOT SPILL) -->
+    <link rel="stylesheet" href="{{ '/css/projects-override.css' | url }}?v=systemOverride3">
+
+    <!-- Canonicals and Structured Social Sharing Layout Data Config -->
+    <link rel="canonical" href="https://yousefmohamed.studio{{ page.url | url }}" />
+    <meta property="og:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.png">
+    <meta property="og:title" content="{{ title or metadata.title }}">
+    <meta name="twitter:image" content="https://yousefmohamed.studio/img/icons/logo-512x512.png">
+
+    <!-- Correct Favicon Linking Format optimized png integration bounds natively mapped -->
+    <link rel="icon" href="/img/icons/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="/img/icons/logo-512x512.png">
+
+    <style>
+      /* Base Structural Axis Lock System preventing Mobile Scale Bleeds instantly prior to layout rendering */
+      :root {
+         --main-font: Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+         overflow-x: hidden !important; 
+      }
+      /* Hard Override applying immediate death bounds against invisible markdown horizontal scroll padding! */
+      html, body {
+         overflow-x: hidden !important;
+         max-width: 100vw !important; 
+         width: 100% !important;
+         margin: 0 !important;
+         padding: 0;
+         box-sizing: border-box !important;
+         overscroll-behavior-x: none;
+      }
+      body { 
+        font-family: var(--main-font) !important; 
+        background-color: #000; 
+        color:#efefef; 
+      }
+      /* Subverting default container blow-outs natively injected */
+      .w3-content, .w3-main, #main {
+         max-width: 100vw !important;
+         box-sizing: border-box !important;
+         overflow-x: hidden !important;
+      }
+      *, *::after, *::before {
+         box-sizing: border-box !important;
+      }
+
+      /* Mandatory Accessibility Skips providing extreme compliance routing metrics (WCAG Resolvers) */
+      .skip-link {
+         position: absolute;
+         top: -40px;
+         left: 0;
+         background: #C5004A;
+         color: #fff;
+         padding: 8px 16px;
+         z-index: 100;
+         font-weight: 700;
+         border-bottom-right-radius: 6px;
+         text-decoration: none;
+      }
+      .skip-link:focus {
+         top: 0;
+         outline: 2px solid white;
+      }
+    </style>
+  </head>
+  <body class="site-body">
+    <a href="#main" class="skip-link">Skip to main content</a>
+    
+    <header class="site-header">
+      <nav class="container nav-row">
+        <ul class="main-nav">
+          <li><a href="{{ '/' | url }}" aria-label="Navigate to Home Page Menu Directory">Home</a></li>
+          <li><a href="{{ '/about/' | url }}" aria-label="Navigate to Complete Profile Profile Section">About</a></li>
+          <li><a href="#contact" aria-label="Jump directly securely across Footer Quick Links Target Anchor Points">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- Forcing native grid fluid wrapping constraint down across any subsequent raw MD layout insertions! -->
+    <main id="main" class="container" style="max-width: 100vw; overflow-x: hidden; position: relative;">
+      {{ content | safe }}
+    </main>
+
+    <footer class="site-footer" id="contact">
+      <div class="container footer-grid">
+        <div>
+          <h4 class="footer-title" tabindex="0">Contact Me</h4>
+          <ul class="contact-list">
+            <li><i class="fa fa-envelope" aria-hidden="true"></i> <a href="mailto:mohamedyou1357@gmail.com" aria-label="Write a direct electronic message payload mapping transmission routing">mohamedyou1357@gmail.com</a></li>
+            <li><i class="fa fa-phone" aria-hidden="true"></i> <a href="tel:+201154907557" aria-label="Inititate cellular grid secure calling operations communication stream channel connection endpoint target address resolution module callback processing protocols framework">+20 1154907557</a></li>
+            <li><i class="fa fa-map-marker" aria-hidden="true"></i> Cairo, Egypt</li>
+          </ul>
+        </div>
+        <div>
+          <h4 class="footer-title" tabindex="0">Find Me Online</h4>
+          <p class="social-icons">
+            <a href="https://www.linkedin.com/in/yousef-mohamed-2932a6251" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn Profile"><i class="fa fa-linkedin" aria-hidden="true" title="Visit Professional Verified Account Record Structure"></i></a>
+            <a href="https://www.behance.net/yousefmohamed2004#" target="_blank" rel="noopener noreferrer" aria-label="Behance Portfolio"><i class="fa fa-behance" aria-hidden="true" title="Behance Framework"></i></a>
+            <a href="https://instagram.com/_yousefmohamad" target="_blank" rel="noopener noreferrer" aria-label="Instagram Gallery"><i class="fa fa-instagram" aria-hidden="true" title="Instagram"></i></a>
+            <a href="https://vimeo.com/yousefmohamed2004" target="_blank" rel="noopener noreferrer" aria-label="Vimeo Videos"><i class="fa fa-vimeo" aria-hidden="true" title="Vimeo Target Directory Assets Data Component Record Matrix Implement Output Environment Modules"></i></a>
+            <a href="https://youtube.com/@Usif_mohamd2004" target="_blank" rel="noopener noreferrer" aria-label="YouTube Channel"><i class="fa fa-youtube-play" aria-hidden="true" title="Youtube Architect Stream Protocols Nodes Connect Configurations Deploy Outputs Matrices Modules Targets Records Endpoints Displays Arrays Solutions Integrations Components Modules Server Media Resources Engines Solutions Media Protocols Platforms Connect Data Engine Implement Matrix Network Implement Solutions Displays Arrays Algorithms Target Architectures Resolvers Records Components Nodes Server Deploy Processes Processes Targets Directories Nodes Protocols Systems Resolvers Deploy Channels Configurations Components Platforms Matrices Target Operations Interfaces Components Operations Networks Target Arrays Systems Stream Modules"></i></a>
+          </p>
+        </div>
+      </div>
+      <div class="footer-copyright" tabindex="0" aria-label="Registration intellectual copyright framework legal bound record">
+        <p>&copy; 2026 Yousef Mohamed. All rights reserved.</p>
+      </div>
+    </footer>
+    
+    <!-- Reload scripts deferred for critical DOM construction pipeline to take CSS locks first Priority. Cache reset mapped. -->
+    <script src="{{ '/js/site.js' | url }}?v=systemOverride3" defer></script>
+  </body>
+</html>
+
+------------------------------
+
+--- FILE PATH: _includes/layouts/home.njk ---
+---
+layout: layouts/base.njk
+templateClass: tmpl-home
+---
+{{ content | safe }}
+
+------------------------------
+
+--- FILE PATH: _includes/layouts/post.njk ---
+---
+layout: layouts/base.njk
+templateClass: tmpl-post
+---
+<div class="w3-content">
+<h1>{{ title }}</h1>
+
+{{ content | safe }}
+
+<p><a href="{{ '/' | url }}">← Home</a></p>
+</div>
+------------------------------
+
+--- FILE PATH: _includes/layouts/project.njk ---
+---
+layout: layouts/base.njk
+---
+<article class="project-page w3-content">
+  <header class="project-header">
+    <h2 class="w3-text-light-grey">{{ title }}</h2>
+  </header>
+
+  <!-- Safe Embed Restructuring Container to Resolve Disappearance Bugs and Feature Policy Warnings -->
+  {% if vimeoId %}
+  <div class="video-wrap" style="position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 30px;">
+    <iframe src="https://player.vimeo.com/video/{{ vimeoId }}" frameborder="0"
+      allow="autoplay; fullscreen" allowfullscreen 
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
+  </div>
+  {% endif %}
+
+  <!-- Force Responsive Bound Logic to Prevent Extruding Image Bounds & DOM Blowouts -->
+  <div class="project-body" style="width: 100%; max-width: 100%; overflow: hidden;">
+    {{ content | safe }}
+  </div>
+</article>
+
+------------------------------
+
+--- FILE PATH: _includes/optimized-picture-macro.njk ---
+{% macro renderOptimizedImage(imageSrc, imageAlt, customWidth="1920", customHeight="1080", isPriority=false) %}
+  
+  {% set cleanedSrc = imageSrc | replace('{{', '') | replace('}}', '') | trim %}
+  {% set basePath = cleanedSrc | replace('/img/projects/', '/img/optimized/projects/') %}
+  
+  {% set isVideo = ('.webm' in cleanedSrc) or ('.mp4' in cleanedSrc) or ('.gif' in cleanedSrc) or ('.mov' in cleanedSrc) %}
+
+  {% if isVideo %}
+      {% set videoPath = basePath | replace('.gif', '.webm') | replace('.mp4', '.webm') | replace('.mov', '.webm') %}
+      <video src="{{ videoPath | url }}" autoplay loop muted playsinline width="{{ customWidth }}" height="{{ customHeight }}" style="display: block; width: 100%; height: auto; max-width: 100%; object-fit: contain; margin-bottom: 20px; border-radius: 8px; background: transparent;"></video>
+  {% else %}
+      {% set avifLayer = basePath | replace('.jpg', '.avif') | replace('.jpeg', '.avif') | replace('.png', '.avif') | replace('.JPG', '.avif') | replace('.JPEG', '.avif') | replace('.PNG', '.avif') | replace('.webp', '.avif') | replace('.WEBP', '.avif') %}
+      
+      {# EXPLICIT WEBP FALLBACK LOCK: Never call the raw heavy JPG/PNG. WebP is our final safety net universally gracefully rendering explicitly correctly #}
+      {% set webpLayer = basePath | replace('.avif', '.webp') | replace('.jpg', '.webp') | replace('.jpeg', '.webp') | replace('.png', '.webp') | replace('.JPG', '.webp') | replace('.JPEG', '.webp') | replace('.PNG', '.webp') | replace('.AVIF', '.webp') %}
+      
+      <picture style="display: block; width: 100%; height: 100%; object-fit: cover;">
+          <source type="image/avif" srcset="{{ avifLayer | url }}">
+          <source type="image/webp" srcset="{{ webpLayer | url }}">
+          
+          <img src="{{ webpLayer | url }}" 
+               alt="{{ imageAlt }}" 
+               width="{{ customWidth }}" 
+               height="{{ customHeight }}" 
+               style="display: block; width: 100%; height: auto; max-width: 100%; object-fit: contain; margin-bottom: 20px; border-radius: 8px;"
+               {% if isPriority %}
+                  fetchpriority="high" decoding="sync" loading="eager"
+               {% else %}
+                  decoding="async" loading="lazy"
+               {% endif %}
+          />
+      </picture>
+  {% endif %}
+
+{% endmacro %}
+
+------------------------------
+
+--- FILE PATH: about/index.njk ---
+---
+layout: layouts/home.njk
+title: About Me
+---
+
+<div class="w3-content w3-padding-64">
+  <h2 class="w3-text-light-grey" style="font-size:34px;font-weight:700;margin-bottom:0;padding-bottom:18px;border-bottom:1px solid rgba(255,255,255,0.15);">About Me</h2>
+  
+  <p style="font-size:15px;line-height:1.8;color:#b8b8b8;margin:28px 0 32px 0;">
+    I’m an Environment & Prop Concept Artist focused on production-ready visual development for animation and VFX. I specialize in environment design, prop ideation, and advanced perspective (up to 6-point), combining strong fundamentals with a photobash-to-paint workflow to deliver clear, readable designs. My experience comes from portfolio projects and team collaborations, producing environment keyframes, prop sheets, and storyboard/demo sequences. Detail-oriented and feedback-driven, I’m reliable with revisions and have consistently developed my portfolio since 2022.
+  </p>
+
+  <a href="/files/cv.pdf" class="cv-button" download>
+    CV
+  </a>
+</div>
+
+<style>
+.cv-button{
+  display:inline-block;
+  padding:10px 32px;
+  background:transparent;
+  color:#fff;
+  text-decoration:none;
+  border:2px solid #fff;
+  border-radius:6px;
+  font-size:14px;
+  font-weight:600;
+  letter-spacing:1px;
+  transition:background .2s, color .2s;
+}
+.cv-button:hover{
+  background:#fff;
+  color:#000;
+}
+</style>
+
+------------------------------
+
+--- FILE PATH: contact.njk ---
+---
+layout: layouts/home.njk
+eleventyNavigation:
+  key: Contact
+  order: 4
+  url: /#contact
+---
+------------------------------
+
+--- FILE PATH: feed/feed.njk ---
+---
+permalink: feed/feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+	<title>{{ metadata.title }}</title>
+	<subtitle>{{ metadata.feed.subtitle }}</subtitle>
+	{% set absoluteUrl %}{{ metadata.feed.path | url | absoluteUrl(metadata.url) }}{% endset %}
+	<link href="{{ absoluteUrl }}" rel="self"/>
+	<link href="{{ metadata.url }}"/>
+	<updated>{{ collections.posts | rssLastUpdatedDate }}</updated>
+	<id>{{ metadata.feed.id }}</id>
+	<author>
+		<name>{{ metadata.author.name }}</name>
+		<email>{{ metadata.author.email }}</email>
+	</author>
+	{%- for post in collections.posts %}
+	{% set absolutePostUrl %}{{ post.url | url | absoluteUrl(metadata.url) }}{% endset %}
+	<entry>
+		<title>{{ post.data.title }}</title>
+		<link href="{{ absolutePostUrl }}"/>
+		<updated>{{ post.date | rssDate }}</updated>
+		<id>{{ absolutePostUrl }}</id>
+		<content type="html">{{ post.templateContent | htmlToAbsoluteUrls(absolutePostUrl) }}</content>
+	</entry>
+	{%- endfor %}
+</feed>
+
+------------------------------
+
+--- FILE PATH: feed/htaccess.njk ---
+---
+permalink: feed/.htaccess
+eleventyExcludeFromCollections: true
+---
+# For Apache, to show `{{ metadata.feed.filename }}` when browsing to directory /feed/ (hide the file!)
+DirectoryIndex {{ metadata.feed.filename }}
+
+------------------------------
+
+--- FILE PATH: index.njk ---
+---
+layout: layouts/base.njk
+eleventyNavigation:
+  key: Home
+  order: 1
+hero:
+  name: "Yousef Mohamed"
+  role: "Environment & Prop Concept Artist"
+  subrole: "Secondary: Graphic Designer | 2D Animator | Editor | VFX Generalist"
+---
+
+<!-- HERO SECTION -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-media" id="showreel">
+      {% for item in showreel %}
+        {% if item.type == "video" %}
+          <div class="slide" data-type="video" data-src="{{ item.src | url }}">
+            <video class="lazyload" playsinline muted preload="metadata">
+              {% set base_path = item.src | replace(".jpg", "") | replace(".jpeg", "") | replace(".png", "") %}
+            <source type="image/avif" data-srcset="{{ (base_path ~ '.avif') | url }}">
+            <source type="image/webp" data-srcset="{{ (base_path ~ '.webp') | url }}">
+            </video>
+          </div>
+        {% else %}
+          <div class="slide" data-type="image" data-src="{{ item.src | url }}" style="background-image:url('{{ item.src | url }}')"></div>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  
+  <div class="hero-copy">
+    <h1 class="hero-title">{{ hero.name }}</h1>
+    <p class="hero-role">{{ hero.role }}</p>
+    <div class="hero-subrole">{{ hero.subrole }}</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+{% include "home-projects-sections.html" %}
+
+<!-- SOFTWARE EXPERIENCE -->
+{% include "home-software-section.html" %}
+
+------------------------------
+
+--- FILE PATH: page-list.njk ---
+---
+pagination:
+  data: collections.all
+  size: 20
+  alias: entries
+layout: layouts/home.njk
+permalink: /page-list/{% if pagination.pageNumber > 0 %}{{ pagination.pageNumber }}/{% endif %}
+---
+<table>
+  <thead>
+    <th>URL</th>
+    <th>Page Title</th>
+  </thead>
+  <tbody>
+{%- for entry in entries %}
+  <tr>
+    <td><a href="{{ entry.url }}"><code>{{ entry.url }}</code></a></td>
+    <td>{{ entry.data.title }}</td>
+  </tr>
+{%- endfor %}
+  </tbody>
+</table>
+
+------------------------------
+
+--- FILE PATH: photos.njk ---
+---
+layout: layouts/home.njk
+eleventyNavigation:
+  key: Photos
+  order: 3
+  url: /#photos
+eleventyExcludeFromCollections: true
+---
+<h1>Photos</h1>
+<p>This section is under construction.</p>
+
+------------------------------
+
+--- FILE PATH: projects/concept-art.njk ---
+---
+layout: layouts/home.njk
+title: Concept Art
+---
+{% from "optimized-picture-macro.njk" import renderOptimizedImage %}
+
+<div class="w3-padding-64 w3-content">
+  <h2 class="w3-text-light-grey" style="font-size:34px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:18px;margin-bottom:0;">Concept Art</h2>
+
+  <p class="w3-text-grey" style="margin-top:24px;margin-bottom:32px;">
+    Note: The following works are ordered from the most recent to the oldest, covering the period from 2022 until now.
+  </p>
+
+  <div class="w3-grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    {% for f in concept %}
+      <div class="bg-neutral-900 rounded-2xl shadow p-3">
+        {% if f.type == 'video' %}
+          <video src="{{ f.videoUrl | url }}" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain; border-radius: 8px; display:block;"></video>
+        {% else %}
+          {{ renderOptimizedImage(f.url, f.name, "1920", "1080") }}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+------------------------------
+
+--- FILE PATH: projects/graphic-design.njk ---
+---
+layout: layouts/home.njk
+title: Graphic Design
+---
+{% from "optimized-picture-macro.njk" import renderOptimizedImage %}
+
+<div class="w3-padding-64 w3-content">
+  <h2 class="w3-text-light-grey" style="font-size:34px;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:18px;margin-bottom:0;">Graphic Design</h2>
+
+  <p class="w3-text-grey" style="margin-top:24px;margin-bottom:32px;">
+    Note: The following works are ordered from the most recent to the oldest, covering the period from 2022 until now.
+  </p>
+
+  <div class="w3-grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+    {% for f in graphic %}
+      <div class="bg-neutral-900 rounded-2xl shadow p-3">
+        {% if f.type == 'video' %}
+          <video src="{{ f.videoUrl | url }}" autoplay loop muted playsinline style="width:100%;height:auto;object-fit:contain; border-radius: 8px; display:block; background:#000;"></video>
+        {% else %}
+          {{ renderOptimizedImage(f.url, f.name, "1920", "1080") }}
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+------------------------------
+
+--- FILE PATH: projects/short-film-projects.njk ---
+---
+layout: layouts/base.njk
+title: Short Film Projects
+---
+
+<div class="w3-padding-64 w3-content">
+  <h2 class="w3-text-light-grey">Short Film Projects</h2>
+
+  {% for p in (collections.project or []) | reverse %}
+    {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
+      <div class="film-project w3-margin-bottom">
+        <h3 class="w3-text-light-grey" style="margin:18px 0 8px;">{{ p.data.title }}</h3>
+
+        {% if p.data.vimeoId %}
+          <!-- 1080p Cinematic Hardware-Accelerated Container resolving natively explicitly cleanly smoothly organically rendering -->
+          <div class="video-wrapper">
+            
+            <!-- Cinematic High-Resolution Endpoint Implementation safely correctly efficiently mapped optimally -->
+            <img class="vimeo-thumbnail" src="https://vumbnail.com/{{ p.data.vimeoId }}_1080x.jpg" alt="{{ p.data.title }} Cinematic Thumbnail" loading="lazy" decoding="async" width="1920" height="1080">
+
+            <button class="facade-play-btn" type="button" aria-label="Play video">
+              <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+                <path d="M8 5.2v13.6L19 12z" fill="currentColor"/>
+              </svg>
+            </button>
+
+            <iframe
+              data-src="https://player.vimeo.com/video/{{ p.data.vimeoId }}?autoplay=1&color=ffffff&title=0&byline=0&portrait=0"
+              width="100%" height="100%" frameborder="0"
+              class="lazy-vimeo"
+              allow="autoplay; fullscreen"
+              allowfullscreen>
+            </iframe>
+          </div>
+        {% endif %}
+
+        {% if p.templateContent %}
+          <div class="w3-text-grey" style="line-height:1.7;">
+            {{ p.templateContent | safe }}
+          </div>
+        {% endif %}
+
+        <hr class="w3-opacity">
+      </div>
+    {% endif %}
+  {% endfor %}
+</div>
+
+<style>
+.video-wrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background-color: #000;
+  cursor: pointer;
+  border-radius: 16px;
+  overflow: hidden;
+  isolation: isolate;
+<<<<<<< HEAD
+  margin-bottom: 16px;
+=======
+  filter: contrast(1.05) saturate(1.05);
+>>>>>>> stable-backup-august2026
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  z-index: 1;
+}
+
+/* Cinematic Native Image Integration mapping seamlessly securely perfectly optimally natively */
+.vimeo-thumbnail {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 2;
+  transition: opacity 0.4s ease-out, filter 0.4s ease-out, transform 0.6s ease-out;
+  filter: contrast(1.1) saturate(1.12);
+  transform: scale(1.01);
+}
+
+.video-wrapper:hover .vimeo-thumbnail {
+  transform: scale(1.03);
+  filter: contrast(1.15) saturate(1.2);
+}
+
+.video-wrapper.is-playing .vimeo-thumbnail {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.facade-play-btn {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70px;
+  height: 70px;
+  border: 1px solid oklch(1 0 0 / 0.35);
+  border-radius: 50%;
+  background: oklch(1 0 0 / 0.14);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3;
+  color: #ffffff;
+  transition: transform 0.3s cubic-bezier(0.34, 1.4, 0.5, 1), background 0.25s;
+}
+
+.facade-play-btn:hover {
+  background: oklch(1 0 0 / 0.24);
+  transform: translate(-50%, -50%) scale(1.08);
+}
+
+.facade-play-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid oklch(1 0 0 / 0.2);
+  animation: zigzag-wave 1.2s infinite;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.facade-play-btn:hover::before {
+  opacity: 1;
+}
+
+@keyframes zigzag-wave {
+  0% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.5); opacity: 0.3; }
+  100% { transform: scale(2); opacity: 0; }
+}
+<<<<<<< HEAD
+
+.facade-play-btn svg { fill: currentColor; }
+=======
+
+.facade-play-btn svg { fill: currentColor; }
+
+.video-wrapper.is-playing {
+  background-image: none !important;
+  filter: none !important;
+}
+>>>>>>> stable-backup-august2026
+
+.video-wrapper.is-playing .facade-play-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.video-wrapper').forEach(wrapper => {
+    const iframe = wrapper.querySelector('iframe');
+    const playBtn = wrapper.querySelector('.facade-play-btn');
+
+    function loadVideo() {
+      if (wrapper.classList.contains('is-playing')) return;
+      wrapper.classList.add('is-playing');
+      if (iframe && iframe.dataset.src) {
+        iframe.src = iframe.dataset.src;
+      }
+    }
+
+    wrapper.addEventListener('click', loadVideo);
+    if (playBtn) {
+      playBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        loadVideo();
+      });
+    }
+  });
+});
+</script>
+
+------------------------------
+
+--- FILE PATH: projects.njk ---
+---
+layout: layouts/home.njk
+title: Projects
+eleventyNavigation:
+  key: Projects
+  order: 2
+---
+<div class="w3-padding-64 w3-content">
+  <h2 class="w3-text-light-grey">Projects</h2>
+  <hr style="width:200px" class="w3-opacity">
+
+  <div class="projects-grid">
+    <a class="project-card section-card" href="/projects/concept-art/">
+      <div class="project-thumb">
+        <img src="{{ '/img/optimized/projects/sections/concept-art.webp' | url }}" alt="Concept Art">
+        <div class="project-overlay"><span class="view-more-btn">View More</span></div>
+      </div>
+      <div class="project-meta">
+        <div class="project-title">Concept Art</div>
+      </div>
+    </a>
+
+    <a class="project-card section-card" href="/projects/graphic-design/">
+      <div class="project-thumb">
+        <img src="{{ '/img/optimized/projects/sections/graphic-design.webp' | url }}" alt="Graphic Design">
+        <div class="project-overlay"><span class="view-more-btn">View More</span></div>
+      </div>
+      <div class="project-meta">
+        <div class="project-title">Graphic Design</div>
+      </div>
+    </a>
+
+    <a class="project-card section-card" href="/projects/short-film-projects/">
+      <div class="project-thumb">
+        <img src="{{ '/img/optimized/projects/sections/short-film-projects.webp' | url }}" alt="Short Film Projects">
+        <div class="project-overlay"><span class="view-more-btn">View More</span></div>
+      </div>
+      <div class="project-meta">
+        <div class="project-title">Short Film Projects</div>
+      </div>
+    </a>
+  </div>
+</div>
+
+------------------------------
+
+--- FILE PATH: sitemap.xml.njk ---
+---
+permalink: /sitemap.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+{%- for page in collections.all %}
+  {% set absoluteUrl %}{{ page.url | url | absoluteUrl(metadata.url) }}{% endset %}
+  <url>
+    <loc>{{ absoluteUrl }}</loc>
+    <lastmod>{{ page.date | htmlDateString }}</lastmod>
+  </url>
+{%- endfor %}
+</urlset>
+
+------------------------------
+
+--- FILE PATH: tags-list.njk ---
+---
+permalink: /tags/
+layout: layouts/home.njk
+---
+<h1>Tags</h1>
+
+{% for tag in collections.tagList %}
+  {% set tagUrl %}/tags/{{ tag }}/{% endset %}
+  <a href="{{ tagUrl | url }}" class="tag">{{ tag }}</a>
+{% endfor %}
+
+------------------------------
+
+=== DATA STRUCTURES (.json files) ===
+--- FILE PATH: _data/metadata.json ---
+{
+  "title": "Yousef Mohamed",
+  "author": {
+    "email": "mohamedyou1357@gmail.com",
+    "location": "Cairo, Egypt",
+    "role": "Filmmaker",
+    "summary": "Multidisciplinary Visual Artist | Concept Artist | Graphic Designer | 2D Animator | Editor | VFX Generalist"
+  },
+  "social": {
+    "linkedin": "#",
+    "behance": "#",
+    "instagram": "#",
+    "vimeo": "#",
+    "youtube": "#"
+  }
+}
+
+------------------------------
+
+--- FILE PATH: _data/navFA.json ---
+{
+    "Home" : "fa-home",
+    "About" : "fa-user",
+    "Photos" : "fa-eye",
+    "Contact" : "fa-envelope",
+    "Archive" : "fa-archive"
+}
+------------------------------
+
+--- FILE PATH: _data/site.json ---
+{
+  "url": "http://localhost:8087",
+  "title": "Yousef Mohamed — Portfolio",
+  "author": "Yousef Mohamed"
+}
+
+------------------------------
+
+--- FILE PATH: package-lock.json ---
+{
+  "name": "yousef-portfolio",
+  "version": "1.0.0",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {
+    "": {
+      "name": "yousef-portfolio",
+      "version": "1.0.0",
+      "license": "MIT",
+      "devDependencies": {
+        "@11ty/eleventy": "^2.0.1",
+        "@11ty/eleventy-navigation": "^0.1.6",
+        "@11ty/eleventy-plugin-rss": "^1.2.0",
+        "@11ty/eleventy-plugin-syntaxhighlight": "^3.0.1",
+        "clean-css": "^5.3.3",
+        "html-minifier-terser": "^7.2.0",
+        "luxon": "^1.21.3",
+        "markdown-it": "^14.1.0",
+        "markdown-it-anchor": "^5.2.5",
+        "rimraf": "^6.1.3",
+        "terser": "^5.50.0"
+      },
+      "optionalDependencies": {
+        "fsevents": "^2.3.3"
+      }
+    },
+    "node_modules/@11ty/dependency-tree": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@11ty/eleventy": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@11ty/dependency-tree": "^2.0.1",
+        "@11ty/eleventy-dev-server": "^1.0.4",
+        "@11ty/eleventy-utils": "^1.0.1",
+        "@11ty/lodash-custom": "^4.17.21",
+        "@iarna/toml": "^2.2.5",
+        "@sindresorhus/slugify": "^1.1.2",
+        "bcp-47-normalize": "^1.1.1",
+        "chokidar": "^3.5.3",
+        "cross-spawn": "^7.0.3",
+        "debug": "^4.3.4",
+        "dependency-graph": "^0.11.0",
+        "ejs": "^3.1.9",
+        "fast-glob": "^3.2.12",
+        "graceful-fs": "^4.2.11",
+        "gray-matter": "^4.0.3",
+        "hamljs": "^0.6.2",
+        "handlebars": "^4.7.7",
+        "is-glob": "^4.0.3",
+        "iso-639-1": "^2.1.15",
+        "kleur": "^4.1.5",
+        "liquidjs": "^10.7.0",
+        "luxon": "^3.3.0",
+        "markdown-it": "^13.0.1",
+        "micromatch": "^4.0.5",
+        "minimist": "^1.2.8",
+        "moo": "^0.5.2",
+        "multimatch": "^5.0.0",
+        "mustache": "^4.2.0",
+        "normalize-path": "^3.0.0",
+        "nunjucks": "^3.2.3",
+        "path-to-regexp": "^6.2.1",
+        "please-upgrade-node": "^3.2.0",
+        "posthtml": "^0.16.6",
+        "posthtml-urls": "^1.0.0",
+        "pug": "^3.0.2",
+        "recursive-copy": "^2.0.14",
+        "semver": "^7.3.8",
+        "slugify": "^1.6.6"
+      },
+      "bin": {
+        "eleventy": "cmd.js"
+      },
+      "engines": {
+        "node": ">=14"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      }
+    },
+    "node_modules/@11ty/eleventy-dev-server": {
+      "version": "1.0.4",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@11ty/eleventy-utils": "^1.0.1",
+        "chokidar": "^3.5.3",
+        "debug": "^4.3.4",
+        "dev-ip": "^1.0.1",
+        "finalhandler": "^1.2.0",
+        "mime": "^3.0.0",
+        "minimist": "^1.2.8",
+        "morphdom": "^2.7.0",
+        "please-upgrade-node": "^3.2.0",
+        "ssri": "^8.0.1",
+        "ws": "^8.13.0"
+      },
+      "bin": {
+        "eleventy-dev-server": "cmd.js"
+      },
+      "engines": {
+        "node": ">=14"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      }
+    },
+    "node_modules/@11ty/eleventy-navigation": {
+      "version": "0.1.6",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "dependency-graph": "^0.8.1"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      },
+      "peerDependencies": {
+        "@11ty/eleventy": ">=0.7.0"
+      }
+    },
+    "node_modules/@11ty/eleventy-navigation/node_modules/dependency-graph": {
+      "version": "0.8.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.6.0"
+      }
+    },
+    "node_modules/@11ty/eleventy-plugin-rss": {
+      "version": "1.2.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "^4.3.4",
+        "posthtml": "^0.16.6",
+        "posthtml-urls": "1.0.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      }
+    },
+    "node_modules/@11ty/eleventy-plugin-syntaxhighlight": {
+      "version": "3.2.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "linkedom": "^0.13.0",
+        "prismjs": "^1.26.0"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      }
+    },
+    "node_modules/@11ty/eleventy-utils": {
+      "version": "1.0.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "normalize-path": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=12"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      }
+    },
+    "node_modules/@11ty/eleventy/node_modules/argparse": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "Python-2.0"
+    },
+    "node_modules/@11ty/eleventy/node_modules/entities": {
+      "version": "3.0.1",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "engines": {
+        "node": ">=0.12"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/entities?sponsor=1"
+      }
+    },
+    "node_modules/@11ty/eleventy/node_modules/linkify-it": {
+      "version": "4.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "uc.micro": "^1.0.1"
+      }
+    },
+    "node_modules/@11ty/eleventy/node_modules/luxon": {
+      "version": "3.7.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/@11ty/eleventy/node_modules/markdown-it": {
+      "version": "13.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "argparse": "^2.0.1",
+        "entities": "~3.0.1",
+        "linkify-it": "^4.0.1",
+        "mdurl": "^1.0.1",
+        "uc.micro": "^1.0.5"
+      },
+      "bin": {
+        "markdown-it": "bin/markdown-it.js"
+      }
+    },
+    "node_modules/@11ty/lodash-custom": {
+      "version": "4.17.21",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=14"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/11ty"
+      }
+    },
+    "node_modules/@babel/helper-string-parser": {
+      "version": "7.27.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/helper-validator-identifier": {
+      "version": "7.27.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@babel/parser": {
+      "version": "7.28.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/types": "^7.28.2"
+      },
+      "bin": {
+        "parser": "bin/babel-parser.js"
+      },
+      "engines": {
+        "node": ">=6.0.0"
+      }
+    },
+    "node_modules/@babel/types": {
+      "version": "7.28.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/helper-string-parser": "^7.27.1",
+        "@babel/helper-validator-identifier": "^7.27.1"
+      },
+      "engines": {
+        "node": ">=6.9.0"
+      }
+    },
+    "node_modules/@iarna/toml": {
+      "version": "2.2.5",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/@jridgewell/gen-mapping": {
+      "version": "0.3.13",
+      "resolved": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
+      "integrity": "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jridgewell/sourcemap-codec": "^1.5.0",
+        "@jridgewell/trace-mapping": "^0.3.24"
+      }
+    },
+    "node_modules/@jridgewell/resolve-uri": {
+      "version": "3.1.2",
+      "resolved": "https://registry.npmjs.org/@jridgewell/resolve-uri/-/resolve-uri-3.1.2.tgz",
+      "integrity": "sha512-bRISgCIjP20/tbWSPWMEi54QVPRZExkuD9lJL+UIxUKtwVJA8wW1Trb1jMs1RFXo1CBTNZ/5hpC9QvmKWdopKw==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.0.0"
+      }
+    },
+    "node_modules/@jridgewell/source-map": {
+      "version": "0.3.11",
+      "resolved": "https://registry.npmjs.org/@jridgewell/source-map/-/source-map-0.3.11.tgz",
+      "integrity": "sha512-ZMp1V8ZFcPG5dIWnQLr3NSI1MiCU7UETdS/A0G8V/XWHvJv3ZsFqutJn1Y5RPmAPX6F3BiE397OqveU/9NCuIA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jridgewell/gen-mapping": "^0.3.5",
+        "@jridgewell/trace-mapping": "^0.3.25"
+      }
+    },
+    "node_modules/@jridgewell/sourcemap-codec": {
+      "version": "1.5.5",
+      "resolved": "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.5.5.tgz",
+      "integrity": "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/@jridgewell/trace-mapping": {
+      "version": "0.3.31",
+      "resolved": "https://registry.npmjs.org/@jridgewell/trace-mapping/-/trace-mapping-0.3.31.tgz",
+      "integrity": "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@jridgewell/resolve-uri": "^3.1.0",
+        "@jridgewell/sourcemap-codec": "^1.4.14"
+      }
+    },
+    "node_modules/@nodelib/fs.scandir": {
+      "version": "2.1.5",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@nodelib/fs.stat": "2.0.5",
+        "run-parallel": "^1.1.9"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/@nodelib/fs.stat": {
+      "version": "2.0.5",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/@nodelib/fs.walk": {
+      "version": "1.2.8",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@nodelib/fs.scandir": "2.1.5",
+        "fastq": "^1.6.0"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/@sindresorhus/slugify": {
+      "version": "1.1.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@sindresorhus/transliterate": "^0.1.1",
+        "escape-string-regexp": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/@sindresorhus/transliterate": {
+      "version": "0.1.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "escape-string-regexp": "^2.0.0",
+        "lodash.deburr": "^4.1.0"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/@sindresorhus/transliterate/node_modules/escape-string-regexp": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/@types/minimatch": {
+      "version": "3.0.5",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/a-sync-waterfall": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/acorn": {
+      "version": "7.4.1",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "acorn": "bin/acorn"
+      },
+      "engines": {
+        "node": ">=0.4.0"
+      }
+    },
+    "node_modules/any-promise": {
+      "version": "0.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/anymatch": {
+      "version": "3.1.3",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "normalize-path": "^3.0.0",
+        "picomatch": "^2.0.4"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/argparse": {
+      "version": "1.0.10",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "sprintf-js": "~1.0.2"
+      }
+    },
+    "node_modules/array-differ": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/array-union": {
+      "version": "2.1.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/array-uniq": {
+      "version": "1.0.3",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/arrify": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/asap": {
+      "version": "2.0.6",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/assert-never": {
+      "version": "1.4.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/async": {
+      "version": "3.2.6",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/babel-walk": {
+      "version": "3.0.0-canary-5",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/types": "^7.9.6"
+      },
+      "engines": {
+        "node": ">= 10.0.0"
+      }
+    },
+    "node_modules/balanced-match": {
+      "version": "1.0.2",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/bcp-47": {
+      "version": "1.0.8",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-alphabetical": "^1.0.0",
+        "is-alphanumerical": "^1.0.0",
+        "is-decimal": "^1.0.0"
+      },
+      "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wooorm"
+      }
+    },
+    "node_modules/bcp-47-match": {
+      "version": "1.0.3",
+      "dev": true,
+      "license": "MIT",
+      "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wooorm"
+      }
+    },
+    "node_modules/bcp-47-normalize": {
+      "version": "1.1.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "bcp-47": "^1.0.0",
+        "bcp-47-match": "^1.0.0"
+      },
+      "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wooorm"
+      }
+    },
+    "node_modules/binary-extensions": {
+      "version": "2.3.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/boolbase": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/brace-expansion": {
+      "version": "2.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^1.0.0"
+      }
+    },
+    "node_modules/braces": {
+      "version": "3.0.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "fill-range": "^7.1.1"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/buffer-from": {
+      "version": "1.1.2",
+      "resolved": "https://registry.npmjs.org/buffer-from/-/buffer-from-1.1.2.tgz",
+      "integrity": "sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/call-bind-apply-helpers": {
+      "version": "1.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "es-errors": "^1.3.0",
+        "function-bind": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/call-bound": {
+      "version": "1.0.4",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.2",
+        "get-intrinsic": "^1.3.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/camel-case": {
+      "version": "4.1.2",
+      "resolved": "https://registry.npmjs.org/camel-case/-/camel-case-4.1.2.tgz",
+      "integrity": "sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pascal-case": "^3.1.2",
+        "tslib": "^2.0.3"
+      }
+    },
+    "node_modules/character-parser": {
+      "version": "2.2.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-regex": "^1.0.3"
+      }
+    },
+    "node_modules/chokidar": {
+      "version": "3.6.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "anymatch": "~3.1.2",
+        "braces": "~3.0.2",
+        "glob-parent": "~5.1.2",
+        "is-binary-path": "~2.1.0",
+        "is-glob": "~4.0.1",
+        "normalize-path": "~3.0.0",
+        "readdirp": "~3.6.0"
+      },
+      "engines": {
+        "node": ">= 8.10.0"
+      },
+      "funding": {
+        "url": "https://paulmillr.com/funding/"
+      },
+      "optionalDependencies": {
+        "fsevents": "~2.3.2"
+      }
+    },
+    "node_modules/clean-css": {
+      "version": "5.3.3",
+      "resolved": "https://registry.npmjs.org/clean-css/-/clean-css-5.3.3.tgz",
+      "integrity": "sha512-D5J+kHaVb/wKSFcyyV75uCn8fiY4sV38XJoe4CUyGQ+mOU/fMVYUdH1hJC+CJQ5uY3EnW27SbJYS4X8BiLrAFg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "source-map": "~0.6.0"
+      },
+      "engines": {
+        "node": ">= 10.0"
+      }
+    },
+    "node_modules/commander": {
+      "version": "10.0.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=14"
+      }
+    },
+    "node_modules/concat-map": {
+      "version": "0.0.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/constantinople": {
+      "version": "4.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/parser": "^7.6.0",
+        "@babel/types": "^7.6.1"
+      }
+    },
+    "node_modules/cross-spawn": {
+      "version": "7.0.6",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "path-key": "^3.1.0",
+        "shebang-command": "^2.0.0",
+        "which": "^2.0.1"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/css-select": {
+      "version": "4.3.0",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "boolbase": "^1.0.0",
+        "css-what": "^6.0.1",
+        "domhandler": "^4.3.1",
+        "domutils": "^2.8.0",
+        "nth-check": "^2.0.1"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/fb55"
+      }
+    },
+    "node_modules/css-what": {
+      "version": "6.2.2",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "engines": {
+        "node": ">= 6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/fb55"
+      }
+    },
+    "node_modules/cssom": {
+      "version": "0.5.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/debug": {
+      "version": "4.4.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ms": "^2.1.3"
+      },
+      "engines": {
+        "node": ">=6.0"
+      },
+      "peerDependenciesMeta": {
+        "supports-color": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/dependency-graph": {
+      "version": "0.11.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.6.0"
+      }
+    },
+    "node_modules/dev-ip": {
+      "version": "1.0.1",
+      "dev": true,
+      "bin": {
+        "dev-ip": "lib/dev-ip.js"
+      },
+      "engines": {
+        "node": ">= 0.8.0"
+      }
+    },
+    "node_modules/doctypes": {
+      "version": "1.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/dom-serializer": {
+      "version": "1.4.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "domelementtype": "^2.0.1",
+        "domhandler": "^4.2.0",
+        "entities": "^2.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/cheeriojs/dom-serializer?sponsor=1"
+      }
+    },
+    "node_modules/domelementtype": {
+      "version": "2.3.0",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/fb55"
+        }
+      ],
+      "license": "BSD-2-Clause"
+    },
+    "node_modules/domhandler": {
+      "version": "4.3.1",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "domelementtype": "^2.2.0"
+      },
+      "engines": {
+        "node": ">= 4"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/domhandler?sponsor=1"
+      }
+    },
+    "node_modules/domutils": {
+      "version": "2.8.0",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "dom-serializer": "^1.0.1",
+        "domelementtype": "^2.2.0",
+        "domhandler": "^4.2.0"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/domutils?sponsor=1"
+      }
+    },
+    "node_modules/dot-case": {
+      "version": "3.0.4",
+      "resolved": "https://registry.npmjs.org/dot-case/-/dot-case-3.0.4.tgz",
+      "integrity": "sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "no-case": "^3.0.4",
+        "tslib": "^2.0.3"
+      }
+    },
+    "node_modules/dunder-proto": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.1",
+        "es-errors": "^1.3.0",
+        "gopd": "^1.2.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/ee-first": {
+      "version": "1.1.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/ejs": {
+      "version": "3.1.10",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "jake": "^10.8.5"
+      },
+      "bin": {
+        "ejs": "bin/cli.js"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/encodeurl": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/entities": {
+      "version": "2.2.0",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "funding": {
+        "url": "https://github.com/fb55/entities?sponsor=1"
+      }
+    },
+    "node_modules/errno": {
+      "version": "0.1.8",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "prr": "~1.0.1"
+      },
+      "bin": {
+        "errno": "cli.js"
+      }
+    },
+    "node_modules/es-define-property": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-errors": {
+      "version": "1.3.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/es-object-atoms": {
+      "version": "1.1.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "es-errors": "^1.3.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/escape-html": {
+      "version": "1.0.3",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/escape-string-regexp": {
+      "version": "4.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/esprima": {
+      "version": "4.0.1",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "bin": {
+        "esparse": "bin/esparse.js",
+        "esvalidate": "bin/esvalidate.js"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/extend-shallow": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-extendable": "^0.1.0"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/fast-glob": {
+      "version": "3.3.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@nodelib/fs.stat": "^2.0.2",
+        "@nodelib/fs.walk": "^1.2.3",
+        "glob-parent": "^5.1.2",
+        "merge2": "^1.3.0",
+        "micromatch": "^4.0.8"
+      },
+      "engines": {
+        "node": ">=8.6.0"
+      }
+    },
+    "node_modules/fastq": {
+      "version": "1.19.1",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "reusify": "^1.0.4"
+      }
+    },
+    "node_modules/filelist": {
+      "version": "1.0.4",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "minimatch": "^5.0.1"
+      }
+    },
+    "node_modules/fill-range": {
+      "version": "7.1.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "to-regex-range": "^5.0.1"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/finalhandler": {
+      "version": "1.3.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "debug": "2.6.9",
+        "encodeurl": "~2.0.0",
+        "escape-html": "~1.0.3",
+        "on-finished": "2.4.1",
+        "parseurl": "~1.3.3",
+        "statuses": "2.0.1",
+        "unpipe": "~1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/finalhandler/node_modules/debug": {
+      "version": "2.6.9",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ms": "2.0.0"
+      }
+    },
+    "node_modules/finalhandler/node_modules/ms": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/fs.realpath": {
+      "version": "1.0.0",
+      "resolved": "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz",
+      "integrity": "sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/fsevents": {
+      "version": "2.3.3",
+      "license": "MIT",
+      "optional": true,
+      "os": [
+        "darwin"
+      ],
+      "engines": {
+        "node": "^8.16.0 || ^10.6.0 || >=11.0.0"
+      }
+    },
+    "node_modules/function-bind": {
+      "version": "1.1.2",
+      "dev": true,
+      "license": "MIT",
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/get-intrinsic": {
+      "version": "1.3.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "call-bind-apply-helpers": "^1.0.2",
+        "es-define-property": "^1.0.1",
+        "es-errors": "^1.3.0",
+        "es-object-atoms": "^1.1.1",
+        "function-bind": "^1.1.2",
+        "get-proto": "^1.0.1",
+        "gopd": "^1.2.0",
+        "has-symbols": "^1.1.0",
+        "hasown": "^2.0.2",
+        "math-intrinsics": "^1.1.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/get-proto": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "dunder-proto": "^1.0.1",
+        "es-object-atoms": "^1.0.0"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/glob": {
+      "version": "13.0.6",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-13.0.6.tgz",
+      "integrity": "sha512-Wjlyrolmm8uDpm/ogGyXZXb1Z+Ca2B8NbJwqBVg0axK9GbBeoS7yGV6vjXnYdGm6X53iehEuxxbyiKp8QmN4Vw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "minimatch": "^10.2.2",
+        "minipass": "^7.1.3",
+        "path-scurry": "^2.0.2"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/glob-parent": {
+      "version": "5.1.2",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "is-glob": "^4.0.1"
+      },
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/glob/node_modules/balanced-match": {
+      "version": "4.0.4",
+      "resolved": "https://registry.npmjs.org/balanced-match/-/balanced-match-4.0.4.tgz",
+      "integrity": "sha512-BLrgEcRTwX2o6gGxGOCNyMvGSp35YofuYzw9h1IMTRmKqttAZZVU67bdb9Pr2vUHA8+j3i2tJfjO6C6+4myGTA==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "18 || 20 || >=22"
+      }
+    },
+    "node_modules/glob/node_modules/brace-expansion": {
+      "version": "5.0.9",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-5.0.9.tgz",
+      "integrity": "sha512-ScQ4IuvIEF1TMlP7Zt+vjJ//9zlPb2SDcxWxM3bk8s6t6GGdJ7KO1dCcTidOPJKePW30LE/2cT7wCyPho9/Wxg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^4.0.2"
+      },
+      "engines": {
+        "node": "20 || >=22"
+      }
+    },
+    "node_modules/glob/node_modules/minimatch": {
+      "version": "10.2.6",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-10.2.6.tgz",
+      "integrity": "sha512-vpLQEs+VLCr1nU0BXS07maYoFwlDAH0gngQuuttxIwutDFEMHq2blX+8vpgxDdK3J1PwjCJiep77OitTZ4Ll1A==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "brace-expansion": "^5.0.8"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/glob/node_modules/minipass": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+      "integrity": "sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      }
+    },
+    "node_modules/gopd": {
+      "version": "1.2.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/graceful-fs": {
+      "version": "4.2.11",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/gray-matter": {
+      "version": "4.0.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "js-yaml": "^3.13.1",
+        "kind-of": "^6.0.2",
+        "section-matter": "^1.0.0",
+        "strip-bom-string": "^1.0.0"
+      },
+      "engines": {
+        "node": ">=6.0"
+      }
+    },
+    "node_modules/hamljs": {
+      "version": "0.6.2",
+      "dev": true
+    },
+    "node_modules/handlebars": {
+      "version": "4.7.8",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "minimist": "^1.2.5",
+        "neo-async": "^2.6.2",
+        "source-map": "^0.6.1",
+        "wordwrap": "^1.0.0"
+      },
+      "bin": {
+        "handlebars": "bin/handlebars"
+      },
+      "engines": {
+        "node": ">=0.4.7"
+      },
+      "optionalDependencies": {
+        "uglify-js": "^3.1.4"
+      }
+    },
+    "node_modules/has-symbols": {
+      "version": "1.1.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/has-tostringtag": {
+      "version": "1.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "has-symbols": "^1.0.3"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/hasown": {
+      "version": "2.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "function-bind": "^1.1.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/html-escaper": {
+      "version": "3.0.3",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/html-minifier-terser": {
+      "version": "7.2.0",
+      "resolved": "https://registry.npmjs.org/html-minifier-terser/-/html-minifier-terser-7.2.0.tgz",
+      "integrity": "sha512-tXgn3QfqPIpGl9o+K5tpcj3/MN4SfLtsx2GWwBC3SSd0tXQGyF3gsSqad8loJgKZGM3ZxbYDd5yhiBIdWpmvLA==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "camel-case": "^4.1.2",
+        "clean-css": "~5.3.2",
+        "commander": "^10.0.0",
+        "entities": "^4.4.0",
+        "param-case": "^3.0.4",
+        "relateurl": "^0.2.7",
+        "terser": "^5.15.1"
+      },
+      "bin": {
+        "html-minifier-terser": "cli.js"
+      },
+      "engines": {
+        "node": "^14.13.1 || >=16.0.0"
+      }
+    },
+    "node_modules/html-minifier-terser/node_modules/entities": {
+      "version": "4.5.0",
+      "resolved": "https://registry.npmjs.org/entities/-/entities-4.5.0.tgz",
+      "integrity": "sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "engines": {
+        "node": ">=0.12"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/entities?sponsor=1"
+      }
+    },
+    "node_modules/htmlparser2": {
+      "version": "7.2.0",
+      "dev": true,
+      "funding": [
+        "https://github.com/fb55/htmlparser2?sponsor=1",
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/fb55"
+        }
+      ],
+      "license": "MIT",
+      "dependencies": {
+        "domelementtype": "^2.0.1",
+        "domhandler": "^4.2.2",
+        "domutils": "^2.8.0",
+        "entities": "^3.0.1"
+      }
+    },
+    "node_modules/htmlparser2/node_modules/entities": {
+      "version": "3.0.1",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "engines": {
+        "node": ">=0.12"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/entities?sponsor=1"
+      }
+    },
+    "node_modules/http-equiv-refresh": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.10"
+      }
+    },
+    "node_modules/inflight": {
+      "version": "1.0.6",
+      "resolved": "https://registry.npmjs.org/inflight/-/inflight-1.0.6.tgz",
+      "integrity": "sha512-k92I/b08q4wvFscXCLvqfsHCrjrF7yiXsQuIVvVE7N82W3+aqpzuUdBbfhWcy/FZR3/4IgflMgKLOsvPDrGCJA==",
+      "deprecated": "This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "once": "^1.3.0",
+        "wrappy": "1"
+      }
+    },
+    "node_modules/inherits": {
+      "version": "2.0.4",
+      "resolved": "https://registry.npmjs.org/inherits/-/inherits-2.0.4.tgz",
+      "integrity": "sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/is-alphabetical": {
+      "version": "1.0.4",
+      "dev": true,
+      "license": "MIT",
+      "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wooorm"
+      }
+    },
+    "node_modules/is-alphanumerical": {
+      "version": "1.0.4",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-alphabetical": "^1.0.0",
+        "is-decimal": "^1.0.0"
+      },
+      "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wooorm"
+      }
+    },
+    "node_modules/is-binary-path": {
+      "version": "2.1.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "binary-extensions": "^2.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/is-core-module": {
+      "version": "2.16.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "hasown": "^2.0.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/is-decimal": {
+      "version": "1.0.4",
+      "dev": true,
+      "license": "MIT",
+      "funding": {
+        "type": "github",
+        "url": "https://github.com/sponsors/wooorm"
+      }
+    },
+    "node_modules/is-expression": {
+      "version": "4.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "acorn": "^7.1.1",
+        "object-assign": "^4.1.1"
+      }
+    },
+    "node_modules/is-extendable": {
+      "version": "0.1.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/is-extglob": {
+      "version": "2.1.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/is-glob": {
+      "version": "4.0.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-extglob": "^2.1.1"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/is-json": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/is-number": {
+      "version": "7.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.12.0"
+      }
+    },
+    "node_modules/is-promise": {
+      "version": "2.2.2",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/is-regex": {
+      "version": "1.2.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "call-bound": "^1.0.2",
+        "gopd": "^1.2.0",
+        "has-tostringtag": "^1.0.2",
+        "hasown": "^2.0.2"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/isexe": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/iso-639-1": {
+      "version": "2.1.15",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6.0"
+      }
+    },
+    "node_modules/jake": {
+      "version": "10.9.4",
+      "dev": true,
+      "license": "Apache-2.0",
+      "dependencies": {
+        "async": "^3.2.6",
+        "filelist": "^1.0.4",
+        "picocolors": "^1.1.1"
+      },
+      "bin": {
+        "jake": "bin/cli.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/js-stringify": {
+      "version": "1.0.2",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/js-yaml": {
+      "version": "3.14.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "argparse": "^1.0.7",
+        "esprima": "^4.0.0"
+      },
+      "bin": {
+        "js-yaml": "bin/js-yaml.js"
+      }
+    },
+    "node_modules/jstransformer": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-promise": "^2.0.0",
+        "promise": "^7.0.1"
+      }
+    },
+    "node_modules/junk": {
+      "version": "1.0.3",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/kind-of": {
+      "version": "6.0.3",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/kleur": {
+      "version": "4.1.5",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/linkedom": {
+      "version": "0.13.7",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "css-select": "^4.2.1",
+        "cssom": "^0.5.0",
+        "html-escaper": "^3.0.3",
+        "htmlparser2": "^7.2.0",
+        "uhyphen": "^0.1.0"
+      }
+    },
+    "node_modules/linkify-it": {
+      "version": "5.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "uc.micro": "^2.0.0"
+      }
+    },
+    "node_modules/linkify-it/node_modules/uc.micro": {
+      "version": "2.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/liquidjs": {
+      "version": "10.21.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "commander": "^10.0.0"
+      },
+      "bin": {
+        "liquid": "bin/liquid.js",
+        "liquidjs": "bin/liquid.js"
+      },
+      "engines": {
+        "node": ">=14"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/liquidjs"
+      }
+    },
+    "node_modules/list-to-array": {
+      "version": "1.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/lodash.deburr": {
+      "version": "4.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/lower-case": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/lower-case/-/lower-case-2.0.2.tgz",
+      "integrity": "sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "tslib": "^2.0.3"
+      }
+    },
+    "node_modules/lru-cache": {
+      "version": "11.5.2",
+      "resolved": "https://registry.npmjs.org/lru-cache/-/lru-cache-11.5.2.tgz",
+      "integrity": "sha512-4pfM1Ff0x50o0tQwb5ucw/RzNyD0/YJME6IVcStalZuMWxdt3sR3huStTtxz4PUmvZfRguvDejasvQ2kifR11g==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": "20 || >=22"
+      }
+    },
+    "node_modules/luxon": {
+      "version": "1.28.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/markdown-it": {
+      "version": "14.1.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "argparse": "^2.0.1",
+        "entities": "^4.4.0",
+        "linkify-it": "^5.0.0",
+        "mdurl": "^2.0.0",
+        "punycode.js": "^2.3.1",
+        "uc.micro": "^2.1.0"
+      },
+      "bin": {
+        "markdown-it": "bin/markdown-it.mjs"
+      }
+    },
+    "node_modules/markdown-it-anchor": {
+      "version": "5.3.0",
+      "dev": true,
+      "license": "Unlicense",
+      "peerDependencies": {
+        "markdown-it": "*"
+      }
+    },
+    "node_modules/markdown-it/node_modules/argparse": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "Python-2.0"
+    },
+    "node_modules/markdown-it/node_modules/entities": {
+      "version": "4.5.0",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "engines": {
+        "node": ">=0.12"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/entities?sponsor=1"
+      }
+    },
+    "node_modules/markdown-it/node_modules/mdurl": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/markdown-it/node_modules/uc.micro": {
+      "version": "2.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/math-intrinsics": {
+      "version": "1.1.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      }
+    },
+    "node_modules/maximatch": {
+      "version": "0.1.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "array-differ": "^1.0.0",
+        "array-union": "^1.0.1",
+        "arrify": "^1.0.0",
+        "minimatch": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/maximatch/node_modules/array-differ": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/maximatch/node_modules/array-union": {
+      "version": "1.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "array-uniq": "^1.0.1"
+      },
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/maximatch/node_modules/arrify": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/maximatch/node_modules/brace-expansion": {
+      "version": "1.1.12",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^1.0.0",
+        "concat-map": "0.0.1"
+      }
+    },
+    "node_modules/maximatch/node_modules/minimatch": {
+      "version": "3.1.2",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "brace-expansion": "^1.1.7"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/mdurl": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/merge2": {
+      "version": "1.4.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/micromatch": {
+      "version": "4.0.8",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "braces": "^3.0.3",
+        "picomatch": "^2.3.1"
+      },
+      "engines": {
+        "node": ">=8.6"
+      }
+    },
+    "node_modules/mime": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "mime": "cli.js"
+      },
+      "engines": {
+        "node": ">=10.0.0"
+      }
+    },
+    "node_modules/minimatch": {
+      "version": "5.1.6",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "brace-expansion": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/minimist": {
+      "version": "1.2.8",
+      "dev": true,
+      "license": "MIT",
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/minipass": {
+      "version": "3.3.6",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "yallist": "^4.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/mkdirp": {
+      "version": "0.5.6",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "minimist": "^1.2.6"
+      },
+      "bin": {
+        "mkdirp": "bin/cmd.js"
+      }
+    },
+    "node_modules/moo": {
+      "version": "0.5.2",
+      "dev": true,
+      "license": "BSD-3-Clause"
+    },
+    "node_modules/morphdom": {
+      "version": "2.7.7",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/ms": {
+      "version": "2.1.3",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/multimatch": {
+      "version": "5.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@types/minimatch": "^3.0.3",
+        "array-differ": "^3.0.0",
+        "array-union": "^2.1.0",
+        "arrify": "^2.0.1",
+        "minimatch": "^3.0.4"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/sindresorhus"
+      }
+    },
+    "node_modules/multimatch/node_modules/brace-expansion": {
+      "version": "1.1.12",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^1.0.0",
+        "concat-map": "0.0.1"
+      }
+    },
+    "node_modules/multimatch/node_modules/minimatch": {
+      "version": "3.1.2",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "brace-expansion": "^1.1.7"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/mustache": {
+      "version": "4.2.0",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "mustache": "bin/mustache"
+      }
+    },
+    "node_modules/neo-async": {
+      "version": "2.6.2",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/no-case": {
+      "version": "3.0.4",
+      "resolved": "https://registry.npmjs.org/no-case/-/no-case-3.0.4.tgz",
+      "integrity": "sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "lower-case": "^2.0.2",
+        "tslib": "^2.0.3"
+      }
+    },
+    "node_modules/normalize-path": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/nth-check": {
+      "version": "2.1.1",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "boolbase": "^1.0.0"
+      },
+      "funding": {
+        "url": "https://github.com/fb55/nth-check?sponsor=1"
+      }
+    },
+    "node_modules/nunjucks": {
+      "version": "3.2.4",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "a-sync-waterfall": "^1.0.0",
+        "asap": "^2.0.3",
+        "commander": "^5.1.0"
+      },
+      "bin": {
+        "nunjucks-precompile": "bin/precompile"
+      },
+      "engines": {
+        "node": ">= 6.9.0"
+      },
+      "peerDependencies": {
+        "chokidar": "^3.3.0"
+      },
+      "peerDependenciesMeta": {
+        "chokidar": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/nunjucks/node_modules/commander": {
+      "version": "5.1.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 6"
+      }
+    },
+    "node_modules/object-assign": {
+      "version": "4.1.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/on-finished": {
+      "version": "2.4.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "ee-first": "1.1.1"
+      },
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/once": {
+      "version": "1.4.0",
+      "resolved": "https://registry.npmjs.org/once/-/once-1.4.0.tgz",
+      "integrity": "sha512-lNaJgI+2Q5URQBkccEKHTQOPaXdUxnZZElQTZY0MFUAuaEqe1E+Nyvgdz/aIyNi6Z9MzO5dv1H8n58/GELp3+w==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "wrappy": "1"
+      }
+    },
+    "node_modules/package-json-from-dist": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/package-json-from-dist/-/package-json-from-dist-1.0.1.tgz",
+      "integrity": "sha512-UEZIS3/by4OC8vL3P2dTXRETpebLI2NiI5vIrjaD/5UtrkFX/tNbwjTSRAGC/+7CAo2pIcBaRgWmcBBHcsaCIw==",
+      "dev": true,
+      "license": "BlueOak-1.0.0"
+    },
+    "node_modules/param-case": {
+      "version": "3.0.4",
+      "resolved": "https://registry.npmjs.org/param-case/-/param-case-3.0.4.tgz",
+      "integrity": "sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "dot-case": "^3.0.4",
+        "tslib": "^2.0.3"
+      }
+    },
+    "node_modules/parse-srcset": {
+      "version": "1.0.2",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/parseurl": {
+      "version": "1.3.3",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/pascal-case": {
+      "version": "3.1.2",
+      "resolved": "https://registry.npmjs.org/pascal-case/-/pascal-case-3.1.2.tgz",
+      "integrity": "sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "no-case": "^3.0.4",
+        "tslib": "^2.0.3"
+      }
+    },
+    "node_modules/path-is-absolute": {
+      "version": "1.0.1",
+      "resolved": "https://registry.npmjs.org/path-is-absolute/-/path-is-absolute-1.0.1.tgz",
+      "integrity": "sha512-AVbw3UJ2e9bq64vSaS9Am0fje1Pa8pbGqTTsmXfaIiMpnr5DlDhfJOuLj9Sf95ZPVDAUerDfEk88MPmPe7UCQg==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/path-key": {
+      "version": "3.1.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/path-parse": {
+      "version": "1.0.7",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/path-scurry": {
+      "version": "2.0.2",
+      "resolved": "https://registry.npmjs.org/path-scurry/-/path-scurry-2.0.2.tgz",
+      "integrity": "sha512-3O/iVVsJAPsOnpwWIeD+d6z/7PmqApyQePUtCndjatj/9I5LylHvt5qluFaBT3I5h3r1ejfR056c+FCv+NnNXg==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "lru-cache": "^11.0.0",
+        "minipass": "^7.1.2"
+      },
+      "engines": {
+        "node": "18 || 20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/path-scurry/node_modules/minipass": {
+      "version": "7.1.3",
+      "resolved": "https://registry.npmjs.org/minipass/-/minipass-7.1.3.tgz",
+      "integrity": "sha512-tEBHqDnIoM/1rXME1zgka9g6Q2lcoCkxHLuc7ODJ5BxbP5d4c2Z5cGgtXAku59200Cx7diuHTOYfSBD8n6mm8A==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "engines": {
+        "node": ">=16 || 14 >=14.17"
+      }
+    },
+    "node_modules/path-to-regexp": {
+      "version": "6.3.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/picocolors": {
+      "version": "1.1.1",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/picomatch": {
+      "version": "2.3.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8.6"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/jonschlinkert"
+      }
+    },
+    "node_modules/pify": {
+      "version": "2.3.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/please-upgrade-node": {
+      "version": "3.2.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "semver-compare": "^1.0.0"
+      }
+    },
+    "node_modules/posthtml": {
+      "version": "0.16.6",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "posthtml-parser": "^0.11.0",
+        "posthtml-render": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=12.0.0"
+      }
+    },
+    "node_modules/posthtml-parser": {
+      "version": "0.11.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "htmlparser2": "^7.1.1"
+      },
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/posthtml-render": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-json": "^2.0.1"
+      },
+      "engines": {
+        "node": ">=12"
+      }
+    },
+    "node_modules/posthtml-urls": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "http-equiv-refresh": "^1.0.0",
+        "list-to-array": "^1.1.0",
+        "parse-srcset": "^1.0.2",
+        "promise-each": "^2.2.0"
+      },
+      "engines": {
+        "node": ">= 4"
+      }
+    },
+    "node_modules/prismjs": {
+      "version": "1.30.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/promise": {
+      "version": "7.3.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "asap": "~2.0.3"
+      }
+    },
+    "node_modules/promise-each": {
+      "version": "2.2.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "any-promise": "^0.1.0"
+      }
+    },
+    "node_modules/prr": {
+      "version": "1.0.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/pug": {
+      "version": "3.0.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pug-code-gen": "^3.0.3",
+        "pug-filters": "^4.0.0",
+        "pug-lexer": "^5.0.1",
+        "pug-linker": "^4.0.0",
+        "pug-load": "^3.0.0",
+        "pug-parser": "^6.0.0",
+        "pug-runtime": "^3.0.1",
+        "pug-strip-comments": "^2.0.0"
+      }
+    },
+    "node_modules/pug-attrs": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "constantinople": "^4.0.1",
+        "js-stringify": "^1.0.2",
+        "pug-runtime": "^3.0.0"
+      }
+    },
+    "node_modules/pug-code-gen": {
+      "version": "3.0.3",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "constantinople": "^4.0.1",
+        "doctypes": "^1.1.0",
+        "js-stringify": "^1.0.2",
+        "pug-attrs": "^3.0.0",
+        "pug-error": "^2.1.0",
+        "pug-runtime": "^3.0.1",
+        "void-elements": "^3.1.0",
+        "with": "^7.0.0"
+      }
+    },
+    "node_modules/pug-error": {
+      "version": "2.1.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/pug-filters": {
+      "version": "4.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "constantinople": "^4.0.1",
+        "jstransformer": "1.0.0",
+        "pug-error": "^2.0.0",
+        "pug-walk": "^2.0.0",
+        "resolve": "^1.15.1"
+      }
+    },
+    "node_modules/pug-lexer": {
+      "version": "5.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "character-parser": "^2.2.0",
+        "is-expression": "^4.0.0",
+        "pug-error": "^2.0.0"
+      }
+    },
+    "node_modules/pug-linker": {
+      "version": "4.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pug-error": "^2.0.0",
+        "pug-walk": "^2.0.0"
+      }
+    },
+    "node_modules/pug-load": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "object-assign": "^4.1.1",
+        "pug-walk": "^2.0.0"
+      }
+    },
+    "node_modules/pug-parser": {
+      "version": "6.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pug-error": "^2.0.0",
+        "token-stream": "1.0.0"
+      }
+    },
+    "node_modules/pug-runtime": {
+      "version": "3.0.1",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/pug-strip-comments": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "pug-error": "^2.0.0"
+      }
+    },
+    "node_modules/pug-walk": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/punycode.js": {
+      "version": "2.3.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=6"
+      }
+    },
+    "node_modules/queue-microtask": {
+      "version": "1.2.3",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT"
+    },
+    "node_modules/readdirp": {
+      "version": "3.6.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "picomatch": "^2.2.1"
+      },
+      "engines": {
+        "node": ">=8.10.0"
+      }
+    },
+    "node_modules/recursive-copy": {
+      "version": "2.0.14",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "errno": "^0.1.2",
+        "graceful-fs": "^4.1.4",
+        "junk": "^1.0.1",
+        "maximatch": "^0.1.0",
+        "mkdirp": "^0.5.1",
+        "pify": "^2.3.0",
+        "promise": "^7.0.1",
+        "rimraf": "^2.7.1",
+        "slash": "^1.0.0"
+      }
+    },
+    "node_modules/recursive-copy/node_modules/brace-expansion": {
+      "version": "1.1.18",
+      "resolved": "https://registry.npmjs.org/brace-expansion/-/brace-expansion-1.1.18.tgz",
+      "integrity": "sha512-Edep/X9fGqVNmzKBVsDYIOtD+z1tuezV70LBjdCst9Tqu76lsnvRiZ6oTic1n+/BIwX6QDGAO94PN4N2SADvtw==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "balanced-match": "^1.0.0",
+        "concat-map": "0.0.1"
+      }
+    },
+    "node_modules/recursive-copy/node_modules/glob": {
+      "version": "7.2.3",
+      "resolved": "https://registry.npmjs.org/glob/-/glob-7.2.3.tgz",
+      "integrity": "sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==",
+      "deprecated": "Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "fs.realpath": "^1.0.0",
+        "inflight": "^1.0.4",
+        "inherits": "2",
+        "minimatch": "^3.1.1",
+        "once": "^1.3.0",
+        "path-is-absolute": "^1.0.0"
+      },
+      "engines": {
+        "node": "*"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/recursive-copy/node_modules/minimatch": {
+      "version": "3.1.5",
+      "resolved": "https://registry.npmjs.org/minimatch/-/minimatch-3.1.5.tgz",
+      "integrity": "sha512-VgjWUsnnT6n+NUk6eZq77zeFdpW2LWDzP6zFGrCbHXiYNul5Dzqk2HHQ5uFH2DNW5Xbp8+jVzaeNt94ssEEl4w==",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "brace-expansion": "^1.1.7"
+      },
+      "engines": {
+        "node": "*"
+      }
+    },
+    "node_modules/recursive-copy/node_modules/rimraf": {
+      "version": "2.7.1",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-2.7.1.tgz",
+      "integrity": "sha512-uWjbaKIK3T1OSVptzX7Nl6PvQ3qAGtKEtVRjRuazjfL3Bx5eI409VZSqgND+4UNnmzLVdPj9FqFJNPqBZFve4w==",
+      "deprecated": "Rimraf versions prior to v4 are no longer supported",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "glob": "^7.1.3"
+      },
+      "bin": {
+        "rimraf": "bin.js"
+      }
+    },
+    "node_modules/relateurl": {
+      "version": "0.2.7",
+      "resolved": "https://registry.npmjs.org/relateurl/-/relateurl-0.2.7.tgz",
+      "integrity": "sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.10"
+      }
+    },
+    "node_modules/resolve": {
+      "version": "1.22.10",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-core-module": "^2.16.0",
+        "path-parse": "^1.0.7",
+        "supports-preserve-symlinks-flag": "^1.0.0"
+      },
+      "bin": {
+        "resolve": "bin/resolve"
+      },
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/reusify": {
+      "version": "1.1.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "iojs": ">=1.0.0",
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/rimraf": {
+      "version": "6.1.3",
+      "resolved": "https://registry.npmjs.org/rimraf/-/rimraf-6.1.3.tgz",
+      "integrity": "sha512-LKg+Cr2ZF61fkcaK1UdkH2yEBBKnYjTyWzTJT6KNPcSPaiT7HSdhtMXQuN5wkTX0Xu72KQ1l8S42rlmexS2hSA==",
+      "dev": true,
+      "license": "BlueOak-1.0.0",
+      "dependencies": {
+        "glob": "^13.0.3",
+        "package-json-from-dist": "^1.0.1"
+      },
+      "bin": {
+        "rimraf": "dist/esm/bin.mjs"
+      },
+      "engines": {
+        "node": "20 || >=22"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/isaacs"
+      }
+    },
+    "node_modules/run-parallel": {
+      "version": "1.2.0",
+      "dev": true,
+      "funding": [
+        {
+          "type": "github",
+          "url": "https://github.com/sponsors/feross"
+        },
+        {
+          "type": "patreon",
+          "url": "https://www.patreon.com/feross"
+        },
+        {
+          "type": "consulting",
+          "url": "https://feross.org/support"
+        }
+      ],
+      "license": "MIT",
+      "dependencies": {
+        "queue-microtask": "^1.2.2"
+      }
+    },
+    "node_modules/section-matter": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "extend-shallow": "^2.0.1",
+        "kind-of": "^6.0.0"
+      },
+      "engines": {
+        "node": ">=4"
+      }
+    },
+    "node_modules/semver": {
+      "version": "7.7.2",
+      "dev": true,
+      "license": "ISC",
+      "bin": {
+        "semver": "bin/semver.js"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/semver-compare": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/shebang-command": {
+      "version": "2.0.0",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "shebang-regex": "^3.0.0"
+      },
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/shebang-regex": {
+      "version": "3.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8"
+      }
+    },
+    "node_modules/slash": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/slugify": {
+      "version": "1.6.6",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=8.0.0"
+      }
+    },
+    "node_modules/source-map": {
+      "version": "0.6.1",
+      "dev": true,
+      "license": "BSD-3-Clause",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/source-map-support": {
+      "version": "0.5.21",
+      "resolved": "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz",
+      "integrity": "sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "buffer-from": "^1.0.0",
+        "source-map": "^0.6.0"
+      }
+    },
+    "node_modules/sprintf-js": {
+      "version": "1.0.3",
+      "dev": true,
+      "license": "BSD-3-Clause"
+    },
+    "node_modules/ssri": {
+      "version": "8.0.1",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "minipass": "^3.1.1"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/statuses": {
+      "version": "2.0.1",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/strip-bom-string": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/supports-preserve-symlinks-flag": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.4"
+      },
+      "funding": {
+        "url": "https://github.com/sponsors/ljharb"
+      }
+    },
+    "node_modules/terser": {
+      "version": "5.50.0",
+      "resolved": "https://registry.npmjs.org/terser/-/terser-5.50.0.tgz",
+      "integrity": "sha512-CN9BVxWhgS/hRxtUMjtC2uRWSTcSfQFHMDWma6sKKfIivCD91sM+FOPfvwoaRMqCSrUpe1nv3jDamd9eEQ4y+w==",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "dependencies": {
+        "@jridgewell/source-map": "^0.3.3",
+        "acorn": "^8.15.0",
+        "commander": "^2.20.0",
+        "source-map-support": "~0.5.20"
+      },
+      "bin": {
+        "terser": "bin/terser"
+      },
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/terser/node_modules/acorn": {
+      "version": "8.18.0",
+      "resolved": "https://registry.npmjs.org/acorn/-/acorn-8.18.0.tgz",
+      "integrity": "sha512-lGq+9yr1/GuAWaVYIHRjvvySG5/4VfKIvC8EWxStPdcDh/Ka7FG3twP6v4d5BkravUilhIAsG4Qj83t02LWUPQ==",
+      "dev": true,
+      "license": "MIT",
+      "bin": {
+        "acorn": "bin/acorn"
+      },
+      "engines": {
+        "node": ">=0.4.0"
+      }
+    },
+    "node_modules/terser/node_modules/commander": {
+      "version": "2.20.3",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/to-regex-range": {
+      "version": "5.0.1",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "is-number": "^7.0.0"
+      },
+      "engines": {
+        "node": ">=8.0"
+      }
+    },
+    "node_modules/token-stream": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/tslib": {
+      "version": "2.8.1",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.8.1.tgz",
+      "integrity": "sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==",
+      "dev": true,
+      "license": "0BSD"
+    },
+    "node_modules/uc.micro": {
+      "version": "1.0.6",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/uglify-js": {
+      "version": "3.19.3",
+      "dev": true,
+      "license": "BSD-2-Clause",
+      "optional": true,
+      "bin": {
+        "uglifyjs": "bin/uglifyjs"
+      },
+      "engines": {
+        "node": ">=0.8.0"
+      }
+    },
+    "node_modules/uhyphen": {
+      "version": "0.1.0",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/unpipe": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">= 0.8"
+      }
+    },
+    "node_modules/void-elements": {
+      "version": "3.1.0",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=0.10.0"
+      }
+    },
+    "node_modules/which": {
+      "version": "2.0.2",
+      "dev": true,
+      "license": "ISC",
+      "dependencies": {
+        "isexe": "^2.0.0"
+      },
+      "bin": {
+        "node-which": "bin/node-which"
+      },
+      "engines": {
+        "node": ">= 8"
+      }
+    },
+    "node_modules/with": {
+      "version": "7.0.2",
+      "dev": true,
+      "license": "MIT",
+      "dependencies": {
+        "@babel/parser": "^7.9.6",
+        "@babel/types": "^7.9.6",
+        "assert-never": "^1.2.1",
+        "babel-walk": "3.0.0-canary-5"
+      },
+      "engines": {
+        "node": ">= 10.0.0"
+      }
+    },
+    "node_modules/wordwrap": {
+      "version": "1.0.0",
+      "dev": true,
+      "license": "MIT"
+    },
+    "node_modules/wrappy": {
+      "version": "1.0.2",
+      "resolved": "https://registry.npmjs.org/wrappy/-/wrappy-1.0.2.tgz",
+      "integrity": "sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==",
+      "dev": true,
+      "license": "ISC"
+    },
+    "node_modules/ws": {
+      "version": "8.18.3",
+      "dev": true,
+      "license": "MIT",
+      "engines": {
+        "node": ">=10.0.0"
+      },
+      "peerDependencies": {
+        "bufferutil": "^4.0.1",
+        "utf-8-validate": ">=5.0.2"
+      },
+      "peerDependenciesMeta": {
+        "bufferutil": {
+          "optional": true
+        },
+        "utf-8-validate": {
+          "optional": true
+        }
+      }
+    },
+    "node_modules/yallist": {
+      "version": "4.0.0",
+      "dev": true,
+      "license": "ISC"
+    }
+  }
+}
+
+------------------------------
+
+--- FILE PATH: package.json ---
+{
+  "name": "yousef-portfolio",
+  "version": "1.0.0",
+  "description": "Yousef Mohamed's portfolio website built with Eleventy",
+  "scripts": {
+    "build": "eleventy",
+    "watch": "eleventy --watch",
+    "serve": "eleventy --serve",
+    "debug": "DEBUG=* eleventy",
+    "clean": "rimraf _site || rm -rf _site",
+    "sync-assets": "node scripts/sync_ghost_assets.js",
+    "optimize": "python3 scripts/optimize_assets.py",
+    "refactor": "node scripts/force-macro-refactor-final.js",
+    "prod:build": "npm run clean && npm run sync-assets && npm run optimize && npm run refactor && ELEVENTY_ENV=production eleventy",
+    "deploy": "bash scripts/deploy.sh",
+    "maintenance": "bash scripts/maintenance.sh",
+    "verify-assets": "node scripts/verify-assets.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YousefMohamd/YousefMohamd.github.io.git"
+  },
+  "author": "Yousef Mohamed",
+  "license": "MIT",
+  "main": ".eleventy.js",
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "@11ty/eleventy-navigation": "^0.1.6",
+    "@11ty/eleventy-plugin-rss": "^1.2.0",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^3.0.1",
+    "clean-css": "^5.3.3",
+    "html-minifier-terser": "^7.2.0",
+    "luxon": "^1.21.3",
+    "markdown-it": "^14.1.0",
+    "markdown-it-anchor": "^5.2.5",
+    "rimraf": "^6.1.3",
+    "terser": "^5.50.0"
+  },
+  "optionalDependencies": {
+    "fsevents": "^2.3.3"
+  },
+  "keywords": [
+    "eleventy",
+    "portfolio",
+    "static-site"
+  ]
+}
+
+------------------------------
+
+--- FILE PATH: posts/posts.json ---
+{
+  "tags": [
+    "posts"
+  ]
+}
+
+------------------------------
+
+--- FILE PATH: venv/lib/python3.14/site-packages/pillow-12.3.0.dist-info/sboms/pillow-12.3.0.cdx.json ---
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.7",
+  "serialNumber": "urn:uuid:e11ef76f-c1f5-4768-929c-1cc6d6bab343",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-07-01T09:47:40Z",
+    "lifecycles": [
+      {
+        "phase": "build"
+      }
+    ],
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "generate-sbom.py",
+          "group": "pillow"
+        }
+      ]
+    },
+    "component": {
+      "bom-ref": "pkg:pypi/pillow@12.3.0",
+      "type": "library",
+      "name": "Pillow",
+      "version": "12.3.0",
+      "description": "Python Imaging Library (fork)",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0",
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://python-pillow.github.io"
+        },
+        {
+          "type": "vcs",
+          "url": "https://github.com/python-pillow/Pillow"
+        },
+        {
+          "type": "documentation",
+          "url": "https://pillow.readthedocs.io"
+        },
+        {
+          "type": "security-contact",
+          "url": "https://github.com/python-pillow/Pillow/security/policy"
+        }
+      ]
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._avif",
+      "type": "library",
+      "name": "PIL._avif",
+      "version": "12.3.0",
+      "description": "AVIF image format extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._avif"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imaging",
+      "type": "library",
+      "name": "PIL._imaging",
+      "version": "12.3.0",
+      "description": "Core image processing extension (decode, encode, map, display, outline, path, libImaging)",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imaging"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingcms",
+      "type": "library",
+      "name": "PIL._imagingcms",
+      "version": "12.3.0",
+      "description": "LittleCMS2 colour management extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingcms"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingft",
+      "type": "library",
+      "name": "PIL._imagingft",
+      "version": "12.3.0",
+      "description": "FreeType font rendering extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingft"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingmath",
+      "type": "library",
+      "name": "PIL._imagingmath",
+      "version": "12.3.0",
+      "description": "Image math operations extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingmath"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingmorph",
+      "type": "library",
+      "name": "PIL._imagingmorph",
+      "version": "12.3.0",
+      "description": "Image morphology extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingmorph"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingtk",
+      "type": "library",
+      "name": "PIL._imagingtk",
+      "version": "12.3.0",
+      "description": "Tk/Tcl display extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingtk"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._webp",
+      "type": "library",
+      "name": "PIL._webp",
+      "version": "12.3.0",
+      "description": "WebP image format extension",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT-CMU"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/pillow@12.3.0#c-ext/PIL._webp"
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#thirdparty/fribidi-shim",
+      "type": "library",
+      "name": "fribidi-shim",
+      "version": "1.x",
+      "description": "FriBiDi runtime-loading shim (vendored in src/thirdparty/fribidi-shim/); loads libfribidi dynamically",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "7e8cfa78dcd21cebeb0ad91c0cd23e0dba6496c0fbd66e1ec3d25c5b1b365d11"
+        }
+      ],
+      "pedigree": {
+        "notes": "Pillow-authored shim; not taken from an upstream project."
+      },
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/fribidi/fribidi"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:github/python/pythoncapi-compat",
+      "type": "library",
+      "name": "pythoncapi_compat",
+      "description": "Backport header for new CPython C-API functions (vendored in src/thirdparty/pythoncapi_compat.h)",
+      "licenses": [
+        {
+          "license": {
+            "id": "0BSD"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "97b0e62657965bd01a783b93422a6f7138d64c48546657feacc218ec8319ee0b"
+        }
+      ],
+      "pedigree": {
+        "notes": "Vendored unmodified from upstream python/pythoncapi-compat."
+      },
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/python/pythoncapi-compat"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:pypi/pillow@12.3.0#thirdparty/raqm",
+      "type": "library",
+      "name": "raqm",
+      "version": "0.10.5",
+      "description": "Complex text layout library (vendored in src/thirdparty/raqm/)",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-256",
+          "content": "5549e7458674077ca4794033ade277910ba0ad6989651787eba1a8b5513a9f9d"
+        }
+      ],
+      "pedigree": {
+        "ancestors": [
+          {
+            "bom-ref": "pkg:github/HOST-Oman/libraqm@0.10.5#upstream",
+            "type": "library",
+            "name": "raqm",
+            "version": "0.10.5",
+            "purl": "pkg:github/HOST-Oman/libraqm@0.10.5",
+            "externalReferences": [
+              {
+                "type": "distribution",
+                "url": "https://github.com/HOST-Oman/libraqm/releases/tag/v0.10.5"
+              }
+            ]
+          }
+        ],
+        "patches": [
+          {
+            "type": "unofficial",
+            "diff": {
+              "text": {
+                "content": "LS0tIGEvc3JjL3JhcW0tdmVyc2lvbi5oLmluCisrKyBiL3NyYy9yYXFtLXZlcnNpb24uaApAQCAtMzEsMTQgKzMxLDE0IEBACiAjaWZuZGVmIF9SQVFNX1ZFUlNJT05fSF8KICNkZWZpbmUgX1JBUU1fVkVSU0lPTl9IXwogCi0jZGVmaW5lIFJBUU1fVkVSU0lPTl9NQUpPUiBAUkFRTV9WRVJTSU9OX01BSk9SQAotI2RlZmluZSBSQVFNX1ZFUlNJT05fTUlOT1IgQFJBUU1fVkVSU0lPTl9NSU5PUkAKLSNkZWZpbmUgUkFRTV9WRVJTSU9OX01JQ1JPIEBSQVFNX1ZFUlNJT05fTUlDUk9ACisjZGVmaW5lIFJBUU1fVkVSU0lPTl9NQUpPUiAwCisjZGVmaW5lIFJBUU1fVkVSU0lPTl9NSU5PUiAxMAorI2RlZmluZSBSQVFNX1ZFUlNJT05fTUlDUk8gNQogCi0jZGVmaW5lIFJBUU1fVkVSU0lPTl9TVFJJTkcgIkBSQVFNX1ZFUlNJT05AIgorI2RlZmluZSBSQVFNX1ZFUlNJT05fU1RSSU5HICIwLjEwLjUiCiAKICNkZWZpbmUgUkFRTV9WRVJTSU9OX0FUTEVBU1QobWFqb3IsbWlub3IsbWljcm8pIFwKLQkoKG1ham9yKSoxMDAwMCsobWlub3IpKjEwMCsobWljcm8pIDw9IFwKLQkgUkFRTV9WRVJTSU9OX01BSk9SKjEwMDAwK1JBUU1fVkVSU0lPTl9NSU5PUioxMDArUkFRTV9WRVJTSU9OX01JQ1JPKQorICAgICgobWFqb3IpKjEwMDAwKyhtaW5vcikqMTAwKyhtaWNybykgPD0gXAorICAgICBSQVFNX1ZFUlNJT05fTUFKT1IqMTAwMDArUkFRTV9WRVJTSU9OX01JTk9SKjEwMCtSQVFNX1ZFUlNJT05fTUlDUk8pCiAKICNlbmRpZiAvKiBfUkFRTV9WRVJTSU9OX0hfICovCg==",
+                "encoding": "base64"
+              }
+            }
+          },
+          {
+            "type": "unofficial",
+            "diff": {
+              "text": {
+                "content": "LS0tIGEvc3JjL3JhcW0uYworKysgYi9zcmMvcmFxbS5jCkBAIC0zNiw3ICszNiwxMSBAQAogI2luY2x1ZGUgPFNoZWVuQmlkaS5oPgogI2VuZGlmCiAjZWxzZQorI2lmZGVmIEhBVkVfRlJJQklESV9TWVNURU0KICNpbmNsdWRlIDxmcmliaWRpLmg+CisjZWxzZQorI2luY2x1ZGUgIi4uL2ZyaWJpZGktc2hpbS9mcmliaWRpLmgiCisjZW5kaWYKICNlbmRpZgogCiAjaW5jbHVkZSA8aGIuaD4K",
+                "encoding": "base64"
+              }
+            }
+          }
+        ],
+        "notes": "Vendored from upstream HOST-Oman/libraqm v0.10.5 with two Pillow-specific modifications: (1) raqm-version.h.in was pre-processed into raqm-version.h with version placeholders replaced by literal values; (2) raqm.c wraps the <fribidi.h> include in an #ifdef HAVE_FRIBIDI_SYSTEM guard so Pillow's bundled fribidi-shim is used when a system FriBiDi is absent."
+      },
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/python-pillow/Pillow/tree/main/src/thirdparty/raqm"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/freetype2",
+      "type": "library",
+      "name": "FreeType",
+      "version": "2.14.3",
+      "scope": "optional",
+      "description": "Font rendering (optional, used by PIL._imagingft). Required for text/font support.",
+      "licenses": [
+        {
+          "license": {
+            "id": "FTL"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://freetype.org"
+        },
+        {
+          "type": "distribution",
+          "url": "https://download.savannah.gnu.org/releases/freetype/"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/fribidi",
+      "type": "library",
+      "name": "FriBiDi",
+      "version": "1.0.16",
+      "scope": "optional",
+      "description": "Unicode bidi algorithm library (optional, loaded at runtime by fribidi-shim).",
+      "licenses": [
+        {
+          "license": {
+            "id": "LGPL-2.1-or-later"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/fribidi/fribidi"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/fribidi/fribidi/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/harfbuzz",
+      "type": "library",
+      "name": "HarfBuzz",
+      "version": "14.2.1",
+      "scope": "optional",
+      "description": "Text shaping (optional, required by libraqm for complex text layout).",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://harfbuzz.github.io"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/harfbuzz/harfbuzz/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libavif",
+      "type": "library",
+      "name": "libavif",
+      "version": "1.4.2",
+      "scope": "optional",
+      "description": "AVIF codec (optional, used by PIL._avif).",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://github.com/AOMediaCodec/libavif"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/AOMediaCodec/libavif/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libimagequant",
+      "type": "library",
+      "name": "libimagequant",
+      "version": "4.4.1",
+      "scope": "optional",
+      "description": "Improved colour quantization (optional).",
+      "licenses": [
+        {
+          "license": {
+            "id": "GPL-3.0-or-later"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://pngquant.org/lib/"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/ImageOptim/libimagequant/tags"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libjpeg",
+      "type": "library",
+      "name": "libjpeg / libjpeg-turbo",
+      "version": "3.1.4.1",
+      "description": "JPEG codec (required by default; disable with -C jpeg=disable).",
+      "licenses": [
+        {
+          "license": {
+            "id": "IJG"
+          }
+        },
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://ijg.org"
+        },
+        {
+          "type": "website",
+          "url": "https://libjpeg-turbo.org"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/libjpeg-turbo/libjpeg-turbo/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libtiff",
+      "type": "library",
+      "name": "libtiff",
+      "version": "4.7.1",
+      "scope": "optional",
+      "description": "TIFF codec (optional).",
+      "licenses": [
+        {
+          "license": {
+            "id": "libtiff"
+          }
+        }
+      ],
+      "pedigree": {
+        "ancestors": [
+          {
+            "bom-ref": "pkg:generic/libtiff@4.7.1#upstream",
+            "type": "library",
+            "name": "libtiff",
+            "version": "4.7.1",
+            "purl": "pkg:generic/libtiff@4.7.1",
+            "externalReferences": [
+              {
+                "type": "distribution",
+                "url": "https://gitlab.com/libtiff/libtiff/-/tags/v4.7.1"
+              }
+            ]
+          }
+        ],
+        "patches": [
+          {
+            "type": "cherry-pick",
+            "diff": {
+              "text": {
+                "content": "Y29tbWl0IDc4MmExMWQ2YjViNjFjNmRjMjFlNzE0OTUwYTRhZjViZjg5ZjAyM2MKQXV0aG9yOiBFdmVuIFJvdWF1bHQgPGV2ZW4ucm91YXVsdEBzcGF0aWFseXMuY29tPgpEYXRlOiAgIFN1biBGZWIgMjIgMjM6MzI6NDcgMjAyNiArMDEwMAoKICAgIFRJRkZSZWFkUkdCQUltYWdlKCk6IHByZXZlbnQgaW50ZWdlciBvdmVyZmxvdyBhbmQgbGF0ZXIgaGVhcCBvdmVyZmxvdyBvbiBpbWFnZXMgd2l0aCBodWdlIHdpZHRoIGluIFlDYkNyIHRpbGUgZGVjb2RpbmcgZnVuY3Rpb25zCgogICAgRml4ZXMgaHR0cHM6Ly9naXRsYWIuY29tL2xpYnRpZmYvbGlidGlmZi8tL2lzc3Vlcy83ODcKCmRpZmYgLS1naXQgYS9saWJ0aWZmL3RpZl9nZXRpbWFnZS5jIGIvbGlidGlmZi90aWZfZ2V0aW1hZ2UuYwppbmRleCA0NTQzZGRkYS4uZmE4MmQwOTEgMTAwNjQ0Ci0tLSBsaWJ0aWZmL3RpZl9nZXRpbWFnZS5jCisrKyBsaWJ0aWZmL3RpZl9nZXRpbWFnZS5jCkBAIC0yMjI0LDcgKzIyMjQsNyBAQCBERUNMQVJFQ29udGlnUHV0RnVuYyhwdXRjb250aWc4Yml0WUNiQ3I0NHRpbGUpCiAgICAgdWludDMyX3QgKmNwMSA9IGNwICsgdyArIHRvc2tldzsKICAgICB1aW50MzJfdCAqY3AyID0gY3AxICsgdyArIHRvc2tldzsKICAgICB1aW50MzJfdCAqY3AzID0gY3AyICsgdyArIHRvc2tldzsKLSAgICBpbnQzMl90IGluY3IgPSAzICogdyArIDQgKiB0b3NrZXc7CisgICAgY29uc3QgdG1zaXplX3QgaW5jciA9IDMgKiAodG1zaXplX3QpdyArIDQgKiAodG1zaXplX3QpdG9za2V3OwoKICAgICAodm9pZCl5OwogICAgIC8qIGFkanVzdCBmcm9tc2tldyAqLwpAQCAtMjM2NCw3ICsyMzY0LDcgQEAgREVDTEFSRUNvbnRpZ1B1dEZ1bmMocHV0Y29udGlnOGJpdFlDYkNyNDR0aWxlKQogREVDTEFSRUNvbnRpZ1B1dEZ1bmMocHV0Y29udGlnOGJpdFlDYkNyNDJ0aWxlKQogewogICAgIHVpbnQzMl90ICpjcDEgPSBjcCArIHcgKyB0b3NrZXc7Ci0gICAgaW50MzJfdCBpbmNyID0gMiAqIHRvc2tldyArIHc7CisgICAgY29uc3QgdG1zaXplX3QgaW5jciA9IDIgKiAodG1zaXplX3QpdG9za2V3ICsgdzsKCiAgICAgKHZvaWQpeTsKICAgICBmcm9tc2tldyA9IChmcm9tc2tldyAvIDQpICogKDQgKiAyICsgMik7CkBAIC0yNTIyLDcgKzI1MjIsNyBAQCBERUNMQVJFQ29udGlnUHV0RnVuYyhwdXRjb250aWc4Yml0WUNiQ3I0MXRpbGUpCiBERUNMQVJFQ29udGlnUHV0RnVuYyhwdXRjb250aWc4Yml0WUNiQ3IyMnRpbGUpCiB7CiAgICAgdWludDMyX3QgKmNwMjsKLSAgICBpbnQzMl90IGluY3IgPSAyICogdG9za2V3ICsgdzsKKyAgICBjb25zdCB0bXNpemVfdCBpbmNyID0gMiAqICh0bXNpemVfdCl0b3NrZXcgKyB3OwogICAgICh2b2lkKXk7CiAgICAgZnJvbXNrZXcgPSAoZnJvbXNrZXcgLyAyKSAqICgyICogMiArIDIpOwogICAgIGNwMiA9IGNwICsgdyArIHRvc2tldzsKQEAgLTI2MjUsNyArMjYyNSw3IEBAIERFQ0xBUkVDb250aWdQdXRGdW5jKHB1dGNvbnRpZzhiaXRZQ2JDcjIxdGlsZSkKIERFQ0xBUkVDb250aWdQdXRGdW5jKHB1dGNvbnRpZzhiaXRZQ2JDcjEydGlsZSkKIHsKICAgICB1aW50MzJfdCAqY3AyOwotICAgIGludDMyX3QgaW5jciA9IDIgKiB0b3NrZXcgKyB3OworICAgIGNvbnN0IHRtc2l6ZV90IGluY3IgPSAyICogKHRtc2l6ZV90KXRvc2tldyArIHc7CiAgICAgKHZvaWQpeTsKICAgICBmcm9tc2tldyA9IChmcm9tc2tldyAvIDEpICogKDEgKiAyICsgMik7CiAgICAgY3AyID0gY3AgKyB3ICsgdG9za2V3Owo=",
+                "encoding": "base64"
+              }
+            }
+          }
+        ],
+        "notes": "Vendored from upstream libtiff v4.7.1 with a commit from master cherry-picked to fix CVE-2026-4775."
+      },
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://libtiff.gitlab.io/libtiff/"
+        },
+        {
+          "type": "distribution",
+          "url": "https://download.osgeo.org/libtiff/"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libwebp",
+      "type": "library",
+      "name": "libwebp",
+      "version": "1.6.0",
+      "scope": "optional",
+      "description": "WebP codec (optional, used by PIL._webp).",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://chromium.googlesource.com/webm/libwebp"
+        },
+        {
+          "type": "distribution",
+          "url": "https://chromium.googlesource.com/webm/libwebp"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/libxcb",
+      "type": "library",
+      "name": "libxcb",
+      "version": "1.17.0",
+      "scope": "optional",
+      "description": "X11 screen-grab support (optional, used by PIL._imaging on macOS and Linux).",
+      "licenses": [
+        {
+          "license": {
+            "id": "X11"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://xcb.freedesktop.org"
+        },
+        {
+          "type": "distribution",
+          "url": "https://xcb.freedesktop.org/dist/"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/littlecms2",
+      "type": "library",
+      "name": "Little CMS 2",
+      "version": "2.19.1",
+      "scope": "optional",
+      "description": "Colour management (optional, used by PIL._imagingcms).",
+      "licenses": [
+        {
+          "license": {
+            "id": "MIT"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://www.littlecms.com"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/mm2/Little-CMS/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/openjpeg",
+      "type": "library",
+      "name": "OpenJPEG",
+      "version": "2.5.4",
+      "scope": "optional",
+      "description": "JPEG 2000 codec (optional).",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-2-Clause"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://www.openjpeg.org"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/uclouvain/openjpeg/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:pypi/pybind11",
+      "type": "library",
+      "name": "pybind11",
+      "scope": "excluded",
+      "description": "Parallel C compilation library (build-time dependency).",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://pybind11.readthedocs.io"
+        },
+        {
+          "type": "distribution",
+          "url": "https://github.com/pybind/pybind11/releases"
+        }
+      ]
+    },
+    {
+      "bom-ref": "pkg:generic/zlib",
+      "type": "library",
+      "name": "zlib",
+      "version": "2.3.3",
+      "description": "Deflate/PNG compression (required by default; disable with -C zlib=disable).",
+      "licenses": [
+        {
+          "license": {
+            "id": "Zlib"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "website",
+          "url": "https://zlib.net"
+        },
+        {
+          "type": "distribution",
+          "url": "https://zlib.net"
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "pkg:pypi/pillow@12.3.0",
+      "dependsOn": [
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._avif",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._imaging",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingcms",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingft",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingmath",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingmorph",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingtk",
+        "pkg:pypi/pillow@12.3.0#c-ext/PIL._webp"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._avif",
+      "dependsOn": [
+        "pkg:generic/libavif"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imaging",
+      "dependsOn": [
+        "pkg:generic/libimagequant",
+        "pkg:generic/libjpeg",
+        "pkg:generic/libtiff",
+        "pkg:generic/libxcb",
+        "pkg:generic/openjpeg",
+        "pkg:generic/zlib"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingcms",
+      "dependsOn": [
+        "pkg:generic/littlecms2"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._imagingft",
+      "dependsOn": [
+        "pkg:generic/freetype2",
+        "pkg:generic/fribidi",
+        "pkg:generic/harfbuzz",
+        "pkg:pypi/pillow@12.3.0#thirdparty/fribidi-shim",
+        "pkg:pypi/pillow@12.3.0#thirdparty/raqm"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/pillow@12.3.0#c-ext/PIL._webp",
+      "dependsOn": [
+        "pkg:generic/libwebp"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/pillow@12.3.0#thirdparty/raqm",
+      "dependsOn": [
+        "pkg:generic/harfbuzz",
+        "pkg:pypi/pillow@12.3.0#thirdparty/fribidi-shim"
+      ]
+    }
+  ]
+}
+
+------------------------------
+

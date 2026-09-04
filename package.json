@@ -8,8 +8,14 @@
     "serve": "eleventy --serve",
     "debug": "DEBUG=* eleventy",
     "clean": "rimraf _site || rm -rf _site",
-    "verify-assets": "node scripts/verify-assets.js",
-    "prod": "npm run clean && npm run verify-assets && ELEVENTY_ENV=production eleventy"
+    "sync-assets": "node scripts/sync_ghost_assets.js",
+    "optimize": "python3 scripts/optimize_assets.py",
+    "refactor": "node scripts/force-macro-refactor-final.js",
+    "prod:build": "npm run clean && npm run sync-assets && npm run optimize && npm run refactor && ELEVENTY_ENV=production eleventy",
+    "prod:build:safe": "npm run clean && npm run sync-assets && npm run optimize && ELEVENTY_ENV=production eleventy",
+    "deploy": "bash scripts/deploy.sh",
+    "maintenance": "bash scripts/maintenance.sh",
+    "verify-assets": "node scripts/verify-assets.js"
   },
   "repository": {
     "type": "git",

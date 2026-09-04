@@ -4,18 +4,19 @@ layout: layouts/base.njk
 <article class="project-page w3-content">
   <header class="project-header">
     <h2 class="w3-text-light-grey">{{ title }}</h2>
-    {# Meta/Date tags successfully abstracted globally #}
   </header>
 
+  <!-- Safe Embed Restructuring Container to Resolve Disappearance Bugs and Feature Policy Warnings -->
   {% if vimeoId %}
-  <div class="video-wrap" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%;">
+  <div class="video-wrap" style="position: relative; width: 100%; padding-bottom: 56.25%; background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 30px;">
     <iframe src="https://player.vimeo.com/video/{{ vimeoId }}" frameborder="0"
-      allow="autoplay; fullscreen; picture-in-picture" allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-width: 100%;"></iframe>
+      allow="autoplay; fullscreen" allowfullscreen 
+      style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe>
   </div>
   {% endif %}
 
-  <!-- Constraining the absolute DOM injection to explicitly reject Layout overflow -->
-  <div class="project-body container-fluid overflow-contain" style="max-width: 100%; overflow-x: hidden; width: 100%; overflow-wrap: break-word;">
+  <!-- Force Responsive Bound Logic to Prevent Extruding Image Bounds & DOM Blowouts -->
+  <div class="project-body" style="width: 100%; max-width: 100%; overflow: hidden;">
     {{ content | safe }}
   </div>
 </article>

@@ -1,0 +1,18 @@
+{% macro renderVimeoThumb(id, title, className) %}
+  {% set base = "https://i.vimeocdn.com/video/" ~ id %}
+  <a href="https://vimeo.com/{{ id }}" class="video-thumb {{ className }}" aria-label="{{ title }}">
+    <img
+      src="{{ base }}_640x360.jpg"
+      srcset="{{ base }}_320x180.jpg 320w,
+              {{ base }}_640x360.jpg 640w,
+              {{ base }}_1280x720.jpg 1280w"
+      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+      alt="{{ title }}"
+      width="640"
+      height="360"
+      loading="lazy"
+      decoding="async"
+      style="aspect-ratio: 16 / 9; object-fit: cover; width: 100%; height: auto; display: block; border-radius: 8px;"
+    >
+  </a>
+{% endmacro %}

@@ -1,94 +1,397 @@
+<!-- ==============================================================
+     SOFTWARE / TOOLS EXPERIENCES (Ultra-Compact Flagship Architecture)
+     ============================================================== -->
+<section id="tools" class="home-section" aria-label="Software & Tools Experience">
+  <div class="sw-header">
+    <h2 class="sw-title">Software Experience</h2>
+    <p class="sw-subtitle">Production-focused tools for 2D, compositing, and basic 3D.</p>
+  </div>
+
+  <div class="sw-expand-wrapper">
+    <h3 class="sw-group-title"> </h3>
+    <div class="sw-grid-container">
+      <ul class="flagship-tools-list">
+        
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/adobe-photoshop.svg' | url }}" alt="Adobe Photoshop" loading="lazy" decoding="async" width="14" height="14">
+          <span>Adobe Photoshop — <span class="tool-focus">Advanced</span></span>
+        </li>
+        
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/krita.svg" alt="Krita" loading="lazy" decoding="async" width="14" height="14">
+          <span>Krita — <span class="tool-focus">Advanced</span></span>
+        </li>
+        
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/pureref.svg' | url }}" alt="PureRef" loading="lazy" decoding="async" width="14" height="14">
+          <span>PureRef — <span class="tool-focus">Reference tool</span></span>
+        </li>
+        
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/darktable.svg' | url }}" alt="Darktable" loading="lazy" decoding="async" width="14" height="14">
+          <span>Darktable</span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/shotcut.svg' | url }}" alt="Shotcut" loading="lazy" decoding="async" width="14" height="14">
+          <span>Shotcut</span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/davinciresolve.svg" alt="DaVinci Resolve" loading="lazy" decoding="async" width="14" height="14" onerror="this.src='https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/video.svg'">
+          <span>DaVinci Resolve — <span class="tool-focus">Advanced</span></span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/opentoonz.svg' | url }}" alt="OpenToonz" loading="lazy" decoding="async" width="14" height="14">
+          <span>OpenToonz — <span class="tool-focus">2D animation</span></span>
+        </li>
+        
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/natron.svg' | url }}" alt="Natron" loading="lazy" decoding="async" width="14" height="14">
+          <span>Natron — <span class="tool-focus">Node-based compositing</span></span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/tracktion.svg" alt="Waveform 13" loading="lazy" decoding="async" width="14" height="14" onerror="this.src='https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/audio.svg'">
+          <span>Waveform 13 <span class="tool-focus">(audio editing)</span></span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="{{ '/img/icons/cinema4d.svg' | url }}" alt="Cinema 4D" loading="lazy" decoding="async" width="14" height="14">
+          <span>Cinema 4D <span class="tool-focus">(1 year, 2023)</span></span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/blender.svg" alt="Blender" loading="lazy" decoding="async" width="14" height="14">
+          <span>Blender — <span class="tool-focus">Basic</span></span>
+        </li>
+
+        <li class="flagship-tool-card">
+          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/inkscape.svg" alt="Inkscape" loading="lazy" decoding="async" width="14" height="14">
+          <span>Inkscape — <span class="tool-focus">Basic</span></span>
+        </li>
+
+      </ul>
+    </div>
+    <!-- The Dark Fade Overlay Layer explicitly locking to the minimized row perfectly gracefully -->
+    <div class="sw-fade-mask"></div>
+  </div>
+</section>
+
 <style>
-.sw-section{max-width:1200px;margin:100px auto 0;padding:0 16px;}
-.sw-header{cursor:pointer;padding:18px 0;border-bottom:1px solid rgba(255,255,255,0.12);transition:border-color .3s;}
-.sw-section:hover .sw-header{border-color:rgba(255,255,255,0.22);}
-.sw-title{font-size:24px;font-weight:700;margin:0 0 9px 0;color:#f0f0f0;}
-.sw-desc{font-size:13.5px;color:#b0b0b0;margin:0;line-height:1.6;}
+/* Ultra Compact Flagship Architecture */
+.sw-header {
+  margin-bottom: 8px; /* Extremely tight margin preventing bloat */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+.sw-title {
+  font-size: 28px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  font-family: Inter, system-ui, sans-serif;
+}
+.sw-subtitle {
+  font-size: 14px;
+  color: #a0a0a0;
+  margin: 0;
+  font-weight: 400;
+}
+.sw-group-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+  font-family: Inter, system-ui, sans-serif;
+}
 
-.sw-content{max-height:0;overflow:hidden;opacity:0;transition:max-height .5s cubic-bezier(.4,0,.2,1), opacity .4s ease;margin-top:0;}
-.sw-section:hover .sw-content{max-height:700px;opacity:1;margin-top:30px;}
+/* Accordion Expansion Matrix */
+.sw-expand-wrapper {
+  position: relative;
+  width: 100%;
+  margin-top: 14px; /* Minimal space above the section */
+  padding-bottom: 8px;
+}
 
-.sw-group{margin-bottom:32px;}
-.sw-group-title{font-size:15px;font-weight:600;margin:0 0 14px 0;color:#e0e0e0;}
-.sw-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:12px;}
+.sw-grid-container {
+  /* Exactly limits height to the 52px card + 10px gap mathematically */
+  max-height: 62px; 
+  overflow: hidden;
+  transition: max-height 0.85s cubic-bezier(0.4, 0, 0.2, 1); 
+  will-change: max-height;
+}
 
-.sw-item{display:flex;align-items:center;gap:10px;background:#151515;border:1px solid rgba(255,255,255,.06);border-radius:9px;padding:8px 12px;transition:background .2s,border-color .2s;}
-.sw-item:hover{background:#1a1a1a;border-color:rgba(255,255,255,.12);}
+.home-section:hover .sw-grid-container {
+  /* Fluid maximum bound securely opening gracefully without snapping */
+  max-height: 800px; 
+}
 
-.sw-icon{width:17px;height:17px;flex-shrink:0;object-fit:contain;}
+/* The Black Gradient Mask beautifully hiding overflowing elements positioned at the exact gap */
+.sw-fade-mask {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 32px;
+  background: linear-gradient(to bottom, transparent, #000 85%);
+  pointer-events: none;
+  transition: opacity 0.5s ease-out;
+}
 
-.sw-name{font-size:12.5px;color:#cfcfcf;line-height:1.4;}
+.home-section:hover .sw-fade-mask {
+  opacity: 0;
+}
 
-/* تطبيقات الموبايل - أصغر بكتير */
-.sw-group.mobile{margin-bottom:28px;}
-.sw-group.mobile .sw-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:9px;}
-.sw-group.mobile .sw-item{padding:6px 10px;}
-.sw-group.mobile .sw-name{font-size:12px;}
+.flagship-tools-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); /* Compact columns for 4-across */
+  gap: 10px; /* Extremely tight gap */
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  padding-bottom: 16px;
+}
 
-@media (max-width:720px){
-  .sw-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
-  .sw-item{padding:7px 11px;}
+.flagship-tool-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #111111;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+  padding: 10px 14px; /* Tighter padding */
+  transition: all 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  overflow: hidden;
+  height: 52px; /* Rigid exact height locking the row flawlessly */
+}
+
+.flagship-tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 40%);
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+}
+
+.flagship-tool-card:hover {
+  background: #161616;
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.flagship-tool-card:hover::before {
+  opacity: 1;
+}
+
+.flagship-tool-card img.sw-icon {
+  width: 14px !important;
+  height: 14px !important;
+  object-fit: contain;
+  flex-shrink: 0;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+  font-size: 0; 
+  color: transparent; 
+}
+
+.flagship-tool-card span {
+  font-size: 13px; /* Smaller text size */
+  font-weight: 500;
+  color: #e0e0e0;
+  line-height: 1.3;
+  font-family: Inter, system-ui, sans-serif;
+  
+  /* Webkit Line Clamp explicitly permitting flawless 2-line wraps like "Adobe Photoshop - Advanced" natively */
+  white-space: normal;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tool-focus {
+  color: #909090;
+  font-weight: 400;
+}
+
+@media (max-width: 640px) {
+  .flagship-tools-list {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Compact Professional Overrides */
+#tools.home-section {
+  margin-bottom: 0;
+}
+
+.sw-header {
+  margin-bottom: 2px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.sw-title {
+  font-size: 24px;
+  margin-bottom: 2px;
+}
+
+.sw-subtitle {
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
+.sw-expand-wrapper {
+  margin-top: 6px;
+  padding-bottom: 0;
+}
+
+.sw-grid-container {
+  max-height: 52px;
+  padding-bottom: 0;
+  transition: max-height 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.home-section:hover .sw-grid-container {
+  max-height: 640px;
+}
+
+.sw-fade-mask {
+  height: 20px;
+}
+
+.flagship-tools-list {
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 8px;
+  padding-bottom: 0;
+}
+
+.flagship-tool-card {
+  height: 46px;
+  padding: 6px 10px;
+  gap: 10px;
+  border-radius: 7px;
+}
+
+.flagship-tool-card img.sw-icon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.flagship-tool-card span {
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
+/* Final Professional Adjustments */
+#tools.home-section {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.sw-expand-wrapper {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.sw-grid-container {
+  opacity: 0.88;
+  max-height: 56px;
+}
+
+.home-section:hover .sw-grid-container {
+  opacity: 1;
+  max-height: 640px;
+}
+
+.sw-fade-mask {
+  height: 24px;
+  opacity: 0.35;
+  transition: opacity 0.6s ease-out;
+}
+
+.home-section:hover .sw-fade-mask {
+  opacity: 0;
+}
+
+.flagship-tools-list {
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 8px;
+}
+
+.flagship-tool-card {
+  height: 50px;
+  background: rgba(17, 17, 17, 0.68);
+  border-color: rgba(255, 255, 255, 0.10);
+  border-radius: 8px;
+  padding: 7px 12px;
+  gap: 11px;
+}
+
+.flagship-tool-card:hover {
+  background: rgba(28, 28, 28, 0.85);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.flagship-tool-card img.sw-icon {
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.flagship-tool-card span {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+/* Minimal Spacing Final Pass */
+#tools.home-section {
+  margin-bottom: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.sw-header {
+  margin-bottom: 2px;
+  padding-bottom: 4px;
+}
+
+.sw-expand-wrapper {
+  margin-top: 2px;
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.sw-grid-container {
+  max-height: 56px;
+}
+
+.sw-fade-mask {
+  height: 12px;
+  opacity: 0.22;
+}
+
+.flagship-tool-card {
+  height: 50px;
+  margin-bottom: 2px;
 }
 </style>
 
-<section class="sw-section">
-  <div class="sw-header">
-    <h2 class="sw-title">Software Experience</h2>
-    <p class="sw-desc">Production-focused tools for 2D, compositing, and basic 3D.
-</p>
-  </div>
-  
-  <div class="sw-content">
-    <div class="sw-group">
-      <h3 class="sw-group-title">Desktop apps (macOS / Windows)</h3>
-      <div class="sw-grid">
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/adobe-photoshop.svg' | url }}" alt="">
-          <span class="sw-name">Adobe Photoshop — Advanced</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/krita.svg" alt="">
-          <span class="sw-name">Krita — Advanced</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/pureref.svg' | url }}" alt="">
-          <span class="sw-name">PureRef — Reference tool</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/darktable.svg' | url }}" alt="">
-          <span class="sw-name">Darktable</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/shotcut.svg' | url }}" alt="">
-          <span class="sw-name">Shotcut</span>
-        </div>
-        <div class="sw-item">
-          <span class="sw-name">DaVinci Resolve — Advanced</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/opentoonz.svg' | url }}" alt="">
-          <span class="sw-name">OpenToonz — 2D animation</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/natron.svg' | url }}" alt="">
-          <span class="sw-name">Natron — Node-based compositing</span>
-        </div>
-        <div class="sw-item">
-          <span class="sw-name">Waveform 13 (audio editing)</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="{{ '/img/icons/cinema4d.svg' | url }}" alt="">
-          <span class="sw-name">Cinema 4D (1 year, 2023)</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/blender.svg" alt="">
-          <span class="sw-name">Blender — Basic</span>
-        </div>
-        <div class="sw-item">
-          <img class="sw-icon" src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/inkscape.svg" alt="">
-          <span class="sw-name">Inkscape — Basic</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.flagship-tool-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--mouse-x', `${x}px`);
+      card.style.setProperty('--mouse-y', `${y}px`);
+    });
+  });
+});
+</script>

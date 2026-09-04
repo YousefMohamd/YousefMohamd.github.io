@@ -1,0 +1,59 @@
+2026-09-01 17:23:29,349 - INFO - Scanned 68 source files from /Users/Yousef/my-portfolio/img/projects
+2026-09-01 17:23:29,359 - DEBUG - Importing WebPImagePlugin
+2026-09-01 17:23:29,379 - DEBUG - Importing AvifImagePlugin
+2026-09-01 17:23:29,780 - INFO - Pending execution for: concept-art/30.webp (Hash changed or output missing)
+2026-09-01 17:23:30,197 - INFO - Pending execution for: graphic-design/11.png (Hash changed or output missing)
+2026-09-01 17:23:30,202 - INFO - Pending execution for: graphic-design/12.png (Hash changed or output missing)
+2026-09-01 17:23:30,219 - INFO - Pending execution for: graphic-design/13.png (Hash changed or output missing)
+2026-09-01 17:23:30,235 - INFO - Pending execution for: graphic-design/14.png (Hash changed or output missing)
+2026-09-01 17:23:30,429 - INFO - Copying asset: /Users/Yousef/my-portfolio/img/projects/concept-art/30.webp -> /Users/Yousef/my-portfolio/img/optimized/projects/concept-art/30.webp
+2026-09-01 17:23:30,430 - INFO - Converting raster: /Users/Yousef/my-portfolio/img/projects/graphic-design/12.png
+2026-09-01 17:23:30,430 - INFO - Converting raster: /Users/Yousef/my-portfolio/img/projects/graphic-design/11.png
+2026-09-01 17:23:30,431 - INFO - Converting raster: /Users/Yousef/my-portfolio/img/projects/graphic-design/14.png
+2026-09-01 17:23:30,431 - DEBUG - Importing PngImagePlugin
+2026-09-01 17:23:30,431 - INFO - Converting raster: /Users/Yousef/my-portfolio/img/projects/graphic-design/13.png
+2026-09-01 17:23:30,431 - DEBUG - Importing PngImagePlugin
+2026-09-01 17:23:30,431 - DEBUG - Importing PngImagePlugin
+2026-09-01 17:23:30,432 - DEBUG - Importing PngImagePlugin
+2026-09-01 17:23:30,434 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/concept-art/30.webp.part -> /Users/Yousef/my-portfolio/img/optimized/projects/concept-art/30.webp
+2026-09-01 17:23:30,453 - DEBUG - STREAM b'IHDR' 16 13
+2026-09-01 17:23:30,454 - DEBUG - STREAM b'iCCP' 41 404
+2026-09-01 17:23:30,454 - DEBUG - iCCP profile name b'ICC Profile'
+2026-09-01 17:23:30,454 - DEBUG - Compression method 0
+2026-09-01 17:23:30,454 - DEBUG - STREAM b'IHDR' 16 13
+2026-09-01 17:23:30,454 - DEBUG - STREAM b'IHDR' 16 13
+2026-09-01 17:23:30,455 - DEBUG - STREAM b'iCCP' 41 403
+2026-09-01 17:23:30,455 - DEBUG - iCCP profile name b'ICC Profile'
+2026-09-01 17:23:30,455 - DEBUG - Compression method 0
+2026-09-01 17:23:30,454 - DEBUG - STREAM b'IHDR' 16 13
+2026-09-01 17:23:30,455 - DEBUG - STREAM b'iCCP' 41 400
+2026-09-01 17:23:30,455 - DEBUG - iCCP profile name b'Linear ProPhoto RGB'
+2026-09-01 17:23:30,456 - DEBUG - Compression method 0
+2026-09-01 17:23:30,455 - DEBUG - STREAM b'eXIf' 457 56
+2026-09-01 17:23:30,456 - DEBUG - STREAM b'iTXt' 525 503
+2026-09-01 17:23:30,456 - DEBUG - STREAM b'IDAT' 1040 16384
+2026-09-01 17:23:30,456 - DEBUG - STREAM b'iTXt' 453 2498
+2026-09-01 17:23:30,455 - DEBUG - STREAM b'iCCP' 41 400
+2026-09-01 17:23:30,455 - DEBUG - STREAM b'eXIf' 456 56
+2026-09-01 17:23:30,457 - DEBUG - STREAM b'iTXt' 524 503
+2026-09-01 17:23:30,457 - DEBUG - STREAM b'IDAT' 1039 16384
+2026-09-01 17:23:30,457 - DEBUG - STREAM b'IDAT' 2963 8192
+2026-09-01 17:23:30,457 - DEBUG - iCCP profile name b'Linear ProPhoto RGB'
+2026-09-01 17:23:30,462 - DEBUG - Compression method 0
+2026-09-01 17:23:30,462 - DEBUG - STREAM b'iTXt' 453 2498
+2026-09-01 17:23:30,463 - DEBUG - STREAM b'IDAT' 2963 8192
+2026-09-01 17:23:30,751 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/11.webp.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/11.webp
+2026-09-01 17:23:31,065 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/12.webp.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/12.webp
+2026-09-01 17:23:31,335 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/11.avif.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/11.avif
+2026-09-01 17:23:31,567 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/12.avif.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/12.avif
+2026-09-01 17:23:32,917 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/14.webp.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/14.webp
+2026-09-01 17:23:32,995 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/13.webp.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/13.webp
+2026-09-01 17:23:35,535 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/14.avif.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/14.avif
+2026-09-01 17:23:35,629 - DEBUG - Atomic move: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/13.avif.part -> /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/13.avif
+2026-09-01 17:23:35,636 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/.DS_Store
+2026-09-01 17:23:35,638 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/concept-art/.DS_Store
+2026-09-01 17:23:35,642 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/.DS_Store
+2026-09-01 17:23:35,642 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/14.png
+2026-09-01 17:23:35,643 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/12.png
+2026-09-01 17:23:35,643 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/13.png
+2026-09-01 17:23:35,644 - INFO - Pruning orphan: /Users/Yousef/my-portfolio/img/optimized/projects/graphic-design/11.png

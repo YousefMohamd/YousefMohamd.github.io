@@ -17,7 +17,9 @@ hero:
         {% if item.type == "video" %}
           <div class="slide" data-type="video" data-src="{{ item.src | url }}">
             <video class="lazyload" playsinline muted preload="metadata">
-              <source data-src="{{ item.src | url }}">
+              {% set base_path = item.src | replace(".jpg", "") | replace(".jpeg", "") | replace(".png", "") %}
+            <source type="image/avif" data-srcset="{{ (base_path ~ '.avif') | url }}">
+            <source type="image/webp" data-srcset="{{ (base_path ~ '.webp') | url }}">
             </video>
           </div>
         {% else %}
