@@ -291,7 +291,6 @@ def convert_raster(source: Path, temp_output: Path) -> None:
             save_kwargs["icc_profile"] = icc
         out.save(temp_output, **save_kwargs)
 
-
 def copy_native(source: Path, temp_output: Path) -> None:
     shutil.copy2(source, temp_output)
 
