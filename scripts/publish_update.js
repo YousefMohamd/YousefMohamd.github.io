@@ -30,31 +30,29 @@ function hasChanges() {
 }
 
 try {
-  // 1. Generate/refresh assets before committing.
-  run('npm run sync-assets');
-  run('npm run optimize');
-  run('npm run refactor');
-  run('SKIP_ASSET_PIPELINE=1 ELEVENTY_ENV=production npm run build');
+  // This script ONLY publishes the changes that already exist in the working
+  // tree. It intentionally does NOT run any asset pipeline step
+  // (sync-assets / optimize / refactor / build), so nothing is regenerated,
+  // overwritten, or deleted. It just commits what you changed and pushes it.
 
-  // 2. Commit local changes FIRST so the working tree is clean.
-  //    rebase refuses to run while there are uncommitted changes.
-  if (hasChanges()) {
-    run('git add .');
-    runAllowFail(`git commit -m "Deploy update: $(date +'%Y-%m-%d %H:%M')"`);
-  } else {
-    console.log('No local changes to commit.');
+  if (!hasChanges()) {
+    console.log('No local changes to publish. Nothing to do.');
+    process.exit(0);
   }
 
-  // 3. Rebase onto the latest remote. Specify remote + branch explicitly
-  //    because the local branch may not have upstream tracking configured.
+  // 1. Stage and commit the existing changes.
+  run('git add .');
+  runAllowFail(`git commit -m "Update: $(date +'%Y-%m-%d %H:%M')"`);
+
+  // 2. Rebase onto the latest remote (explicit remote + branch in case the
+  //    local branch has no upstream tracking configured).
   run(`git pull --rebase ${REMOTE} ${BRANCH}`);
 
-  // 4. Push the result and set upstream tracking (-u) so future
-  //    plain `git pull` / `git push` work without extra arguments.
+  // 3. Push the result and set upstream tracking (-u) for future pulls/pushes.
   run(`git push -u ${REMOTE} ${BRANCH}`);
 
-  console.log('\n✅ Deployed successfully.');
+  console.log('\n✅ Changes published successfully.');
 } catch (err) {
-  console.error('Deployment failed:', err.message);
+  console.error('Publish failed:', err.message);
   process.exit(1);
 }
