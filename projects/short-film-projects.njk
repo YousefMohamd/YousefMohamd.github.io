@@ -45,7 +45,7 @@ title: Short Film Projects
               <!-- Projector beam (cinema light) -->
               <div class="cine-light" data-light aria-hidden="true"></div>
 
-              <!-- Title block (top-left, AppleSystemUIFont for desc, Phosphate for title) -->
+              <!-- Title block (top-left) -->
               <div class="cine-title-block" data-title-block>
                 <h3 class="cine-title" data-film-title></h3>
                 <p class="cine-desc" data-film-desc></p>
@@ -118,32 +118,34 @@ title: Short Film Projects
 
             <!-- Control bar (revealed after morph) -->
             <div class="cine-controls" data-controls aria-label="Film controls">
-              <div class="cine-timeline">
-                <div class="cine-timeline-track">
-                  <div class="cine-timeline-fill" data-progress-fill></div>
-                  <input
-                    class="cine-timeline-input"
-                    data-progress
-                    type="range"
-                    min="0" max="1000" step="1" value="0"
-                    aria-label="Seek through the film"
-                    disabled
-                  >
+              <div class="cine-main-row">
+                <button class="cine-playpause" data-playpause-btn type="button" aria-label="Play">
+                  <svg class="pp-svg" viewBox="0 0 24 24" aria-hidden="true">
+                    <path class="pp-path" d="M8 5v14l11-7z" fill="currentColor"/>
+                  </svg>
+                </button>
+
+                <div class="cine-timeline">
+                  <div class="cine-timeline-track">
+                    <div class="cine-timeline-fill" data-progress-fill></div>
+                    <input
+                      class="cine-timeline-input"
+                      data-progress
+                      type="range"
+                      min="0" max="1000" step="1" value="0"
+                      aria-label="Seek through the film"
+                      disabled
+                    >
+                  </div>
                 </div>
+
+                <span class="cine-time" data-time>00:00 / 00:00</span>
               </div>
 
               <div class="cine-btn-row">
                 <div class="cine-btn-left">
-                  <!-- Play/Pause button (appears after morph) -->
-                  <button class="cine-playpause" data-playpause-btn type="button" aria-label="Play/Pause">
-                    <svg class="pp-svg" viewBox="0 0 24 24" aria-hidden="true">
-                      <path class="pp-path" d="M8 5v14l11-7z" fill="currentColor"/>
-                    </svg>
-                  </button>
-
-                  <!-- Volume -->
                   <div class="cine-volume">
-                    <button class="cine-btn" data-volume-btn type="button" aria-label="Mute/Unmute">
+                    <button class="cine-btn" data-volume-btn type="button" aria-label="Unmute film">
                       <svg viewBox="0 0 24 24" class="cine-btn-icon" aria-hidden="true">
                         <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                       </svg>
@@ -156,13 +158,11 @@ title: Short Film Projects
                       aria-label="Volume"
                     >
                   </div>
-
-                  <span class="cine-time" data-time>00:00 / 00:00</span>
                 </div>
 
                 <div class="cine-btn-right">
                   <div class="cine-speed-wrap">
-                    <button class="cine-btn cine-btn-text" data-speed-btn type="button">1x</button>
+                    <button class="cine-btn cine-btn-text" data-speed-btn type="button" aria-label="Playback speed">1x</button>
                     <div class="cine-popup" data-speed-menu hidden>
                       <button class="cine-popup-item" data-speed-value="0.5">0.5x</button>
                       <button class="cine-popup-item" data-speed-value="0.75">0.75x</button>
@@ -174,7 +174,7 @@ title: Short Film Projects
                   </div>
 
                   <div class="cine-quality-wrap">
-                    <button class="cine-btn cine-btn-text" data-quality-btn type="button">
+                    <button class="cine-btn cine-btn-text" data-quality-btn type="button" aria-label="Video quality">
                       <span data-quality-label>Auto</span>
                     </button>
                     <div class="cine-popup" data-quality-menu hidden></div>
@@ -203,17 +203,17 @@ title: Short Film Projects
 
 <style>
 /* ============================================================
-   CINEMATIC PLAYER — v6
+   CINEMATIC PLAYER — v7
    ------------------------------------------------------------
    States (data-state on .cinema):
      idle     → title visible + camera at bottom-left
-     playing  → video playing + controls (auto-hide)
+     playing  → video playing + controls (auto-hide after 3s)
      paused   → video paused + controls visible
-   ------------------------------------------------------------
-   Layout:
-     Title block  → TOP-LEFT
-     Camera       → BOTTOM-LEFT
-     Controls     → full-width bar at bottom (revealed after morph)
+   Classes:
+     .is-morphing   → during the GSAP camera→pause morph
+     .is-ui-visible → controls forced visible
+     .is-ended      → end card: title block returns
+   Motion: transform / opacity / filter only.
    ============================================================ */
 
 .cinematic-projects {
@@ -222,7 +222,7 @@ title: Short Film Projects
   --cine-text: #e6e6e6;
   --cine-desc: #cccccc;
   --cine-accent: #e8d68a;
-  /* Title: Phosphate on macOS → Anton on others (very close match) → Impact fallback */
+  /* Title: Phosphate on macOS → Anton on others → Impact fallback */
   --cine-title-font: 'Phosphate', 'Anton', 'Impact', 'Oswald', sans-serif;
   /* Description: Apple system font on macOS → Inter fallback on others */
   --cine-body-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'AppleSystemUIFont', 'Inter', 'Helvetica Neue', 'Segoe UI', sans-serif;
@@ -335,7 +335,7 @@ title: Short Film Projects
   gap: 6px;
   max-width: 620px;
   pointer-events: none;
-  /* Soft scroll entrance */
+  /* Soft scroll entrance (once per load) */
   opacity: 0;
   transform: translate3d(0, -22px, 0);
   filter: blur(6px);
@@ -349,7 +349,7 @@ title: Short Film Projects
 
 .cinematic-projects .cine-title {
   font-family: var(--cine-title-font);
-  font-size: 48px;
+  font-size: clamp(26px, 4.2vw, 48px);
   font-weight: 400;
   line-height: 1;
   letter-spacing: 0.01em;
@@ -369,7 +369,7 @@ title: Short Film Projects
   text-shadow: 0 1px 6px rgba(0,0,0,0.75);
 }
 
-/* Fade title on morph */
+/* Fade title out on morph / playback */
 .cinematic-projects .cinema.is-morphing .cine-title-block,
 .cinematic-projects .cinema[data-state="playing"] .cine-title-block,
 .cinematic-projects .cinema[data-state="paused"] .cine-title-block {
@@ -381,6 +381,13 @@ title: Short Film Projects
     opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
     transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
     filter 0.7s ease;
+}
+
+/* End card: title returns only when the film ends */
+.cinematic-projects .cinema.is-ended .cine-title-block {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  filter: blur(0);
 }
 
 /* ===== Camera stage — BOTTOM-LEFT ===== */
@@ -431,7 +438,7 @@ title: Short Film Projects
   display: block;
 }
 
-/* Reel spin on hover (Animation 2) */
+/* Reel spin on hover (Animation 2, idle only) */
 @keyframes cine-reel-spin { to { transform: rotate(360deg); } }
 .cinematic-projects .cinema[data-state="idle"] .cine-camera-btn:hover .cam-reel-left {
   animation: cine-reel-spin 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1;
@@ -442,7 +449,6 @@ title: Short Film Projects
   animation-delay: 0.08s;
   transform-origin: 150px 48px;
 }
-/* Also spin the holes with the reels */
 .cinematic-projects .cinema[data-state="idle"] .cine-camera-btn:hover .cam-holes circle:nth-child(-n+5) {
   animation: cine-reel-spin 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1;
   transform-origin: 95px 60px;
@@ -485,11 +491,20 @@ title: Short Film Projects
   pointer-events: auto;
 }
 
+/* ===== Main row: play/pause + timeline + time ===== */
+.cinematic-projects .cine-main-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
 /* ===== Timeline ===== */
 .cinematic-projects .cine-timeline {
   display: flex;
   align-items: center;
-  width: 100%;
+  flex: 1;
+  min-width: 0;
 }
 .cinematic-projects .cine-timeline-track {
   position: relative;
@@ -499,19 +514,24 @@ title: Short Film Projects
   background: rgba(242, 240, 235, 0.18);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  transition: height 0.2s ease;
+  transform: scaleY(1);
+  transform-origin: center;
+  transition: transform 0.2s ease;
+  will-change: transform;
 }
-.cinematic-projects .cine-timeline:hover .cine-timeline-track { height: 5px; }
+.cinematic-projects .cine-timeline:hover .cine-timeline-track { transform: scaleY(1.6667); }
 .cinematic-projects .cine-timeline-fill {
   position: absolute;
   top: 0; left: 0;
   height: 100%;
-  width: 0%;
+  width: 100%;
   background: rgba(242, 240, 235, 0.88);
   border-radius: 3px;
   pointer-events: none;
-  transition: width 0.15s linear;
+  transform: scaleX(0);
+  transform-origin: left center;
   box-shadow: 0 0 8px rgba(242,240,235,0.35);
+  will-change: transform;
 }
 .cinematic-projects .cine-timeline-input {
   position: absolute;
@@ -526,6 +546,7 @@ title: Short Film Projects
   outline: none;
   z-index: 2;
 }
+.cinematic-projects .cine-timeline-input:disabled { cursor: default; }
 .cinematic-projects .cine-timeline-input::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 12px; height: 12px;
@@ -590,6 +611,7 @@ title: Short Film Projects
   background: transparent;
   color: #f2f0eb;
   cursor: pointer;
+  flex: 0 0 auto;
   transition: background 0.15s ease, transform 0.15s ease;
 }
 .cinematic-projects .cine-playpause:hover { background: rgba(255,255,255,0.09); }
@@ -601,9 +623,9 @@ title: Short Film Projects
   align-items: center;
 }
 .cinematic-projects .cine-volume-slider {
-  width: 0;
+  width: 80px;
   height: 3px;
-  margin: 0; padding: 0;
+  margin: 0 0 0 8px; padding: 0;
   appearance: none;
   -webkit-appearance: none;
   background: rgba(242,240,235,0.25);
@@ -611,11 +633,17 @@ title: Short Film Projects
   cursor: pointer;
   outline: none;
   opacity: 0;
-  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin-left 0.3s ease;
+  transform: scaleX(0);
+  transform-origin: left center;
+  pointer-events: none;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  will-change: transform, opacity;
 }
 .cinematic-projects .cine-volume:hover .cine-volume-slider,
 .cinematic-projects .cine-volume-slider:focus {
-  width: 80px; opacity: 1; margin-left: 6px;
+  opacity: 1;
+  transform: scaleX(1);
+  pointer-events: auto;
 }
 .cinematic-projects .cine-volume-slider::-webkit-slider-thumb {
   -webkit-appearance: none;
@@ -625,15 +653,25 @@ title: Short Film Projects
   cursor: pointer;
   box-shadow: 0 0 0 3px rgba(242,240,235,0.15);
 }
+.cinematic-projects .cine-volume-slider::-moz-range-thumb {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #f2f0eb;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 0 0 3px rgba(242,240,235,0.15);
+}
 
 .cinematic-projects .cine-time {
   font-family: var(--cine-body-font);
   font-size: 12px;
   color: rgba(242,240,235,0.7);
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
   white-space: nowrap;
   padding: 0 6px;
   user-select: none;
+  flex: 0 0 auto;
 }
 
 .cinematic-projects .cine-speed-wrap,
@@ -767,7 +805,6 @@ title: Short Film Projects
     const sections = document.querySelectorAll('[data-cinema]');
     if (!sections.length) return;
 
-    /* Wait for GSAP if it is still loading */
     waitForGSAP(3000).then(hasGSAP => {
       sections.forEach(root => initSection(root, hasGSAP));
     });
@@ -843,6 +880,7 @@ title: Short Film Projects
     function setVolumeIcon(volume, isMuted) {
       if (!volumeBtn) return;
       const v = isMuted ? 0 : volume;
+      volumeBtn.setAttribute('aria-label', v === 0 ? 'Unmute film' : 'Mute film');
       let d;
       if (v === 0) {
         d = 'M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z';
@@ -858,7 +896,7 @@ title: Short Film Projects
       const pct = duration > 0 ? (current / duration * 100) : 0;
       if (!seeking) {
         progress.value = duration > 0 ? Math.round(current / duration * 1000) : 0;
-        if (progressFill) progressFill.style.width = pct + '%';
+        if (progressFill) progressFill.style.transform = 'scaleX(' + (pct / 100) + ')';
       }
       if (timeEl) timeEl.textContent = fmt(current) + ' / ' + fmt(duration);
     }
@@ -914,9 +952,19 @@ title: Short Film Projects
 
         player = new Vimeo.Player(iframe);
 
-        player.on('play',  () => { setState('playing'); setPlayPauseIcon(true); });
+        player.on('play',  () => {
+          root.classList.remove('is-ended');
+          setState('playing');
+          setPlayPauseIcon(true);
+        });
         player.on('pause', () => { setState('paused');  setPlayPauseIcon(false); });
-        player.on('ended', () => { setState('paused');  setPlayPauseIcon(false); current = duration; updateTime(); });
+        player.on('ended', () => {
+          setState('paused');
+          setPlayPauseIcon(false);
+          current = duration;
+          updateTime();
+          root.classList.add('is-ended');
+        });
         player.on('timeupdate', e => {
           current = Number(e.seconds) || 0;
           duration = Number(e.duration) || duration;
@@ -947,6 +995,7 @@ title: Short Film Projects
 
         await withTimeout(player.ready(), 20000);
         ready = true;
+        progress.disabled = false;
         player.getDuration().then(v => { duration = Number(v) || 0; updateTime(); }).catch(() => {});
         player.getMuted().then(m => { muted = m; setVolumeIcon(1, m); }).catch(() => {});
         player.getVolume().then(v => { if (volumeSlider) volumeSlider.value = v; }).catch(() => {});
@@ -982,36 +1031,37 @@ title: Short Film Projects
       };
 
       if (hasGSAP) {
+        window.gsap.registerPlugin(window.MorphSVGPlugin);
         const tl = window.gsap.timeline({ onComplete: cleanupAndStart });
 
-        // 1) Title + description fade out softly
+        // 1) Title + description fade out softly (0 → 550ms)
         tl.to(titleBlock, { opacity: 0, y: -18, filter: 'blur(4px)', duration: 0.55, ease: 'power2.out' }, 0);
 
-        // 2) Light beam appears
-        tl.to(q('[data-light]'), { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0.15);
+        // 2) Light beam appears (150 → 900ms)
+        tl.to(q('[data-light]'), { opacity: 1, duration: 0.75, ease: 'power2.out' }, 0.15);
 
-        // 3) Holes fade out
+        // 3) Holes fade out (200 → 500ms)
         tl.to(qa('.cam-holes circle'), { opacity: 0, duration: 0.3, ease: 'power2.out' }, 0.2);
 
-        // 4) Body fades out
+        // 4) Body fades out (250 → 650ms)
         tl.to(q('.cam-body'), { opacity: 0, duration: 0.4, ease: 'power2.out' }, 0.25);
 
-        // 5) Reels morph into pause bars
+        // 5) Reels morph into pause bars (300 → 1100ms)
         tl.to(q('.cam-reel-left'), {
-          morphSVG: { shape: '.morph-left', shapeIndex: 'auto' },
+          morphSVG: { shape: q('.morph-left'), shapeIndex: 'auto' },
           duration: 0.8,
           ease: 'power3.inOut'
         }, 0.3);
         tl.to(q('.cam-reel-right'), {
-          morphSVG: { shape: '.morph-right', shapeIndex: 'auto' },
+          morphSVG: { shape: q('.morph-right'), shapeIndex: 'auto' },
           duration: 0.8,
           ease: 'power3.inOut'
-        }, 0.35);
+        }, 0.3);
 
-        // 6) Camera stage fades away once morph is done
+        // 6) Camera stage fades away (1150 → 1550ms)
         tl.to(cameraStage, { opacity: 0, duration: 0.4, ease: 'power2.out' }, 1.15);
 
-        // 7) Controls fade in
+        // 7) Controls fade in (1300 → 1850ms)
         tl.to(controls, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 1.3);
       } else {
         // Fallback: no GSAP → just hide camera, show controls
@@ -1093,7 +1143,7 @@ title: Short Film Projects
       e.stopPropagation();
       seeking = true;
       const pct = Number(progress.value) / 10;
-      if (progressFill) progressFill.style.width = pct + '%';
+      if (progressFill) progressFill.style.transform = 'scaleX(' + (pct / 100) + ')';
       const preview = duration * Number(progress.value) / 1000;
       if (timeEl) timeEl.textContent = fmt(preview) + ' / ' + fmt(duration);
     });
