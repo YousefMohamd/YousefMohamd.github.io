@@ -6,16 +6,16 @@ title: Short Film Projects
 <div class="w3-padding-64 w3-content cinematic-projects">
   <h2 class="w3-text-light-grey">Short Film Projects</h2>
 
-  {% for p in (collections.project or []) | reverse %}
+{% for p in (collections.project or []) | reverse %}
     {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
       <div class="film-project w3-margin-bottom">
         <h3 class="w3-text-light-grey" style="margin:18px 0 8px;">{{ p.data.title }}</h3>
 
-        {% if p.data.vimeoId %}
+{% if p.data.vimeoId %}
           {# Keep real project IDs. A standalone demonstration can use 76979871. #}
           {% set playerKey = 'cinema-' ~ loop.index %}
 
-          <section
+<section
             class="cinema"
             data-cinema
             data-video-id="{{ p.data.vimeoId | escape }}"
@@ -25,7 +25,7 @@ title: Short Film Projects
               <!-- The iframe is created on demand through the official Player API. -->
               <div class="cinema-video" data-video-layer></div>
 
-              <img
+<img
                 class="cinema-poster"
                 data-poster
                 src="/img/optimized/projects/short-film/{{ p.data.vimeoId | escape }}.webp"
@@ -36,31 +36,51 @@ title: Short Film Projects
                 height="1080"
               >
 
-              <div class="cinema-camera-layer" data-camera-layer>
+<div class="cinema-camera-layer" data-camera-layer>
                 <button
                   class="cinema-camera"
                   data-camera
                   type="button"
                   aria-label="Play {{ p.data.title | escape }}"
                 >
-                  <!-- Original vector artwork: two reels, body and lens; no tripod. -->
-                  <svg viewBox="0 0 300 210" width="300" height="210" aria-hidden="true" focusable="false">
+                  <!-- Original vector artwork retained; appearance adjusted through CSS. -->
+                  <svg
+                    viewBox="0 0 300 210"
+                    width="300"
+                    height="210"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
                     <defs>
-                      <linearGradient id="{{ playerKey }}-metal" x1="0" y1="0" x2="0" y2="1">
+                      <linearGradient
+                        id="{{ playerKey }}-metal"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
                         <stop offset="0" stop-color="#f5e6d3"/>
                         <stop offset="0.5" stop-color="#d4a24e"/>
                         <stop offset="1" stop-color="#8b5d28"/>
                       </linearGradient>
-                      <radialGradient id="{{ playerKey }}-glass">
+
+<radialGradient id="{{ playerKey }}-glass">
                         <stop offset="0" stop-color="#ffd970"/>
                         <stop offset="0.55" stop-color="#8b3a2a"/>
                         <stop offset="1" stop-color="#2a1810"/>
                       </radialGradient>
                     </defs>
 
-                    <!-- Unique IDs prevent collisions between multiple film players. -->
+<!-- Unique IDs prevent collisions between multiple film players. -->
                     <g id="{{ playerKey }}-reel-left" class="cinema-reel">
-                      <circle cx="86" cy="58" r="43" fill="url(#{{ playerKey }}-metal)" stroke="#2a1810" stroke-width="5"/>
+                      <circle
+                        cx="86"
+                        cy="58"
+                        r="43"
+                        fill="url(#{{ playerKey }}-metal)"
+                        stroke="#2a1810"
+                        stroke-width="5"
+                      />
                       <g fill="#3a2418">
                         <circle cx="86" cy="33" r="10"/>
                         <circle cx="110" cy="58" r="10"/>
@@ -70,8 +90,15 @@ title: Short Film Projects
                       <circle cx="86" cy="58" r="6" fill="#f5e6d3"/>
                     </g>
 
-                    <g id="{{ playerKey }}-reel-right" class="cinema-reel">
-                      <circle cx="177" cy="58" r="43" fill="url(#{{ playerKey }}-metal)" stroke="#2a1810" stroke-width="5"/>
+<g id="{{ playerKey }}-reel-right" class="cinema-reel">
+                      <circle
+                        cx="177"
+                        cy="58"
+                        r="43"
+                        fill="url(#{{ playerKey }}-metal)"
+                        stroke="#2a1810"
+                        stroke-width="5"
+                      />
                       <g fill="#3a2418">
                         <circle cx="177" cy="33" r="10"/>
                         <circle cx="201" cy="58" r="10"/>
@@ -81,23 +108,82 @@ title: Short Film Projects
                       <circle cx="177" cy="58" r="6" fill="#f5e6d3"/>
                     </g>
 
-                    <rect x="51" y="101" width="162" height="88" rx="17" fill="#3a2418" stroke="url(#{{ playerKey }}-metal)" stroke-width="5"/>
-                    <rect x="65" y="115" width="132" height="58" rx="8" fill="#2a1810" stroke="#8b3a2a" stroke-width="2"/>
-                    <path d="M213 127 L244 115 L244 175 L213 163 Z" fill="url(#{{ playerKey }}-metal)" stroke="#2a1810" stroke-width="3"/>
-                    <ellipse cx="246" cy="145" rx="13" ry="30" fill="url(#{{ playerKey }}-glass)" stroke="#d4a24e" stroke-width="4"/>
-                    <ellipse class="cinema-lens-glow" cx="246" cy="145" rx="16" ry="33" fill="#ffd970"/>
-                    <ellipse data-lens cx="246" cy="145" rx="3" ry="3" fill="#f5e6d3"/>
-                    <path d="M78 146 H148 M78 154 H129" stroke="#d4a24e" stroke-width="3"/>
-                    <circle cx="178" cy="143" r="9" fill="#8b3a2a" stroke="#d4a24e" stroke-width="2"/>
+<rect
+                      x="51"
+                      y="101"
+                      width="162"
+                      height="88"
+                      rx="17"
+                      fill="#3a2418"
+                      stroke="url(#{{ playerKey }}-metal)"
+                      stroke-width="5"
+                    />
+                    <rect
+                      x="65"
+                      y="115"
+                      width="132"
+                      height="58"
+                      rx="8"
+                      fill="#2a1810"
+                      stroke="#8b3a2a"
+                      stroke-width="2"
+                    />
+                    <path
+                      d="M213 127 L244 115 L244 175 L213 163 Z"
+                      fill="url(#{{ playerKey }}-metal)"
+                      stroke="#2a1810"
+                      stroke-width="3"
+                    />
+                    <ellipse
+                      cx="246"
+                      cy="145"
+                      rx="13"
+                      ry="30"
+                      fill="url(#{{ playerKey }}-glass)"
+                      stroke="#d4a24e"
+                      stroke-width="4"
+                    />
+                    <ellipse
+                      class="cinema-lens-glow"
+                      cx="246"
+                      cy="145"
+                      rx="16"
+                      ry="33"
+                      fill="#ffd970"
+                    />
+                    <ellipse
+                      data-lens
+                      cx="246"
+                      cy="145"
+                      rx="3"
+                      ry="3"
+                      fill="#f5e6d3"
+                    />
+                    <path
+                      d="M78 146 H148 M78 154 H129"
+                      stroke="#d4a24e"
+                      stroke-width="3"
+                    />
+                    <circle
+                      cx="178"
+                      cy="143"
+                      r="9"
+                      fill="#8b3a2a"
+                      stroke="#d4a24e"
+                      stroke-width="2"
+                    />
                   </svg>
-                  <span class="cinema-camera-caption" data-caption>Begin the picture</span>
+
+<span class="cinema-camera-caption" data-caption>
+                    Begin the picture
+                  </span>
                 </button>
               </div>
 
-              <!-- Transform and opacity animate this isolated transition layer. -->
+<!-- Retained for JavaScript compatibility; the old flash is hidden by CSS. -->
               <div class="cinema-beam" data-beam aria-hidden="true"></div>
 
-              <a
+<a
                 class="cinema-credit"
                 href="https://vimeo.com/{{ p.data.vimeoId | escape }}"
                 target="_blank"
@@ -105,18 +191,34 @@ title: Short Film Projects
                 aria-label="Watch this film on Vimeo"
               >vimeo</a>
 
-              <div class="cinema-fallback" data-fallback role="alert" hidden>
+<div class="cinema-fallback" data-fallback role="alert" hidden>
                 <div>
                   <strong>The picture could not start</strong>
-                  <p>We could not load the film. Please check your connection and refresh the page.</p>
-                  <a href="https://vimeo.com/{{ p.data.vimeoId | escape }}" target="_blank" rel="noopener noreferrer">Watch on Vimeo</a>
-                  <button type="button" data-refresh aria-label="Refresh the page">Refresh</button>
+                  <p>
+                    We could not load the film. Please check your connection
+                    and refresh the page.
+                  </p>
+                  <a
+                    href="https://vimeo.com/{{ p.data.vimeoId | escape }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >Watch on Vimeo</a>
+                  <button
+                    type="button"
+                    data-refresh
+                    aria-label="Refresh the page"
+                  >Refresh</button>
                 </div>
               </div>
             </div>
 
-            <!-- Controls remain in document flow to avoid covering narrow videos. -->
-            <div class="cinema-controls" data-controls aria-label="Film controls" hidden>
+<!-- Controls remain in document flow to avoid covering narrow videos. -->
+            <div
+              class="cinema-controls"
+              data-controls
+              aria-label="Film controls"
+              hidden
+            >
               <input
                 class="cinema-progress"
                 data-progress
@@ -130,13 +232,16 @@ title: Short Film Projects
                 disabled
               >
 
-              <div class="cinema-control-row">
+<div class="cinema-control-row">
                 <button type="button" data-toggle aria-label="Play film">▶</button>
                 <button type="button" data-replay aria-label="Replay film">↺</button>
                 <button type="button" data-sound aria-label="Unmute film">Unmute</button>
-                <span class="cinema-time" data-time aria-live="off">00:00 / 00:00</span>
 
-                <label>
+<span class="cinema-time" data-time aria-live="off">
+                  00:00 / 00:00
+                </span>
+
+<label>
                   <span>Speed</span>
                   <select data-speed aria-label="Playback speed">
                     <option value="0.5">0.5x</option>
@@ -145,7 +250,7 @@ title: Short Film Projects
                   </select>
                 </label>
 
-                <label>
+<label>
                   <span>Quality</span>
                   <select data-quality aria-label="Video quality" disabled>
                     <option value="auto">Auto</option>
@@ -154,349 +259,587 @@ title: Short Film Projects
               </div>
             </div>
 
-            <p class="cinema-status" data-status role="status" aria-live="polite"></p>
+<p
+              class="cinema-status"
+              data-status
+              role="status"
+              aria-live="polite"
+            ></p>
 
-            <noscript>
-              <p><a href="https://vimeo.com/{{ p.data.vimeoId | escape }}">Watch this film on Vimeo</a>. JavaScript is required for the custom player.</p>
+<noscript>
+              <p>
+                <a href="https://vimeo.com/{{ p.data.vimeoId | escape }}">
+                  Watch this film on Vimeo
+                </a>.
+                JavaScript is required for the custom player.
+              </p>
             </noscript>
           </section>
         {% endif %}
 
-        {% if p.templateContent %}
+{% if p.templateContent %}
           <div class="w3-text-grey" style="line-height:1.7;">
             {{ p.templateContent | safe }}
           </div>
         {% endif %}
 
-        <hr class="w3-opacity">
+<hr class="w3-opacity">
       </div>
     {% endif %}
   {% endfor %}
 </div>
 
 <style>
-/* Scope every rule to this component instead of changing shared site styles. */
+/*
+ * Presentation-only update.
+ * Preserve markup hooks, Vimeo loading, controls and playback behavior.
+ */
+
 .cinematic-projects .cinema {
-  --cinema-brown: #2a1810;
-  --cinema-panel: #3a2418;
-  --cinema-gold: #d4a24e;
-  --cinema-cream: #f5e6d3;
-  position: relative;
+  --cinema-bg: #101110;
+  --cinema-panel: #191a18;
+  --cinema-ink: #f0eee6;
+  --cinema-muted: #aaa99f;
+  --cinema-accent: #d5ca91;
+  --cinema-line: #393a34;
+  --cinema-camera-size: clamp(112px, 18vw, 184px);
+  --cinema-space: clamp(12px, 2.2vw, 26px);
+
+position: relative;
   isolation: isolate;
-  margin-bottom: 16px;
-  color: var(--cinema-cream);
-  background: var(--cinema-brown);
-  border: 1px solid #8b5d28;
-  border-radius: 16px;
+  margin-bottom: 20px;
+  border: 0;
+  border-radius: 0;
   overflow: hidden;
+  color: var(--cinema-ink);
+  background: var(--cinema-bg);
+  box-shadow: none;
+  backdrop-filter: none;
 }
 
-.cinema [hidden] {
+/* Use the real project title already present in the template. */
+.cinematic-projects .film-project > h3 {
+  max-width: 28ch;
+  margin: 24px 0 14px !important;
+  color: #f0eee6 !important;
+  font-size: clamp(26px, 3.8vw, 48px);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.025em;
+  text-align: left;
+  text-wrap: balance;
+}
+
+/* Never override the hidden state managed by JavaScript. */
+.cinematic-projects .cinema [hidden] {
   display: none !important;
 }
 
-.cinema .cinema-screen {
+.cinematic-projects .cinema-screen {
   position: relative;
+  isolation: isolate;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  isolation: isolate;
-  background: radial-gradient(ellipse at center, #59402a, #2a1810 70%);
+  background: #000;
 }
 
-.cinema .cinema-video,
-.cinema .cinema-video iframe,
-.cinema .cinema-poster,
-.cinema .cinema-camera-layer {
+/* No grading, tint, blur or blending on the picture. */
+.cinematic-projects .cinema-video,
+.cinematic-projects .cinema-video iframe,
+.cinematic-projects .cinema-poster,
+.cinematic-projects .cinema-camera-layer {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
 }
 
-.cinema .cinema-video {
+.cinematic-projects .cinema-video {
   z-index: 1;
+  opacity: 0;
+  filter: none;
+  mix-blend-mode: normal;
+  transition: opacity 480ms ease;
 }
 
-.cinema .cinema-video iframe {
+.cinematic-projects .cinema-video iframe {
   border: 0;
   pointer-events: none;
+  filter: none;
 }
 
-.cinema .cinema-poster {
+.cinematic-projects .cinema-poster {
   z-index: 2;
   object-fit: cover;
-  opacity: 0.5;
-  transition: opacity 400ms ease-out;
+  opacity: 1;
+  filter: none;
+  mix-blend-mode: normal;
+  transition: opacity 480ms ease;
 }
 
-.cinema.is-started .cinema-poster {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.cinema .cinema-camera-layer {
-  z-index: 10;
-  display: grid;
-  place-items: center;
-  background: linear-gradient(0deg, #2a181066, transparent);
-  transition: opacity 400ms ease-out;
-}
-
-.cinema.is-launching .cinema-camera-layer,
-.cinema.is-started .cinema-camera-layer {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.cinema .cinema-camera {
-  display: grid;
-  justify-items: center;
-  width: clamp(140px, 32%, 300px);
-  padding: 0;
-  border: 0;
-  background: none;
-  color: var(--cinema-cream);
-  cursor: pointer;
-}
-
-.cinema .cinema-camera svg {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-.cinema .cinema-camera-caption {
-  font-family: Georgia, serif;
-  font-size: clamp(12px, 1.5vw, 17px);
-  letter-spacing: 0.12em;
-  text-shadow: 0 2px 4px #000;
-}
-
-.cinema .cinema-reel {
-  transform-box: fill-box;
-  transform-origin: center;
-  transform: rotate(0deg);
-  transition: transform 600ms ease-out;
-}
-
-.cinema .cinema-lens-glow {
-  opacity: 0;
-  transition: opacity 600ms ease-out;
-  isolation: isolate;
-}
-
-@media (hover: hover) {
-  .cinema .cinema-screen:hover .cinema-reel {
-    transform: rotate(360deg);
-    will-change: transform;
-  }
-
-  .cinema .cinema-screen:hover .cinema-lens-glow {
-    opacity: 0.85;
-  }
-}
-
-.cinema .cinema-camera:focus-visible .cinema-reel {
-  transform: rotate(360deg);
-  will-change: transform;
-}
-
-.cinema .cinema-camera:focus-visible .cinema-lens-glow {
-  opacity: 0.85;
-}
-
-.cinema button:focus-visible,
-.cinema a:focus-visible,
-.cinema select:focus-visible,
-.cinema input:focus-visible {
-  outline: 3px solid #ffd970;
-  outline-offset: 3px;
-}
-
-.cinema .cinema-beam {
-  position: absolute;
-  z-index: 20;
-  pointer-events: none;
-  border-radius: 50%;
-  background: radial-gradient(circle, #fff3c4 0%, #ffd970 45%, #d4a24e 75%, #d4a24e00 100%);
-  opacity: 0;
-  transform: translate(-50%, -50%) scale(0);
-  isolation: isolate;
-}
-
-.cinema .cinema-credit {
-  position: absolute;
-  right: 12px;
-  bottom: 10px;
-  z-index: 25;
-  color: #fff;
-  font-size: 10px;
-  font-style: italic;
-  font-weight: bold;
-  text-decoration: none;
-  opacity: 0.4;
-  transition: opacity 200ms ease;
-}
-
-.cinema .cinema-credit:hover,
-.cinema .cinema-credit:focus-visible {
+.cinematic-projects .cinema.is-started .cinema-video {
   opacity: 1;
 }
 
-.cinema .cinema-controls {
-  position: relative;
-  z-index: 30;
-  background: linear-gradient(#3a2418, #2a1810);
-  border-top: 1px solid #8b5d28;
-  padding: 8px 12px 12px;
-  transition: opacity 220ms ease;
-}
-
-.cinema.controls-idle .cinema-controls {
+.cinematic-projects .cinema.is-started .cinema-poster {
   opacity: 0;
   pointer-events: none;
 }
 
-.cinema.controls-idle .cinema-controls:focus-within {
+/* Camera sits at the bottom-left, without a full-screen tint. */
+.cinematic-projects .cinema-camera-layer {
+  z-index: 10;
+  display: grid;
+  align-content: end;
+  justify-items: start;
+  box-sizing: border-box;
+  padding: var(--cinema-space);
+  background: none;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+}
+
+.cinematic-projects .cinema-camera {
+  position: relative;
+  display: grid;
+  justify-items: start;
+  gap: 4px;
+  width: var(--cinema-camera-size);
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--cinema-ink);
+  background: none;
+  box-shadow: none;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cinematic-projects .cinema-camera svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+/* Flatten the existing SVG colors without replacing the artwork. */
+.cinematic-projects .cinema-camera svg linearGradient stop {
+  stop-color: #c9c3aa;
+}
+
+.cinematic-projects .cinema-camera svg linearGradient stop:last-child {
+  stop-color: #aaa48c;
+}
+
+.cinematic-projects .cinema-camera svg radialGradient stop {
+  stop-color: #d8cfa1;
+}
+
+.cinematic-projects .cinema-camera svg radialGradient stop:last-child {
+  stop-color: #555449;
+}
+
+.cinematic-projects .cinema-reel > circle:first-child {
+  stroke: #34362f;
+  stroke-width: 3px;
+}
+
+.cinematic-projects .cinema-reel > g {
+  fill: #32342e;
+}
+
+.cinematic-projects .cinema-reel > circle:last-child {
+  fill: #ece7d6;
+}
+
+.cinematic-projects .cinema-camera svg > rect {
+  fill: #343630;
+  stroke: #b8b29a;
+  stroke-width: 3px;
+}
+
+.cinematic-projects .cinema-camera svg > rect:nth-of-type(2) {
+  fill: #242620;
+  stroke: #55584c;
+  stroke-width: 2px;
+}
+
+.cinematic-projects .cinema-camera svg > path {
+  stroke: #b8b29a;
+}
+
+.cinematic-projects .cinema-camera svg > circle {
+  fill: #646656;
+  stroke: #c6c0a5;
+}
+
+.cinematic-projects .cinema-camera svg > ellipse:not(.cinema-lens-glow) {
+  stroke: #c6c0a5;
+}
+
+.cinematic-projects .cinema-camera svg [data-lens] {
+  fill: #eee7c7;
+  stroke: none;
+}
+
+/*
+ * Show a short initial caption visually.
+ * The button keeps its existing accessible aria-label.
+ * During loading, display the real caption set by JavaScript.
+ */
+.cinematic-projects .cinema-camera-caption {
+  margin-left: 17%;
+  font-family: inherit;
+  font-size: 0;
+  line-height: 1.4;
+  color: var(--cinema-ink);
+  text-shadow: 0 1px 3px #000;
+}
+
+.cinematic-projects .cinema-camera:not(:disabled)
+  .cinema-camera-caption::after {
+  content: "Play";
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+}
+
+.cinematic-projects .cinema-camera:disabled .cinema-camera-caption {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+}
+
+.cinematic-projects .cinema.is-launching .cinema-camera-caption,
+.cinematic-projects .cinema.is-started .cinema-camera-caption {
+  visibility: hidden;
+}
+
+.cinematic-projects .cinema.is-launching .cinema-camera-layer,
+.cinematic-projects .cinema.is-started .cinema-camera-layer {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cinematic-projects .cinema.is-launching .cinema-camera,
+.cinematic-projects .cinema.is-started .cinema-camera {
+  pointer-events: none;
+}
+
+/* Gentle reel movement instead of a full decorative spin. */
+.cinematic-projects .cinema-reel {
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: rotate(0deg);
+  transition: transform 650ms cubic-bezier(.2, .7, .2, 1);
+}
+
+.cinematic-projects .cinema-lens-glow {
+  fill: #e2d6a0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@keyframes cinema-soft-lens {
+  0%,
+  100% {
+    opacity: 0;
+  }
+
+24% {
+    opacity: 0.34;
+  }
+
+56% {
+    opacity: 0.16;
+  }
+}
+
+@media (hover: hover) {
+  .cinematic-projects .cinema-camera:hover .cinema-reel {
+    transform: rotate(16deg);
+  }
+
+.cinematic-projects .cinema-camera:hover .cinema-lens-glow {
+    animation: cinema-soft-lens 1100ms ease-out;
+  }
+}
+
+.cinematic-projects .cinema-camera:focus-visible .cinema-reel {
+  transform: rotate(16deg);
+}
+
+.cinematic-projects .cinema-camera:focus-visible .cinema-lens-glow,
+.cinematic-projects .cinema-camera:active .cinema-lens-glow {
+  animation: cinema-soft-lens 1100ms ease-out;
+}
+
+/*
+ * Remove the old full-screen flash visually.
+ * Keep the element and JavaScript timing intact.
+ */
+.cinematic-projects .cinema-beam {
+  display: none;
+}
+
+/*
+ * Preserve the working Vimeo link.
+ * End-only display and an account link need a separate behavior update.
+ */
+.cinematic-projects .cinema-credit {
+  position: absolute;
+  z-index: 25;
+  right: var(--cinema-space);
+  bottom: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  color: #e5e1d4;
+  font-family: Arial, sans-serif;
+  font-size: 18px;
+  font-style: italic;
+  font-weight: 700;
+  text-decoration: none;
+  opacity: 0.78;
+  transition: opacity 180ms ease, color 180ms ease;
+}
+
+.cinematic-projects .cinema-credit:hover,
+.cinematic-projects .cinema-credit:focus-visible {
+  color: var(--cinema-accent);
+  opacity: 1;
+}
+
+/* Controls stay below the picture without a glass frame. */
+.cinematic-projects .cinema-controls {
+  position: relative;
+  z-index: 30;
+  padding: 4px var(--cinema-space) 10px;
+  border: 0;
+  background: var(--cinema-bg);
+  opacity: 1;
+  transition: opacity 240ms ease;
+}
+
+@keyframes cinema-track-enter {
+  from {
+    opacity: 0;
+    transform: scaleX(0.08);
+  }
+
+to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes cinema-tools-enter {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Initial reveal only; playback timing is still controlled by existing JS. */
+.cinematic-projects .cinema.is-started .cinema-progress {
+  animation: cinema-track-enter 420ms cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.cinematic-projects .cinema.is-started .cinema-control-row {
+  animation: cinema-tools-enter 320ms ease-out 160ms both;
+}
+
+.cinematic-projects .cinema.controls-idle .cinema-controls {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cinematic-projects .cinema.controls-idle .cinema-controls:focus-within {
   opacity: 1;
   pointer-events: auto;
 }
 
-.cinema .cinema-progress {
-  position: relative;
-  z-index: 30;
+.cinematic-projects .cinema-progress {
   display: block;
+  box-sizing: border-box;
   width: 100%;
-  min-height: 24px;
-  margin: 0 0 6px;
-  accent-color: var(--cinema-gold);
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  accent-color: var(--cinema-accent);
+  background: transparent;
   cursor: pointer;
+  transform-origin: left center;
 }
 
-.cinema .cinema-control-row {
+.cinematic-projects .cinema-control-row {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 4px 10px;
 }
 
-.cinema .cinema-control-row button,
-.cinema .cinema-control-row select,
-.cinema .cinema-fallback button {
+.cinematic-projects .cinema-control-row button,
+.cinematic-projects .cinema-control-row select,
+.cinematic-projects .cinema-fallback button {
+  box-sizing: border-box;
   min-height: 44px;
   padding: 6px 10px;
-  border: 1px solid #8b5d28;
-  border-radius: 6px;
-  color: var(--cinema-cream);
-  background: var(--cinema-panel);
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--cinema-ink);
+  background: transparent;
   font: inherit;
+  font-size: 13px;
   cursor: pointer;
+  touch-action: manipulation;
+  transition: background-color 160ms ease, color 160ms ease;
 }
 
-.cinema .cinema-control-row button {
+.cinematic-projects .cinema-control-row button {
   min-width: 44px;
 }
 
-.cinema button:disabled,
-.cinema select:disabled,
-.cinema input:disabled {
-  opacity: 0.55;
-  cursor: default;
+.cinematic-projects .cinema-control-row [data-toggle],
+.cinematic-projects .cinema-control-row [data-replay] {
+  font-size: 18px;
 }
 
-.cinema .cinema-control-row label {
-  display: flex;
+.cinematic-projects .cinema-control-row select {
+  max-width: 100%;
+  color-scheme: dark;
+  border-color: var(--cinema-line);
+  background: var(--cinema-panel);
+}
+
+@media (hover: hover) {
+  .cinematic-projects .cinema-control-row button:hover,
+  .cinematic-projects .cinema-fallback button:hover {
+    color: var(--cinema-accent);
+    background: #ffffff0a;
+  }
+}
+
+.cinematic-projects .cinema-control-row label {
+  display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 6px;
+  min-width: 0;
+  color: var(--cinema-muted);
   font-size: 12px;
 }
 
-.cinema .cinema-time {
+.cinematic-projects .cinema-time {
   margin-right: auto;
+  color: var(--cinema-muted);
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
 }
 
-.cinema .cinema-status {
+.cinematic-projects .cinema button:disabled,
+.cinematic-projects .cinema select:disabled,
+.cinematic-projects .cinema input:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.cinematic-projects .cinema button:focus-visible,
+.cinematic-projects .cinema a:focus-visible,
+.cinematic-projects .cinema select:focus-visible,
+.cinematic-projects .cinema input:focus-visible {
+  outline: 2px solid var(--cinema-accent);
+  outline-offset: 3px;
+}
+
+.cinematic-projects .cinema-status {
   margin: 0;
-  padding: 0 12px;
+  padding: 0 var(--cinema-space);
+  color: var(--cinema-muted);
   font-size: 13px;
+  line-height: 1.6;
 }
 
-.cinema .cinema-status:not(:empty) {
+.cinematic-projects .cinema-status:not(:empty) {
   padding-top: 8px;
-  padding-bottom: 8px;
+  padding-bottom: 10px;
 }
 
-.cinema .cinema-fallback {
+.cinematic-projects .cinema-fallback {
   position: absolute;
   inset: 0;
   z-index: 50;
   display: grid;
   place-items: center;
   overflow: auto;
-  padding: 18px;
-  background: #2a1810b8;
+  padding: 20px;
+  background: #101110ed;
+  color: var(--cinema-ink);
   text-align: center;
 }
 
-.cinema .cinema-fallback > div {
+.cinematic-projects .cinema-fallback > div {
   max-width: 440px;
 }
 
-.cinema .cinema-fallback a {
+.cinematic-projects .cinema-fallback a {
   display: inline-block;
   margin: 8px;
-  color: #ffd970;
+  padding: 10px 4px;
+  color: var(--cinema-accent);
 }
 
-.cinema.has-error .cinema-poster {
-  opacity: 0.65;
+.cinematic-projects .cinema-fallback button {
+  border-color: var(--cinema-line);
 }
 
-.cinema.has-error .cinema-camera-layer {
+.cinematic-projects .cinema.has-error .cinema-camera-layer {
   visibility: hidden;
 }
 
 @media (max-width: 480px) {
-  .cinema .cinema-control-row {
-    gap: 6px;
+  .cinematic-projects .cinema-control-row {
+    gap: 4px 6px;
   }
 
-  .cinema .cinema-control-row label {
+.cinematic-projects .cinema-control-row label {
     flex-wrap: wrap;
   }
 
-  .cinema .cinema-fallback {
-    font-size: 12px;
-    padding: 10px;
+.cinematic-projects .cinema-time {
+    font-size: 11px;
   }
 
-  .cinema .cinema-fallback p {
+.cinematic-projects .cinema-fallback {
+    padding: 12px;
+    font-size: 12px;
+  }
+
+.cinematic-projects .cinema-fallback p {
     margin: 6px 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cinema .cinema-reel,
-  .cinema .cinema-camera:focus-visible .cinema-reel,
-  .cinema .cinema-screen:hover .cinema-reel {
-    transform: none;
-    transition: none;
-    will-change: auto;
+  .cinematic-projects .cinema *,
+  .cinematic-projects .cinema *::before,
+  .cinematic-projects .cinema *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
   }
 
-  .cinema .cinema-beam {
-    display: none;
-  }
-
-  .cinema .cinema-poster,
-  .cinema .cinema-camera-layer,
-  .cinema .cinema-lens-glow,
-  .cinema .cinema-controls,
-  .cinema .cinema-credit {
-    transition: none;
+.cinematic-projects .cinema-reel {
+    transform: none !important;
   }
 }
 </style>
@@ -505,24 +848,25 @@ title: Short Film Projects
 (function () {
   'use strict';
 
-  // Share one SDK download across all film instances on this page.
+// Share one SDK download across all film instances on this page.
   let sdkPromise;
 
-  function loadVimeoSDK() {
+function loadVimeoSDK() {
     if (window.Vimeo && window.Vimeo.Player) {
       return Promise.resolve(window.Vimeo);
     }
 
-    if (!sdkPromise) {
+if (!sdkPromise) {
       sdkPromise = new Promise(function (resolve, reject) {
         const script = document.createElement('script');
         const timeout = window.setTimeout(function () {
           reject(new Error('Vimeo SDK loading timed out.'));
         }, 20000);
 
-        script.src = 'https://player.vimeo.com/api/player.js';
+script.src = 'https://player.vimeo.com/api/player.js';
         script.async = true;
-        script.onload = function () {
+
+script.onload = function () {
           window.clearTimeout(timeout);
           if (window.Vimeo && window.Vimeo.Player) {
             resolve(window.Vimeo);
@@ -530,24 +874,26 @@ title: Short Film Projects
             reject(new Error('Vimeo SDK is unavailable.'));
           }
         };
-        script.onerror = function () {
+
+script.onerror = function () {
           window.clearTimeout(timeout);
           reject(new Error('Vimeo SDK could not be loaded.'));
         };
-        document.head.appendChild(script);
+
+document.head.appendChild(script);
       });
     }
 
-    return sdkPromise;
+return sdkPromise;
   }
 
-  function withTimeout(promise, milliseconds) {
+function withTimeout(promise, milliseconds) {
     return new Promise(function (resolve, reject) {
       const timer = window.setTimeout(function () {
         reject(new Error('The player did not respond in time.'));
       }, milliseconds);
 
-      Promise.resolve(promise).then(function (value) {
+Promise.resolve(promise).then(function (value) {
         window.clearTimeout(timer);
         resolve(value);
       }, function (error) {
@@ -557,25 +903,27 @@ title: Short Film Projects
     });
   }
 
-  function formatTime(seconds) {
+function formatTime(seconds) {
     const safe = Math.max(0, Math.floor(Number(seconds) || 0));
     const hours = Math.floor(safe / 3600);
     const minutes = Math.floor((safe % 3600) / 60);
     const remainder = safe % 60;
-    const short = String(minutes).padStart(2, '0') + ':' + String(remainder).padStart(2, '0');
-    return hours ? hours + ':' + short : short;
+    const short = String(minutes).padStart(2, '0') + ':' +
+      String(remainder).padStart(2, '0');
+
+return hours ? hours + ':' + short : short;
   }
 
-  function initialize() {
+function initialize() {
     document.querySelectorAll('[data-cinema]').forEach(function (root) {
       if (root.dataset.initialized) return;
       root.dataset.initialized = 'true';
 
-      const find = function (name) {
+const find = function (name) {
         return root.querySelector('[data-' + name + ']');
       };
 
-      const screen = root.querySelector('.cinema-screen');
+const screen = root.querySelector('.cinema-screen');
       const camera = find('camera');
       const cameraLayer = find('camera-layer');
       const lens = find('lens');
@@ -592,10 +940,15 @@ title: Short Film Projects
       const time = find('time');
       const status = find('status');
       const fallback = find('fallback');
-      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-      const touchCapable = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
 
-      let player;
+const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      );
+
+const touchCapable = 'ontouchstart' in window ||
+        navigator.maxTouchPoints > 0;
+
+let player;
       let preparation;
       let ready = false;
       let failed = false;
@@ -607,89 +960,143 @@ title: Short Film Projects
       let current = 0;
       let lastRate = '1';
       let lastQuality = 'auto';
-      let lastTouch = touchCapable && window.matchMedia('(pointer: coarse)').matches;
+      let lastTouch = touchCapable &&
+        window.matchMedia('(pointer: coarse)').matches;
       let hideTimer;
       let revealTimer;
       let beamAnimation;
       let seekEditing = false;
 
-      function showControls() {
+function showControls() {
         root.classList.remove('controls-idle');
         window.clearTimeout(hideTimer);
 
-        if (!started || paused || failed) return;
+if (!started || paused || failed) return;
 
-        hideTimer = window.setTimeout(function () {
-          if (!controls.contains(document.activeElement) && !paused && !seekEditing) {
+hideTimer = window.setTimeout(function () {
+          if (
+            !controls.contains(document.activeElement) &&
+            !paused &&
+            !seekEditing
+          ) {
             root.classList.add('controls-idle');
           }
         }, 2800);
       }
 
-      function setPaused(value) {
+function setPaused(value) {
         paused = value;
         toggle.textContent = value ? '▶' : '❚❚';
-        toggle.setAttribute('aria-label', value ? 'Play film' : 'Pause film');
+        toggle.setAttribute(
+          'aria-label',
+          value ? 'Play film' : 'Pause film'
+        );
         showControls();
       }
 
-      function setMuted(value) {
+function setMuted(value) {
         muted = value;
         sound.textContent = value ? 'Unmute' : 'Mute';
-        sound.setAttribute('aria-label', value ? 'Unmute film' : 'Mute film');
+        sound.setAttribute(
+          'aria-label',
+          value ? 'Unmute film' : 'Mute film'
+        );
       }
 
-      function updateTime() {
-        time.textContent = formatTime(current) + ' / ' + formatTime(duration);
-        progress.disabled = duration <= 0;
-        if (!seekEditing) {
-          progress.value = duration > 0 ? Math.round(current / duration * 1000) : 0;
+function updateTime() {
+        time.textContent = formatTime(current) + ' / ' +
+          formatTime(duration);
+
+progress.disabled = duration <= 0;
+
+if (!seekEditing) {
+          progress.value = duration > 0
+            ? Math.round(current / duration * 1000)
+            : 0;
         }
-        progress.setAttribute('aria-valuetext', formatTime(current) + ' of ' + formatTime(duration));
+
+progress.setAttribute(
+          'aria-valuetext',
+          formatTime(current) + ' of ' + formatTime(duration)
+        );
       }
 
-      function fail(error) {
+function fail(error) {
         if (failed) return;
-        failed = true;
+
+failed = true;
         launching = false;
-        window.clearTimeout(hideTimer);
+
+window.clearTimeout(hideTimer);
         window.clearTimeout(revealTimer);
-        if (beamAnimation) beamAnimation.cancel();
-        beam.style.willChange = 'auto';
+
+if (beamAnimation) beamAnimation.cancel();
+
+beam.style.willChange = 'auto';
         root.classList.add('has-error');
         root.classList.remove('is-launching', 'controls-idle');
         controls.hidden = true;
         camera.disabled = true;
         fallback.hidden = false;
         status.textContent = '';
-        if (player) player.pause().catch(function () {});
-        console.warn('Cinematic Vimeo player:', error);
-        fallback.querySelector('a').focus({ preventScroll: true });
+
+if (player) player.pause().catch(function () {});
+
+console.warn('Cinematic Vimeo player:', error);
+
+fallback.querySelector('a').focus({
+          preventScroll: true
+        });
       }
 
-      function notify(message, error) {
+function notify(message, error) {
         status.textContent = message;
         showControls();
-        if (error) console.warn('Cinematic Vimeo control:', error);
+
+if (error) {
+          console.warn('Cinematic Vimeo control:', error);
+        }
       }
 
-      async function loadQualities() {
+async function loadQualities() {
         try {
-          const options = await withTimeout(player.getQualities(), 8000);
-          if (failed || !Array.isArray(options) || !options.length) return;
+          const options = await withTimeout(
+            player.getQualities(),
+            8000
+          );
 
-          quality.replaceChildren(new Option('Auto', 'auto'));
-          const seen = new Set(['auto']);
-          options.forEach(function (option) {
-            if (!option || !option.id || seen.has(String(option.id))) return;
-            const id = String(option.id);
+if (failed || !Array.isArray(options) || !options.length) {
+            return;
+          }
+
+quality.replaceChildren(new Option('Auto', 'auto'));
+
+const seen = new Set(['auto']);
+
+options.forEach(function (option) {
+            if (
+              !option ||
+              !option.id ||
+              seen.has(String(option.id))
+            ) {
+              return;
+            }
+
+const id = String(option.id);
             seen.add(id);
-            quality.add(new Option(String(option.label || id), id));
+
+quality.add(
+              new Option(String(option.label || id), id)
+            );
           });
 
-          try {
-            const active = await withTimeout(player.getQuality(), 8000);
-            if (seen.has(String(active))) {
+try {
+            const active = await withTimeout(
+              player.getQuality(),
+              8000
+            );
+
+if (seen.has(String(active))) {
               quality.value = String(active);
               lastQuality = String(active);
             }
@@ -697,310 +1104,418 @@ title: Short Film Projects
             lastQuality = 'auto';
           }
 
-          quality.disabled = quality.options.length < 2;
+quality.disabled = quality.options.length < 2;
         } catch (error) {
-          // The disabled Auto option remains truthful when selection is unsupported.
+          // Keep Auto disabled when manual selection is unsupported.
           quality.disabled = true;
         }
       }
 
-      function prepare() {
+function prepare() {
         if (preparation) return preparation;
 
-        preparation = (async function () {
+preparation = (async function () {
           const Vimeo = await loadVimeoSDK();
-          if (failed) return;
 
-          const videoId = String(root.dataset.videoId || '');
-          if (!/^\d+$/.test(videoId)) {
+if (failed) return;
+
+const videoId = String(root.dataset.videoId || '');
+
+if (!/^\d+$/.test(videoId)) {
             throw new Error('The project Vimeo ID is invalid.');
           }
 
-          const iframe = document.createElement('iframe');
-          iframe.src = 'https://player.vimeo.com/video/' + videoId +
+const iframe = document.createElement('iframe');
+
+iframe.src = 'https://player.vimeo.com/video/' + videoId +
             '?background=1&autoplay=0&loop=0&byline=0&title=0&portrait=0&controls=0&muted=1&playsinline=1&keyboard=0';
-          iframe.title = 'Vimeo film';
+
+iframe.title = 'Vimeo film';
           iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
           iframe.allowFullscreen = true;
           iframe.tabIndex = -1;
-          find('video-layer').appendChild(iframe);
 
-          player = new Vimeo.Player(iframe);
+find('video-layer').appendChild(iframe);
 
-          player.on('play', function () {
+player = new Vimeo.Player(iframe);
+
+player.on('play', function () {
             setPaused(false);
           });
 
-          player.on('pause', function () {
+player.on('pause', function () {
             setPaused(true);
           });
 
-          player.on('ended', function () {
+player.on('ended', function () {
             setPaused(true);
             current = duration;
             updateTime();
           });
 
-          player.on('timeupdate', function (event) {
+player.on('timeupdate', function (event) {
             current = Number(event.seconds) || 0;
             duration = Number(event.duration) || duration;
             updateTime();
           });
 
-          player.on('durationchange', function (event) {
+player.on('durationchange', function (event) {
             duration = Number(event.duration) || 0;
             updateTime();
           });
 
-          player.on('playbackratechange', function (event) {
+player.on('playbackratechange', function (event) {
             lastRate = String(event.playbackRate);
             speed.value = lastRate;
           });
 
-          player.on('qualitychange', function (event) {
+player.on('qualitychange', function (event) {
             if (!event || !event.id) return;
-            lastQuality = String(event.id);
+
+lastQuality = String(event.id);
             quality.value = lastQuality;
           });
 
-          player.on('volumechange', function (event) {
+player.on('volumechange', function (event) {
             setMuted(Boolean(event.muted) || event.volume === 0);
           });
 
-          player.on('bufferstart', function () {
-            if (started) status.textContent = 'Buffering the picture.';
+player.on('bufferstart', function () {
+            if (started) {
+              status.textContent = 'Buffering the picture.';
+            }
           });
 
-          player.on('bufferend', function () {
-            if (status.textContent === 'Buffering the picture.') status.textContent = '';
+player.on('bufferend', function () {
+            if (status.textContent === 'Buffering the picture.') {
+              status.textContent = '';
+            }
           });
 
-          player.on('error', function (error) {
+player.on('error', function (error) {
             // Optional control failures must not replace a playable film.
             if (error && [
-              'setQuality', 'getQuality', 'getQualities',
-              'setPlaybackRate', 'setCurrentTime', 'setMuted', 'setVolume'
-            ].indexOf(error.method) !== -1) return;
-            fail(error);
+              'setQuality',
+              'getQuality',
+              'getQualities',
+              'setPlaybackRate',
+              'setCurrentTime',
+              'setMuted',
+              'setVolume'
+            ].indexOf(error.method) !== -1) {
+              return;
+            }
+
+fail(error);
           });
 
-          await withTimeout(player.ready(), 20000);
-          if (failed) return;
-          ready = true;
+await withTimeout(player.ready(), 20000);
 
-          player.getDuration().then(function (value) {
+if (failed) return;
+
+ready = true;
+
+player.getDuration().then(function (value) {
             duration = Number(value) || 0;
             updateTime();
           }).catch(function () {});
 
-          player.getMuted().then(setMuted).catch(function () {});
+player.getMuted().then(setMuted).catch(function () {});
           loadQualities();
         })().catch(function (error) {
           fail(error);
         });
 
-        return preparation;
+return preparation;
       }
 
-      function reveal() {
+function reveal() {
         if (failed) return;
-        started = true;
+
+started = true;
         launching = false;
-        root.classList.remove('is-launching');
+
+root.classList.remove('is-launching');
         root.classList.add('is-started');
-        cameraLayer.hidden = true;
+
+cameraLayer.hidden = true;
         controls.hidden = false;
         caption.textContent = 'Begin the picture';
         status.textContent = '';
-        showControls();
-        if (document.activeElement === camera) {
+
+showControls();
+
+if (document.activeElement === camera) {
           toggle.focus({ preventScroll: true });
         }
       }
 
-      function animateLaunch() {
+function animateLaunch() {
         if (reducedMotion.matches) {
           reveal();
           return;
         }
 
-        // Read geometry together, then write setup dimensions only once.
+// Read geometry together, then write setup dimensions only once.
         const bounds = screen.getBoundingClientRect();
         const lensBounds = lens.getBoundingClientRect();
-        const x = lensBounds.left + lensBounds.width / 2 - bounds.left;
-        const y = lensBounds.top + lensBounds.height / 2 - bounds.top;
-        const radius = Math.hypot(
+        const x = lensBounds.left + lensBounds.width / 2 -
+          bounds.left;
+        const y = lensBounds.top + lensBounds.height / 2 -
+          bounds.top;
+
+const radius = Math.hypot(
           Math.max(x, bounds.width - x),
           Math.max(y, bounds.height - y)
         );
-        const milliseconds = lastTouch ? 450 : 900;
 
-        beam.style.left = x + 'px';
+const milliseconds = lastTouch ? 450 : 900;
+
+beam.style.left = x + 'px';
         beam.style.top = y + 'px';
         beam.style.width = radius * 4 + 'px';
         beam.style.height = radius * 4 + 'px';
         beam.style.willChange = 'transform, opacity';
 
-        // One deliberate layout flush establishes the initial animation state.
+// Existing animation timing is retained.
         void beam.offsetWidth;
 
-        beamAnimation = beam.animate([
-          { offset: 0, opacity: 0, transform: 'translate(-50%, -50%) scale(0)' },
-          { offset: 0.55, opacity: 1, transform: 'translate(-50%, -50%) scale(1)' },
-          { offset: 1, opacity: 0, transform: 'translate(-50%, -50%) scale(1)' }
+beamAnimation = beam.animate([
+          {
+            offset: 0,
+            opacity: 0,
+            transform: 'translate(-50%, -50%) scale(0)'
+          },
+          {
+            offset: 0.55,
+            opacity: 1,
+            transform: 'translate(-50%, -50%) scale(1)'
+          },
+          {
+            offset: 1,
+            opacity: 0,
+            transform: 'translate(-50%, -50%) scale(1)'
+          }
         ], {
           duration: milliseconds,
           easing: 'ease-in-out'
         });
 
-        root.classList.add('is-launching');
+root.classList.add('is-launching');
 
-        // Reveal the moving picture while the beam still masks the change.
-        revealTimer = window.setTimeout(reveal, milliseconds * 0.55);
-        beamAnimation.finished.then(function () {
+revealTimer = window.setTimeout(
+          reveal,
+          milliseconds * 0.55
+        );
+
+beamAnimation.finished.then(function () {
           beam.style.willChange = 'auto';
         }).catch(function () {
           beam.style.willChange = 'auto';
         });
       }
 
-      async function launch() {
+async function launch() {
         if (launching || started || failed) return;
-        launching = true;
+
+launching = true;
         camera.disabled = true;
         caption.textContent = 'Preparing the picture';
         status.textContent = 'Preparing the film.';
 
-        await prepare();
-        if (failed || !ready) return;
+await prepare();
 
-        try {
-          // Muted playback survives the asynchronous SDK load on touch browsers.
+if (failed || !ready) return;
+
+try {
+          // Muted playback survives asynchronous SDK loading on touch browsers.
           await withTimeout(player.play(), 20000);
-          if (failed) return;
-          camera.disabled = false;
+
+if (failed) return;
+
+camera.disabled = false;
           animateLaunch();
         } catch (error) {
           fail(error);
         }
       }
 
-      root.addEventListener('pointerdown', function (event) {
+root.addEventListener('pointerdown', function (event) {
         lastTouch = event.pointerType === 'touch';
         showControls();
       }, { passive: true });
 
-      root.addEventListener('touchstart', function () {
+root.addEventListener('touchstart', function () {
         lastTouch = true;
         showControls();
       }, { passive: true });
 
-      root.addEventListener('keydown', function () {
+root.addEventListener('keydown', function () {
         lastTouch = false;
         showControls();
       });
 
-      root.addEventListener('pointermove', showControls, { passive: true });
-      root.addEventListener('focusin', showControls);
-      root.addEventListener('focusout', function () {
+root.addEventListener(
+        'pointermove',
+        showControls,
+        { passive: true }
+      );
+
+root.addEventListener('focusin', showControls);
+
+root.addEventListener('focusout', function () {
         window.setTimeout(showControls, 0);
       });
 
-      camera.addEventListener('click', launch);
-      find('refresh').addEventListener('click', function () {
+camera.addEventListener('click', launch);
+
+find('refresh').addEventListener('click', function () {
         window.location.reload();
       });
 
-      poster.addEventListener('error', function () {
+poster.addEventListener('error', function () {
         poster.hidden = true;
       });
 
-      toggle.addEventListener('click', async function () {
+toggle.addEventListener('click', async function () {
         if (!ready || failed) return;
-        toggle.disabled = true;
-        try {
-          const isPaused = await withTimeout(player.getPaused(), 8000);
-          await withTimeout(isPaused ? player.play() : player.pause(), 15000);
+
+toggle.disabled = true;
+
+try {
+          const isPaused = await withTimeout(
+            player.getPaused(),
+            8000
+          );
+
+await withTimeout(
+            isPaused ? player.play() : player.pause(),
+            15000
+          );
         } catch (error) {
-          notify('Playback could not be changed. Please try again.', error);
+          notify(
+            'Playback could not be changed. Please try again.',
+            error
+          );
         } finally {
           toggle.disabled = false;
         }
       });
 
-      replay.addEventListener('click', async function () {
+replay.addEventListener('click', async function () {
         replay.disabled = true;
-        try {
-          await withTimeout(player.setCurrentTime(0).then(function () {
-            return player.play();
-          }), 15000);
+
+try {
+          await withTimeout(
+            player.setCurrentTime(0).then(function () {
+              return player.play();
+            }),
+            15000
+          );
         } catch (error) {
-          notify('The film could not be replayed. Please try again.', error);
+          notify(
+            'The film could not be replayed. Please try again.',
+            error
+          );
         } finally {
           replay.disabled = false;
         }
       });
 
-      sound.addEventListener('click', async function () {
+sound.addEventListener('click', async function () {
         sound.disabled = true;
-        try {
+
+try {
           await withTimeout(player.setMuted(!muted), 8000);
           setMuted(await withTimeout(player.getMuted(), 8000));
         } catch (error) {
-          notify('Sound could not be changed. Please use your device sound controls.', error);
+          notify(
+            'Sound could not be changed. Please use your device sound controls.',
+            error
+          );
         } finally {
           sound.disabled = false;
         }
       });
 
-      speed.addEventListener('change', async function () {
+speed.addEventListener('change', async function () {
         const previous = lastRate;
         speed.disabled = true;
-        try {
-          const actual = await withTimeout(player.setPlaybackRate(Number(speed.value)), 8000);
-          lastRate = String(actual);
+
+try {
+          const actual = await withTimeout(
+            player.setPlaybackRate(Number(speed.value)),
+            8000
+          );
+
+lastRate = String(actual);
           speed.value = lastRate;
           status.textContent = '';
         } catch (error) {
           speed.value = previous;
-          notify('This film does not support the selected playback speed.', error);
+
+notify(
+            'This film does not support the selected playback speed.',
+            error
+          );
         } finally {
           speed.disabled = false;
         }
       });
 
-      quality.addEventListener('change', async function () {
+quality.addEventListener('change', async function () {
         const previous = lastQuality;
         quality.disabled = true;
-        try {
-          const actual = await withTimeout(player.setQuality(quality.value), 10000);
-          lastQuality = String(actual);
+
+try {
+          const actual = await withTimeout(
+            player.setQuality(quality.value),
+            10000
+          );
+
+lastQuality = String(actual);
           quality.value = lastQuality;
           status.textContent = '';
         } catch (error) {
           quality.value = previous;
-          notify('Manual quality selection is unavailable for this film.', error);
+
+notify(
+            'Manual quality selection is unavailable for this film.',
+            error
+          );
         } finally {
           quality.disabled = quality.options.length < 2;
         }
       });
 
-      progress.addEventListener('input', function () {
+progress.addEventListener('input', function () {
         seekEditing = true;
         showControls();
-        const preview = duration * Number(progress.value) / 1000;
-        time.textContent = formatTime(preview) + ' / ' + formatTime(duration);
-        progress.setAttribute('aria-valuetext', formatTime(preview) + ' of ' + formatTime(duration));
+
+const preview = duration * Number(progress.value) / 1000;
+
+time.textContent = formatTime(preview) + ' / ' +
+          formatTime(duration);
+
+progress.setAttribute(
+          'aria-valuetext',
+          formatTime(preview) + ' of ' + formatTime(duration)
+        );
       });
 
-      progress.addEventListener('change', async function () {
+progress.addEventListener('change', async function () {
         try {
           current = await withTimeout(
-            player.setCurrentTime(duration * Number(progress.value) / 1000),
+            player.setCurrentTime(
+              duration * Number(progress.value) / 1000
+            ),
             10000
           );
         } catch (error) {
-          notify('Seeking failed. Please try again.', error);
+          notify(
+            'Seeking failed. Please try again.',
+            error
+          );
         } finally {
           seekEditing = false;
           updateTime();
@@ -1008,23 +1523,28 @@ title: Short Film Projects
         }
       });
 
-      progress.addEventListener('blur', function () {
+progress.addEventListener('blur', function () {
         seekEditing = false;
         updateTime();
       });
 
-      reducedMotion.addEventListener('change', function (event) {
+reducedMotion.addEventListener('change', function (event) {
         if (event.matches && beamAnimation) {
           beamAnimation.cancel();
           window.clearTimeout(revealTimer);
-          if (launching && ready && !paused) reveal();
+
+if (launching && ready && !paused) reveal();
         }
       });
     });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initialize, { once: true });
+if (document.readyState === 'loading') {
+    document.addEventListener(
+      'DOMContentLoaded',
+      initialize,
+      { once: true }
+    );
   } else {
     initialize();
   }
