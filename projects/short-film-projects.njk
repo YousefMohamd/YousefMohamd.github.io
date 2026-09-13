@@ -3,6 +3,15 @@ layout: layouts/base.njk
 title: Short Film Projects
 ---
 
+<!-- GSAP 3.13 — plugins are free since Webflow acquisition -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js" defer></script>
+
+<!-- Fonts loaded properly at document level -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet">
+
 <div class="w3-padding-64 w3-content cinematic-projects">
   <h2 class="w3-text-light-grey section-heading">Short Film Projects</h2>
 
@@ -16,6 +25,7 @@ title: Short Film Projects
             data-video-id="{{ p.data.vimeoId | escape }}"
             data-title="{{ p.data.title | escape }}"
             data-subtitle="{{ (p.data.subtitle or '') | escape }}"
+            data-state="idle"
             aria-label="{{ p.data.title | escape }} video player"
           >
             <div class="cinema-screen">
@@ -32,29 +42,87 @@ title: Short Film Projects
                 height="1080"
               >
 
-              <!-- Title (top-left only) -->
-              <div class="cinema-title-layer">
-                <h3 class="cinema-film-title" data-film-title></h3>
-                <span class="cinema-film-sub" data-film-sub></span>
-              </div>
+              <!-- Projector beam (cinema light) -->
+              <div class="cine-light" data-light aria-hidden="true"></div>
 
-              <div class="cinema-fallback" data-fallback role="alert" hidden>
-                <div>
-                  <strong>The picture could not start</strong>
-                  <p>We could not load the film. Please check your connection and refresh the page.</p>
-                  <a href="https://vimeo.com/{{ p.data.vimeoId | escape }}" target="_blank" rel="noopener noreferrer">Watch on Vimeo</a>
-                  <button type="button" data-refresh>Retry</button>
-                </div>
+              <!-- Title block (top-left, AppleSystemUIFont for desc, Phosphate for title) -->
+              <div class="cine-title-block" data-title-block>
+                <h3 class="cine-title" data-film-title></h3>
+                <p class="cine-desc" data-film-desc></p>
               </div>
             </div>
 
-            <!-- Control bar (glass timeline, no frame) -->
-            <div class="cinema-controls" data-controls aria-label="Film controls">
-              <div class="cinema-progress-wrap" data-progress-wrap>
-                <div class="cinema-progress-track">
-                  <div class="cinema-progress-fill" data-progress-fill></div>
+            <!-- Camera stage (bottom-left) -->
+            <div class="cine-camera-stage" data-camera-stage>
+              <button
+                class="cine-camera-btn"
+                data-camera-btn
+                type="button"
+                aria-label="Play film"
+              >
+                <svg
+                  class="cine-camera-svg"
+                  viewBox="0 0 240 240"
+                  xmlns="http://www.w3.org/2000/svg"
+                  shape-rendering="geometricPrecision"
+                  aria-hidden="true"
+                >
+                  <!-- Body group (fades on click) -->
+                  <g class="cam-body">
+                    <rect x="60" y="88" width="120" height="76" rx="9" fill="currentColor"/>
+                    <rect x="52" y="114" width="10" height="14" fill="currentColor"/>
+                    <polygon points="53,114 32,106 32,136 53,128" fill="currentColor"/>
+                    <rect x="178" y="106" width="10" height="28" fill="currentColor"/>
+                    <polygon points="187,106 225,82 225,158 187,134" fill="currentColor"/>
+                    <path d="M 104 163 A 16 16 0 0 0 136 163 Z" fill="currentColor"/>
+                    <polygon points="116,168 124,168 124,230 116,230" fill="currentColor"/>
+                    <polygon points="112,168 102,168 60,230 73,230" fill="currentColor"/>
+                    <polygon points="128,168 138,168 180,230 167,230" fill="currentColor"/>
+                  </g>
+
+                  <!-- Reel holes (fade on click) -->
+                  <g class="cam-holes" fill="var(--cam-bg,#000)">
+                    <circle cx="95" cy="60" r="4.5"/>
+                    <circle cx="95" cy="42" r="6"/>
+                    <circle cx="95" cy="78" r="6"/>
+                    <circle cx="77" cy="60" r="6"/>
+                    <circle cx="113" cy="60" r="6"/>
+                    <circle cx="150" cy="48" r="4.5"/>
+                    <circle cx="150" cy="24" r="7.5"/>
+                    <circle cx="172.83" cy="40.58" r="7.5"/>
+                    <circle cx="164.11" cy="67.42" r="7.5"/>
+                    <circle cx="135.89" cy="67.42" r="7.5"/>
+                    <circle cx="127.17" cy="40.58" r="7.5"/>
+                  </g>
+
+                  <!-- Left reel (morphs to pause bar) -->
+                  <path
+                    class="cam-reel-left"
+                    d="M 63 60 a 32 32 0 1 0 64 0 a 32 32 0 1 0 -64 0"
+                    fill="currentColor"
+                  />
+
+                  <!-- Right reel (morphs to pause bar) -->
+                  <path
+                    class="cam-reel-right"
+                    d="M 110 48 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0"
+                    fill="currentColor"
+                  />
+
+                  <!-- Hidden morph targets -->
+                  <path class="morph-left"  d="M 88 60 H 106 V 180 H 88 Z" fill="currentColor" style="opacity:0;visibility:hidden"/>
+                  <path class="morph-right" d="M 134 60 H 152 V 180 H 134 Z" fill="currentColor" style="opacity:0;visibility:hidden"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Control bar (revealed after morph) -->
+            <div class="cine-controls" data-controls aria-label="Film controls">
+              <div class="cine-timeline">
+                <div class="cine-timeline-track">
+                  <div class="cine-timeline-fill" data-progress-fill></div>
                   <input
-                    class="cinema-progress"
+                    class="cine-timeline-input"
                     data-progress
                     type="range"
                     min="0" max="1000" step="1" value="0"
@@ -64,73 +132,62 @@ title: Short Film Projects
                 </div>
               </div>
 
-              <div class="cinema-btn-row">
-                <div class="cinema-btn-left">
-                  <div class="cbtn-cam-wrap">
-                    <button class="cbtn-cam-btn" data-cam-btn type="button" aria-label="Play/Pause">
-                      <svg class="cbtn-cam" viewBox="0 0 64 64" aria-hidden="true">
-                        <!-- Left reel -->
-                        <circle cx="22" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="2.2"/>
-                        <circle cx="22" cy="16" r="2.2" fill="currentColor"/>
-                        <circle cx="22" cy="9" r="1.3" fill="currentColor"/>
-                        <circle cx="22" cy="23" r="1.3" fill="currentColor"/>
-                        <circle cx="15" cy="16" r="1.3" fill="currentColor"/>
-                        <circle cx="29" cy="16" r="1.3" fill="currentColor"/>
-                        <!-- Right reel -->
-                        <circle cx="42" cy="16" r="10" fill="none" stroke="currentColor" stroke-width="2.2"/>
-                        <circle cx="42" cy="16" r="2.2" fill="currentColor"/>
-                        <circle cx="42" cy="9" r="1.3" fill="currentColor"/>
-                        <circle cx="42" cy="23" r="1.3" fill="currentColor"/>
-                        <circle cx="35" cy="16" r="1.3" fill="currentColor"/>
-                        <circle cx="49" cy="16" r="1.3" fill="currentColor"/>
-                        <!-- Camera body -->
-                        <rect x="16" y="26" width="30" height="17" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/>
-                        <rect x="24" y="31" width="13" height="7" rx="1.4" fill="none" stroke="currentColor" stroke-width="1.6"/>
-                        <circle cx="28" cy="34.5" r="1.1" fill="currentColor"/>
-                        <circle cx="33" cy="34.5" r="1.1" fill="currentColor"/>
-                        <!-- Lens -->
-                        <polygon points="46,30 56,26 56,43 46,39" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/>
-                        <circle cx="49.5" cy="34.5" r="1.4" fill="currentColor" opacity="0.7"/>
-                        <!-- Back viewfinder -->
-                        <polygon points="16,30 12,28 12,35 16,34" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                        <!-- Tripod -->
-                        <line x1="26" y1="43" x2="19" y2="58" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
-                        <line x1="31" y1="43" x2="31" y2="58" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
-                        <line x1="36" y1="43" x2="43" y2="58" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/>
-                        <circle cx="31" cy="43" r="1.5" fill="currentColor"/>
+              <div class="cine-btn-row">
+                <div class="cine-btn-left">
+                  <!-- Play/Pause button (appears after morph) -->
+                  <button class="cine-playpause" data-playpause-btn type="button" aria-label="Play/Pause">
+                    <svg class="pp-svg" viewBox="0 0 24 24" aria-hidden="true">
+                      <path class="pp-path" d="M8 5v14l11-7z" fill="currentColor"/>
+                    </svg>
+                  </button>
+
+                  <!-- Volume -->
+                  <div class="cine-volume">
+                    <button class="cine-btn" data-volume-btn type="button" aria-label="Mute/Unmute">
+                      <svg viewBox="0 0 24 24" class="cine-btn-icon" aria-hidden="true">
+                        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                       </svg>
-                      <span class="cbtn-cam-state" data-cam-label>Play</span>
                     </button>
+                    <input
+                      class="cine-volume-slider"
+                      data-volume-slider
+                      type="range"
+                      min="0" max="1" step="0.01" value="1"
+                      aria-label="Volume"
+                    >
                   </div>
 
-                  <button class="cbtn cbtn-toggle" data-toggle type="button" aria-label="Play film">
-                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M8 5v14l11-7z"/></svg>
-                  </button>
-                  <button class="cbtn" data-replay type="button" aria-label="Replay film">
-                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                  </button>
-                  <button class="cbtn" data-sound type="button" aria-label="Unmute film">
-                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                  </button>
+                  <span class="cine-time" data-time>00:00 / 00:00</span>
                 </div>
 
-                <div class="cinema-btn-right">
-                  <button class="cbtn cbtn-text" data-speed type="button" aria-label="Playback speed">1x</button>
-                  <div class="cinema-quality-wrap">
-                    <button class="cbtn cbtn-text" data-quality type="button" aria-label="Video quality">Auto</button>
-                    <div class="cinema-quality-menu" data-quality-menu hidden></div>
+                <div class="cine-btn-right">
+                  <div class="cine-speed-wrap">
+                    <button class="cine-btn cine-btn-text" data-speed-btn type="button">1x</button>
+                    <div class="cine-popup" data-speed-menu hidden>
+                      <button class="cine-popup-item" data-speed-value="0.5">0.5x</button>
+                      <button class="cine-popup-item" data-speed-value="0.75">0.75x</button>
+                      <button class="cine-popup-item is-active" data-speed-value="1">1x</button>
+                      <button class="cine-popup-item" data-speed-value="1.25">1.25x</button>
+                      <button class="cine-popup-item" data-speed-value="1.5">1.5x</button>
+                      <button class="cine-popup-item" data-speed-value="2">2x</button>
+                    </div>
                   </div>
-                  <button class="cbtn" data-fullscreen type="button" aria-label="Fullscreen">
-                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+
+                  <div class="cine-quality-wrap">
+                    <button class="cine-btn cine-btn-text" data-quality-btn type="button">
+                      <span data-quality-label>Auto</span>
+                    </button>
+                    <div class="cine-popup" data-quality-menu hidden></div>
+                  </div>
+
+                  <button class="cine-btn" data-fullscreen-btn type="button" aria-label="Fullscreen">
+                    <svg viewBox="0 0 24 24" class="cine-btn-icon" aria-hidden="true">
+                      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+                    </svg>
                   </button>
                 </div>
               </div>
             </div>
-
-            <p class="cinema-status" data-status role="status" aria-live="polite"></p>
-            <noscript>
-              <p><a href="https://vimeo.com/{{ p.data.vimeoId | escape }}">Watch on Vimeo</a>. JavaScript required.</p>
-            </noscript>
           </section>
         {% endif %}
 
@@ -146,45 +203,42 @@ title: Short Film Projects
 
 <style>
 /* ============================================================
-   Cinematic Player v3
-   States on .cinema:
-     (pre-start)       → magical intro, controls reveal then fade
-     is-started        → video playing, camera icon persistent
-     is-hover          → title + camera light + state label
-     ui-open           → user is interacting
-     is-paused         → full bar revealed right→left
-     is-ended          → end card (Vimeo wordmark)
-     has-error         → fallback overlay
-   Motion: transform + opacity + filter only.
+   CINEMATIC PLAYER — v6
+   ------------------------------------------------------------
+   States (data-state on .cinema):
+     idle     → title visible + camera at bottom-left
+     playing  → video playing + controls (auto-hide)
+     paused   → video paused + controls visible
+   ------------------------------------------------------------
+   Layout:
+     Title block  → TOP-LEFT
+     Camera       → BOTTOM-LEFT
+     Controls     → full-width bar at bottom (revealed after morph)
    ============================================================ */
-:root {
-  --intro-duration: 2.8s;
-  --idle-timeout: 3s;
-  --accent: #e8d68a;
-  --fade-fast: 0.28s;
-  --fade-slow: 0.55s;
-  --reel-duration: 5s;
-}
+
 .cinematic-projects {
-  --bg: #0a0a0a;
-  --surface: rgba(10, 10, 10, 0.75);
-  --text: #ffffff;
-  --off-white: #f2f0eb;
-  --muted: #a0a0a0;
-  --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --cine-bg: #0a0a0a;
+  --cine-surface: rgba(10, 10, 10, 0.85);
+  --cine-text: #e6e6e6;
+  --cine-desc: #cccccc;
+  --cine-accent: #e8d68a;
+  /* Title: Phosphate on macOS → Anton on others (very close match) → Impact fallback */
+  --cine-title-font: 'Phosphate', 'Anton', 'Impact', 'Oswald', sans-serif;
+  /* Description: Apple system font on macOS → Inter fallback on others */
+  --cine-body-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'AppleSystemUIFont', 'Inter', 'Helvetica Neue', 'Segoe UI', sans-serif;
 }
 
 .cinematic-projects .section-heading {
-  font-family: var(--font);
+  font-family: var(--cine-body-font);
   font-size: clamp(24px, 3vw, 36px);
   font-weight: 700;
   letter-spacing: -0.02em;
   margin-bottom: 48px;
-  color: var(--text);
+  color: #f0f0f0;
 }
 .cinematic-projects .film-project { margin-bottom: 56px; }
 .cinematic-projects .film-description {
-  font-family: var(--font);
+  font-family: var(--cine-body-font);
   color: #c8c8c8;
   line-height: 1.8;
   font-size: 15px;
@@ -200,12 +254,11 @@ title: Short Film Projects
 .cinematic-projects .cinema {
   position: relative;
   isolation: isolate;
-  border-radius: 14px;
+  border-radius: 12px;
   overflow: hidden;
   background: #000;
   box-shadow: 0 24px 72px rgba(0,0,0,0.65);
 }
-.cinematic-projects .cinema-fallback[hidden] { display: none !important; }
 
 /* ===== Screen ===== */
 .cinematic-projects .cinema-screen {
@@ -213,10 +266,9 @@ title: Short Film Projects
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #000;
-  cursor: pointer;
 }
 
-/* ===== Video / Poster ===== */
+/* ===== Video + Poster ===== */
 .cinematic-projects .cinema-video,
 .cinematic-projects .cinema-video iframe {
   position: absolute;
@@ -228,8 +280,10 @@ title: Short Film Projects
   transition: opacity 0.7s ease;
   pointer-events: none;
 }
-.cinematic-projects .cinema.is-started .cinema-video,
-.cinematic-projects .cinema.is-started .cinema-video iframe {
+.cinematic-projects .cinema[data-state="playing"] .cinema-video,
+.cinematic-projects .cinema[data-state="paused"] .cinema-video,
+.cinematic-projects .cinema[data-state="playing"] .cinema-video iframe,
+.cinematic-projects .cinema[data-state="paused"] .cinema-video iframe {
   opacity: 1;
 }
 .cinematic-projects .cinema-poster {
@@ -241,65 +295,166 @@ title: Short Film Projects
   opacity: 1;
   transition: opacity 0.6s ease;
   z-index: 2;
-  will-change: opacity;
 }
-.cinematic-projects .cinema.is-started .cinema-poster {
+.cinematic-projects .cinema[data-state="playing"] .cinema-poster,
+.cinematic-projects .cinema[data-state="paused"] .cinema-poster {
   opacity: 0;
   pointer-events: none;
 }
 
-/* ===== Title (top-left, scroll-smoother glide) ===== */
-.cinematic-projects .cinema-title-layer {
+/* ===== Projector Beam (cinema light) ===== */
+.cinematic-projects .cine-light {
   position: absolute;
-  top: 22px;
-  left: 24px;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 60% at 15% 80%,
+      rgba(255, 235, 180, 0.42) 0%,
+      rgba(255, 235, 180, 0.14) 32%,
+      transparent 65%);
+  mix-blend-mode: screen;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cinematic-projects .cinema.is-morphing .cine-light,
+.cinematic-projects .cinema[data-state="playing"] .cine-light,
+.cinematic-projects .cinema[data-state="paused"] .cine-light {
+  opacity: 1;
+}
+
+/* ===== Title block — TOP-LEFT ===== */
+.cinematic-projects .cine-title-block {
+  position: absolute;
+  top: 28px;
+  left: 32px;
+  right: 32px;
   z-index: 8;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  max-width: 62%;
-  opacity: 0;
-  transform: translate3d(0, -14px, 0);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 6px;
+  max-width: 620px;
   pointer-events: none;
-  will-change: opacity, transform;
+  /* Soft scroll entrance */
+  opacity: 0;
+  transform: translate3d(0, -22px, 0);
+  filter: blur(6px);
+  animation: cine-soft-scroll 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0.35s forwards;
 }
-/* Pre-start: title visible with scroll-smoother reveal */
-.cinematic-projects .cinema:not(.is-started) .cinema-title-layer {
-  opacity: 1;
-  transform: none;
-  transition-delay: 0.35s;
-}
-/* During playback: only on hover or ui-open */
-.cinematic-projects .cinema.is-started.is-hover .cinema-title-layer,
-.cinematic-projects .cinema.is-started.ui-open .cinema-title-layer {
-  opacity: 1;
-  transform: none;
+@keyframes cine-soft-scroll {
+  0%   { opacity: 0; transform: translate3d(0, -22px, 0); filter: blur(6px); }
+  60%  { opacity: 1; filter: blur(0); }
+  100% { opacity: 1; transform: translate3d(0, 0, 0); filter: blur(0); }
 }
 
-.cinematic-projects .cinema-film-title {
-  font-family: var(--font);
-  font-size: clamp(15px, 1.6vw, 18px);
-  font-weight: 700;
-  color: var(--off-white);
-  letter-spacing: -0.01em;
-  line-height: 1.2;
+.cinematic-projects .cine-title {
+  font-family: var(--cine-title-font);
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: var(--cine-text);
   margin: 0;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.7);
-}
-.cinematic-projects .cinema-film-sub {
-  font-family: var(--font);
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--accent);
-  letter-spacing: 0.16em;
   text-transform: uppercase;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.7);
+  text-shadow: 0 2px 18px rgba(0,0,0,0.85);
+}
+.cinematic-projects .cine-desc {
+  font-family: var(--cine-body-font);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--cine-desc);
+  margin: 0;
+  max-width: 520px;
+  text-shadow: 0 1px 6px rgba(0,0,0,0.75);
 }
 
-/* ===== Control Bar (NO border, gradient only) ===== */
-.cinematic-projects .cinema-controls {
+/* Fade title on morph */
+.cinematic-projects .cinema.is-morphing .cine-title-block,
+.cinematic-projects .cinema[data-state="playing"] .cine-title-block,
+.cinematic-projects .cinema[data-state="paused"] .cine-title-block {
+  animation: none;
+  opacity: 0;
+  transform: translate3d(0, -18px, 0);
+  filter: blur(4px);
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.7s ease;
+}
+
+/* ===== Camera stage — BOTTOM-LEFT ===== */
+.cinematic-projects .cine-camera-stage {
+  position: absolute;
+  bottom: 24px;
+  left: 24px;
+  z-index: 12;
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity 0.4s ease;
+}
+.cinematic-projects .cinema.is-morphing .cine-camera-stage,
+.cinematic-projects .cinema[data-state="playing"] .cine-camera-stage,
+.cinematic-projects .cinema[data-state="paused"] .cine-camera-stage {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cinematic-projects .cine-camera-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #f2f0eb;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
+}
+.cinematic-projects .cine-camera-btn:hover {
+  transform: scale(1.08);
+  background: rgba(255,255,255,0.04);
+}
+.cinematic-projects .cine-camera-btn:active {
+  transform: scale(0.96);
+}
+
+.cinematic-projects .cine-camera-svg {
+  width: 76px;
+  height: 76px;
+  color: #f2f0eb;
+  --cam-bg: #000;
+  /* FLAT 2D — no drop shadow, no shading */
+  display: block;
+}
+
+/* Reel spin on hover (Animation 2) */
+@keyframes cine-reel-spin { to { transform: rotate(360deg); } }
+.cinematic-projects .cinema[data-state="idle"] .cine-camera-btn:hover .cam-reel-left {
+  animation: cine-reel-spin 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  transform-origin: 95px 60px;
+}
+.cinematic-projects .cinema[data-state="idle"] .cine-camera-btn:hover .cam-reel-right {
+  animation: cine-reel-spin 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  animation-delay: 0.08s;
+  transform-origin: 150px 48px;
+}
+/* Also spin the holes with the reels */
+.cinematic-projects .cinema[data-state="idle"] .cine-camera-btn:hover .cam-holes circle:nth-child(-n+5) {
+  animation: cine-reel-spin 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  transform-origin: 95px 60px;
+}
+.cinematic-projects .cinema[data-state="idle"] .cine-camera-btn:hover .cam-holes circle:nth-child(n+6) {
+  animation: cine-reel-spin 1.4s cubic-bezier(0.16, 1, 0.3, 1) 1;
+  animation-delay: 0.08s;
+  transform-origin: 150px 48px;
+}
+
+/* ===== Control Bar ===== */
+.cinematic-projects .cine-controls {
   position: absolute;
   left: 0;
   right: 0;
@@ -308,272 +463,62 @@ title: Short Film Projects
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 56px 22px 16px;
+  padding: 64px 22px 18px;
   background: linear-gradient(to top,
               rgba(0,0,0,0.92) 0%,
-              rgba(0,0,0,0.72) 40%,
-              rgba(0,0,0,0.28) 75%,
+              rgba(0,0,0,0.72) 42%,
+              rgba(0,0,0,0.24) 78%,
               rgba(0,0,0,0) 100%);
-  pointer-events: auto;
-  transition: opacity var(--fade-fast) ease, transform var(--fade-fast) ease;
-  will-change: opacity, transform;
-}
-
-/* Pre-start: full bar visible during intro */
-.cinematic-projects .cinema:not(.is-started) .cinema-controls {
-  opacity: 1;
-  transform: none;
-  pointer-events: none;
-}
-/* Started: hidden by default, EXCEPT camera button */
-.cinematic-projects .cinema.is-started:not(.is-hover):not(.ui-open):not(.is-paused):not(.is-ended) .cinema-controls {
   opacity: 0;
-  transform: translate3d(0, 8px, 0);
+  transform: translate3d(0, 12px, 0);
   pointer-events: none;
+  transition:
+    opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.cinematic-projects .cinema.is-started:not(.is-hover):not(.ui-open):not(.is-paused):not(.is-ended) .cbtn-cam-btn {
+.cinematic-projects .cinema.is-morphing .cine-controls,
+.cinematic-projects .cinema[data-state="playing"].is-ui-visible .cine-controls,
+.cinematic-projects .cinema[data-state="playing"]:hover .cine-controls,
+.cinematic-projects .cinema[data-state="paused"] .cine-controls {
   opacity: 1;
   transform: none;
   pointer-events: auto;
 }
-/* Visible during hover / ui-open / paused / ended */
-.cinematic-projects .cinema.is-started.is-hover .cinema-controls,
-.cinematic-projects .cinema.is-started.ui-open .cinema-controls,
-.cinematic-projects .cinema.is-started.is-paused .cinema-controls,
-.cinematic-projects .cinema.is-started.is-ended .cinema-controls {
-  opacity: 1;
-  transform: none;
-  pointer-events: auto;
-}
-.cinematic-projects .cinema.has-error .cinema-controls { display: none; }
 
-/* Hide all but camera during "playing but not revealed" state */
-.cinematic-projects .cinema.is-started:not(.is-hover):not(.ui-open):not(.is-paused):not(.is-ended) .cinema-progress-wrap,
-.cinematic-projects .cinema.is-started:not(.is-hover):not(.ui-open):not(.is-paused):not(.is-ended) .cbtn:not(.cbtn-cam-btn) {
-  opacity: 0;
-  pointer-events: none;
-}
-.cinematic-projects .cinema-progress-wrap,
-.cinematic-projects .cinema-btn-row .cbtn:not(.cbtn-cam-btn) {
-  transition: opacity var(--fade-fast) ease;
-  will-change: opacity;
-}
-
-/* ===== Intro animation (magical stagger) ===== */
-@keyframes cp-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes cp-magical-in {
-  0%   { opacity: 0; transform: translate3d(-8px, 0, 0) scale(0.92); filter: blur(4px); }
-  55%  { opacity: 1; transform: translate3d(0, 0, 0) scale(1.02); filter: blur(0); }
-  75%  { transform: scale(1); }
-  100% { opacity: 1; transform: none; }
-}
-@keyframes cp-magical-out {
-  0%   { opacity: 1; }
-  70%  { opacity: 1; }
-  100% { opacity: 0; }
-}
-@keyframes cp-timeline-draw {
-  0%   { transform: scaleX(0); opacity: 0; }
-  20%  { transform: scaleX(1); opacity: 1; }
-  85%  { transform: scaleX(1); opacity: 1; }
-  100% { transform: scaleX(1); opacity: 0; }
-}
-
-.cinematic-projects .cinema:not(.is-started) {
-  animation: cp-fade 0.7s ease both;
-}
-
-/* Timeline glides in first */
-.cinematic-projects .cinema:not(.is-started) .cinema-progress-wrap {
-  animation: cp-timeline-draw var(--intro-duration) ease both;
-  transform-origin: left center;
-}
-
-/* Controls magical stagger */
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn,
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn {
-  animation: cp-magical-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both,
-             cp-magical-out 0.7s ease 1.6s forwards;
-}
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(1) { animation-delay: 0.15s, 1.7s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(2) { animation-delay: 0.25s, 1.8s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(3) { animation-delay: 0.35s, 1.9s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(4) { animation-delay: 0.45s, 2.0s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(1) { animation-delay: 0.55s, 2.1s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(2) { animation-delay: 0.65s, 2.2s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(3) { animation-delay: 0.75s, 2.3s; }
-
-/* Camera stays visible during intro (no fade-out) */
-.cinematic-projects .cinema:not(.is-started) .cbtn-cam-btn {
-  animation: cp-magical-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both !important;
-}
-
-/* ===== UI reveal stagger (right → left) ===== */
-@keyframes cp-ui-reveal-right {
-  from { opacity: 0; transform: translate3d(12px, 0, 0); }
-  to   { opacity: 1; transform: none; }
-}
-.cinematic-projects .cinema.is-started.ui-open .cinema-progress-wrap {
-  animation: cp-ui-reveal-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-  animation-delay: 0.05s;
-}
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-row .cbtn:not(.cbtn-cam-btn) {
-  animation: cp-ui-reveal-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
-}
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-right .cbtn:nth-child(1) { animation-delay: 0.08s; }
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-right .cbtn:nth-child(2) { animation-delay: 0.13s; }
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-right .cbtn:nth-child(3) { animation-delay: 0.18s; }
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-left .cbtn:nth-child(2) { animation-delay: 0.23s; }
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-left .cbtn:nth-child(3) { animation-delay: 0.28s; }
-.cinematic-projects .cinema.is-started.ui-open .cinema-btn-left .cbtn:nth-child(4) { animation-delay: 0.33s; }
-
-/* ===== Camera icon (left) ===== */
-.cinematic-projects .cbtn-cam-wrap {
-  position: relative;
-  display: inline-flex;
-}
-.cinematic-projects .cbtn-cam-btn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 56px;
-  height: 56px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: var(--off-white);
-  cursor: pointer;
-  transition: filter 0.35s ease;
-}
-.cinematic-projects .cbtn-cam {
-  width: 42px;
-  height: 42px;
-  fill: none;
-  stroke: currentColor;
-  color: var(--off-white);
-  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.15));
-  transition: filter 0.4s ease, transform 0.4s ease;
-  will-change: filter, transform;
-}
-.cinematic-projects .cbtn-cam .reel {
-  transform-origin: center;
-  transform-box: fill-box;
-}
-
-/* Reel rotation only when playing */
-@keyframes cp-reel-spin { to { transform: rotate(360deg); } }
-.cinematic-projects .cinema.is-started .reel {
-  animation: cp-reel-spin var(--reel-duration) linear infinite;
-}
-.cinematic-projects .cinema.is-started .reel:last-of-type {
-  animation-delay: -1.4s;
-}
-
-/* Light-up on hover / paused / ui-open */
-.cinematic-projects .cinema.is-hover .cbtn-cam,
-.cinematic-projects .cinema.is-paused .cbtn-cam,
-.cinematic-projects .cinema.ui-open .cbtn-cam,
-.cinematic-projects .cinema.is-ended .cbtn-cam {
-  filter: drop-shadow(0 1px 0 rgba(255,255,255,0.2))
-          drop-shadow(0 0 16px rgba(232,214,138,0.55));
-}
-
-/* State label (Play / Pause) — appears under camera on hover */
-.cinematic-projects .cbtn-cam-state {
-  position: absolute;
-  bottom: -14px;
-  left: 50%;
-  transform: translateX(-50%) translateY(4px);
-  font-family: var(--font);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--off-white);
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
-  will-change: opacity, transform;
-  text-shadow: 0 1px 6px rgba(0,0,0,0.8);
-}
-.cinematic-projects .cinema.is-hover .cbtn-cam-state,
-.cinematic-projects .cinema.is-paused .cbtn-cam-state,
-.cinematic-projects .cinema.ui-open .cbtn-cam-state {
-  opacity: 0.85;
-  transform: translateX(-50%) translateY(0);
-}
-
-/* ===== Other control buttons ===== */
-.cinematic-projects .cbtn {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border: none;
-  border-radius: 6px;
-  background: transparent;
-  color: var(--off-white);
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.15s ease;
-}
-.cinematic-projects .cbtn:hover { background: rgba(255,255,255,0.09); }
-.cinematic-projects .cbtn:active { transform: scale(0.94); }
-.cinematic-projects .cbtn-icon { width: 22px; height: 22px; fill: currentColor; }
-.cinematic-projects .cbtn-text {
-  width: auto;
-  padding: 0 12px;
-  font-family: var(--font);
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--off-white);
-  letter-spacing: 0.02em;
-  opacity: 0.85;
-}
-.cinematic-projects .cbtn-text:hover { color: var(--text); opacity: 1; }
-
-/* ===== Progress bar (glass, thin, off-white) ===== */
-.cinematic-projects .cinema-progress-wrap {
-  position: relative;
-  height: 20px;
+/* ===== Timeline ===== */
+.cinematic-projects .cine-timeline {
   display: flex;
   align-items: center;
-  cursor: pointer;
-  padding: 0 4px;
-}
-.cinematic-projects .cinema-progress-track {
-  position: relative;
   width: 100%;
+}
+.cinematic-projects .cine-timeline-track {
+  position: relative;
+  flex: 1;
   height: 3px;
   border-radius: 3px;
   background: rgba(242, 240, 235, 0.18);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
-  overflow: hidden;
+  transition: height 0.2s ease;
 }
-.cinematic-projects .cinema-progress-fill {
+.cinematic-projects .cine-timeline:hover .cine-timeline-track { height: 5px; }
+.cinematic-projects .cine-timeline-fill {
   position: absolute;
-  inset: 0;
-  right: auto;
+  top: 0; left: 0;
+  height: 100%;
   width: 0%;
-  background: linear-gradient(to right, rgba(242,240,235,0.85), rgba(242,240,235,0.65));
+  background: rgba(242, 240, 235, 0.88);
   border-radius: 3px;
   pointer-events: none;
   transition: width 0.15s linear;
-  box-shadow: 0 0 10px rgba(242,240,235,0.35);
+  box-shadow: 0 0 8px rgba(242,240,235,0.35);
 }
-.cinematic-projects .cinema-progress {
+.cinematic-projects .cine-timeline-input {
   position: absolute;
-  inset: 0;
+  inset: -6px 0;
   width: 100%;
-  height: 100%;
-  margin: 0;
-  padding: 0;
+  height: calc(100% + 12px);
+  margin: 0; padding: 0;
   appearance: none;
   -webkit-appearance: none;
   background: transparent;
@@ -581,70 +526,141 @@ title: Short Film Projects
   outline: none;
   z-index: 2;
 }
-.cinematic-projects .cinema-progress::-webkit-slider-thumb {
+.cinematic-projects .cine-timeline-input::-webkit-slider-thumb {
   -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
+  width: 12px; height: 12px;
   border-radius: 50%;
-  background: var(--off-white);
+  background: #f2f0eb;
   cursor: pointer;
   box-shadow: 0 0 0 4px rgba(242,240,235,0.18), 0 2px 6px rgba(0,0,0,0.5);
 }
-.cinematic-projects .cinema-progress-wrap:hover .cinema-progress::-webkit-slider-thumb {
-  transform: scale(1.15);
-}
-.cinematic-projects .cinema-progress::-moz-range-thumb {
-  width: 12px;
-  height: 12px;
+.cinematic-projects .cine-timeline-input::-moz-range-thumb {
+  width: 12px; height: 12px;
   border-radius: 50%;
-  background: var(--off-white);
+  background: #f2f0eb;
   cursor: pointer;
   border: none;
-  box-shadow: 0 0 0 4px rgba(242,240,235,0.18), 0 2px 6px rgba(0,0,0,0.5);
 }
 
 /* ===== Button Row ===== */
-.cinematic-projects .cinema-btn-row {
+.cinematic-projects .cine-btn-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
 }
-.cinematic-projects .cinema-btn-left,
-.cinematic-projects .cinema-btn-right {
+.cinematic-projects .cine-btn-left,
+.cinematic-projects .cine-btn-right {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
-/* ===== Quality Menu ===== */
-.cinematic-projects .cinema-quality-wrap { position: relative; }
-.cinematic-projects .cinema-quality-menu {
+.cinematic-projects .cine-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 40px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #f2f0eb;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+  font-family: var(--cine-body-font);
+  font-size: 12px;
+  font-weight: 500;
+}
+.cinematic-projects .cine-btn:hover { background: rgba(255,255,255,0.09); }
+.cinematic-projects .cine-btn:active { transform: scale(0.94); }
+.cinematic-projects .cine-btn-icon { width: 22px; height: 22px; fill: currentColor; }
+.cinematic-projects .cine-btn-text { color: #f2f0eb; opacity: 0.88; }
+.cinematic-projects .cine-btn-text:hover { opacity: 1; }
+
+.cinematic-projects .cine-playpause {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px; height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #f2f0eb;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+.cinematic-projects .cine-playpause:hover { background: rgba(255,255,255,0.09); }
+.cinematic-projects .cine-playpause:active { transform: scale(0.94); }
+.cinematic-projects .pp-svg { width: 28px; height: 28px; fill: currentColor; }
+
+.cinematic-projects .cine-volume {
+  display: inline-flex;
+  align-items: center;
+}
+.cinematic-projects .cine-volume-slider {
+  width: 0;
+  height: 3px;
+  margin: 0; padding: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(242,240,235,0.25);
+  border-radius: 2px;
+  cursor: pointer;
+  outline: none;
+  opacity: 0;
+  transition: width 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease, margin-left 0.3s ease;
+}
+.cinematic-projects .cine-volume:hover .cine-volume-slider,
+.cinematic-projects .cine-volume-slider:focus {
+  width: 80px; opacity: 1; margin-left: 6px;
+}
+.cinematic-projects .cine-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: #f2f0eb;
+  cursor: pointer;
+  box-shadow: 0 0 0 3px rgba(242,240,235,0.15);
+}
+
+.cinematic-projects .cine-time {
+  font-family: var(--cine-body-font);
+  font-size: 12px;
+  color: rgba(242,240,235,0.7);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  padding: 0 6px;
+  user-select: none;
+}
+
+.cinematic-projects .cine-speed-wrap,
+.cinematic-projects .cine-quality-wrap { position: relative; }
+
+.cinematic-projects .cine-popup {
   position: absolute;
-  bottom: calc(100% + 8px);
+  bottom: calc(100% + 10px);
   right: 0;
-  background: var(--surface);
+  min-width: 100px;
+  padding: 6px;
+  background: var(--cine-surface);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   border-radius: 8px;
-  padding: 6px;
-  min-width: 90px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   z-index: 40;
   box-shadow: 0 10px 40px rgba(0,0,0,0.6);
-  animation: cp-menu-in 0.18s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
-.cinematic-projects .cinema-quality-menu[hidden] { display: none; }
-@keyframes cp-menu-in {
-  from { opacity: 0; transform: translate3d(0, 6px, 0); }
-  to { opacity: 1; transform: none; }
-}
-.cinematic-projects .cinema-quality-item {
+.cinematic-projects .cine-popup[hidden] { display: none; }
+.cinematic-projects .cine-popup-item {
   background: transparent;
   border: none;
-  color: var(--off-white);
-  font-family: var(--font);
+  color: #f2f0eb;
+  font-family: var(--cine-body-font);
   font-size: 12px;
   font-weight: 500;
   padding: 7px 12px;
@@ -652,100 +668,25 @@ title: Short Film Projects
   border-radius: 5px;
   cursor: pointer;
   transition: background 0.12s ease;
-  width: 100%;
 }
-.cinematic-projects .cinema-quality-item:hover { background: rgba(255,255,255,0.1); }
-.cinematic-projects .cinema-quality-item.is-active {
+.cinematic-projects .cine-popup-item:hover { background: rgba(255,255,255,0.1); }
+.cinematic-projects .cine-popup-item.is-active {
   background: rgba(232,214,138,0.16);
-  color: var(--accent);
+  color: var(--cine-accent);
 }
 
-/* ===== End Card ===== */
-.cinematic-projects .cinema.is-ended .cinema-screen::after {
-  content: "vimeo";
-  position: absolute;
-  inset: 0;
-  z-index: 30;
-  display: grid;
-  place-items: center;
-  font-family: var(--font);
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -0.03em;
-  color: var(--off-white);
-  background: radial-gradient(60% 60% at 50% 45%, rgba(18,18,18,0.6), rgba(10,10,10,0.92));
-  pointer-events: none;
-  animation: cp-fade 0.7s ease both;
-}
-.cinematic-projects .cinema.is-ended .cinema-screen::before {
-  content: "Portfolio Studio";
-  position: absolute;
-  left: 50%;
-  top: calc(50% + 34px);
-  transform: translateX(-50%);
-  z-index: 31;
-  font-family: var(--font);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--accent);
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(232,214,138,0.35);
-  border-radius: 999px;
-  padding: 4px 12px;
-  pointer-events: none;
-  animation: cp-fade 0.7s ease 0.15s both;
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  .cinematic-projects .cine-title { font-size: 28px; }
+  .cinematic-projects .cine-desc { font-size: 11px; }
+  .cinematic-projects .cine-title-block { top: 16px; left: 18px; right: 18px; }
+  .cinematic-projects .cine-camera-stage { bottom: 16px; left: 16px; }
+  .cinematic-projects .cine-camera-btn { width: 72px; height: 72px; }
+  .cinematic-projects .cine-camera-svg { width: 56px; height: 56px; }
+  .cinematic-projects .cine-controls { padding: 52px 14px 14px; }
+  .cinematic-projects .cine-time { font-size: 11px; padding: 0 3px; }
 }
 
-/* ===== Status & Fallback ===== */
-.cinematic-projects .cinema-status {
-  position: absolute;
-  bottom: 110px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 25;
-  background: rgba(0,0,0,0.85);
-  padding: 6px 14px;
-  border-radius: 16px;
-  font-family: var(--font);
-  font-size: 12px;
-  color: var(--off-white);
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  pointer-events: none;
-}
-.cinematic-projects .cinema-status:not(:empty) { opacity: 1; }
-
-.cinematic-projects .cinema-fallback {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
-  display: grid;
-  place-items: center;
-  background: rgba(0,0,0,0.9);
-  color: var(--off-white);
-  text-align: center;
-  padding: 20px;
-  font-family: var(--font);
-}
-.cinematic-projects .cinema-fallback a,
-.cinematic-projects .cinema-fallback button {
-  display: inline-block;
-  margin: 6px 4px 0;
-  padding: 8px 16px;
-  background: var(--accent);
-  color: #000;
-  text-decoration: none;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-family: var(--font);
-  font-size: 13px;
-  font-weight: 600;
-}
-
-/* ===== Reduced Motion ===== */
 @media (prefers-reduced-motion: reduce) {
   .cinematic-projects *,
   .cinematic-projects *::before,
@@ -755,63 +696,36 @@ title: Short Film Projects
     transition-duration: 0.01ms !important;
   }
 }
-
-/* ===== Responsive ===== */
-@media (max-width: 640px) {
-  .cinematic-projects .cinema-controls { padding: 40px 14px 12px; gap: 8px; }
-  .cinematic-projects .cinema-title-layer { top: 14px; left: 16px; }
-  .cinematic-projects .cbtn { width: 34px; height: 34px; }
-  .cinematic-projects .cbtn-cam { width: 34px; height: 34px; }
-  .cinematic-projects .cbtn-cam-btn { width: 46px; height: 46px; }
-}
 </style>
 
 <script>
 (function () {
   'use strict';
 
+  /* ---------- Vimeo SDK loader ---------- */
   let sdkPromise;
-
   function loadVimeoSDK() {
     if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo);
     if (sdkPromise) return sdkPromise;
     sdkPromise = new Promise(function (resolve, reject) {
-      const script = document.createElement('script');
-      const timer = window.setTimeout(function () { reject(new Error('SDK timeout')); }, 25000);
-      script.src = 'https://player.vimeo.com/api/player.js';
-      script.async = true;
-      script.onload = function () {
-        window.clearTimeout(timer);
-        if (window.Vimeo && window.Vimeo.Player) resolve(window.Vimeo);
-        else reject(new Error('SDK unavailable'));
+      const s = document.createElement('script');
+      const t = setTimeout(() => reject(new Error('Vimeo SDK timeout')), 20000);
+      s.src = 'https://player.vimeo.com/api/player.js';
+      s.async = true;
+      s.onload = () => {
+        clearTimeout(t);
+        (window.Vimeo && window.Vimeo.Player) ? resolve(window.Vimeo) : reject(new Error('missing'));
       };
-      script.onerror = function () {
-        window.clearTimeout(timer);
-        reject(new Error('SDK load failed'));
-      };
-      document.head.appendChild(script);
+      s.onerror = () => { clearTimeout(t); reject(new Error('load failed')); };
+      document.head.appendChild(s);
     });
     return sdkPromise;
   }
 
-  function preconnect() {
-    ['https://player.vimeo.com', 'https://i.vimeocdn.com', 'https://f.vimeocdn.com'].forEach(function (href) {
-      if (document.querySelector('link[rel="preconnect"][href="' + href + '"]')) return;
-      const l = document.createElement('link');
-      l.rel = 'preconnect';
-      l.href = href;
-      l.crossOrigin = '';
-      document.head.appendChild(l);
-    });
-  }
-
-  function withTimeout(promise, ms) {
-    return new Promise(function (resolve, reject) {
-      const t = window.setTimeout(function () { reject(new Error('Timeout')); }, ms);
-      Promise.resolve(promise).then(
-        function (v) { window.clearTimeout(t); resolve(v); },
-        function (e) { window.clearTimeout(t); reject(e); }
-      );
+  function withTimeout(p, ms) {
+    return new Promise((res, rej) => {
+      const t = setTimeout(() => rej(new Error('timeout')), ms);
+      Promise.resolve(p).then(v => { clearTimeout(t); res(v); }, e => { clearTimeout(t); rej(e); });
     });
   }
 
@@ -824,370 +738,398 @@ title: Short Film Projects
     return h ? h + ':' + str : str;
   }
 
+  function preconnect() {
+    ['https://player.vimeo.com', 'https://i.vimeocdn.com', 'https://f.vimeocdn.com'].forEach(href => {
+      if (document.querySelector('link[rel="preconnect"][href="' + href + '"]')) return;
+      const l = document.createElement('link');
+      l.rel = 'preconnect';
+      l.href = href;
+      l.crossOrigin = '';
+      document.head.appendChild(l);
+    });
+  }
+
+  /* ---------- Wait for GSAP to be ready ---------- */
+  function waitForGSAP(maxMs) {
+    return new Promise(resolve => {
+      const start = Date.now();
+      (function poll() {
+        if (window.gsap && window.MorphSVGPlugin) return resolve(true);
+        if (Date.now() - start > (maxMs || 3000)) return resolve(false);
+        requestAnimationFrame(poll);
+      })();
+    });
+  }
+
+  /* ---------- Init ---------- */
   function initialize() {
     preconnect();
+    const sections = document.querySelectorAll('[data-cinema]');
+    if (!sections.length) return;
 
-    document.querySelectorAll('[data-cinema]').forEach(function (root) {
-      if (root.dataset.initialized) return;
-      root.dataset.initialized = 'true';
+    /* Wait for GSAP if it is still loading */
+    waitForGSAP(3000).then(hasGSAP => {
+      sections.forEach(root => initSection(root, hasGSAP));
+    });
+  }
 
-      const $ = function (n) { return root.querySelector('[data-' + n + ']'); };
-      const screen = root.querySelector('.cinema-screen');
-      const videoLayer = $('video-layer');
-      const cameraBtn = $('cam-btn');
-      const cameraLabel = $('cam-label');
-      const controls = $('controls');
-      const toggle = $('toggle');
-      const replay = $('replay');
-      const sound = $('sound');
-      const speed = $('speed');
-      const quality = $('quality');
-      const qualityWrap = quality.parentNode;
-      const qualityMenu = $('quality-menu');
-      const progress = $('progress');
-      const progressFill = $('progress-fill');
-      const status = $('status');
-      const fallback = $('fallback');
-      const poster = $('poster');
-      const filmTitle = $('film-title');
-      const filmSub = $('film-sub');
+  function initSection(root, hasGSAP) {
+    if (root.dataset.initialized) return;
+    root.dataset.initialized = 'true';
 
-      filmTitle.textContent = root.dataset.title || '';
-      filmSub.textContent = root.dataset.subtitle || '';
+    const q  = sel => root.querySelector(sel);
+    const qa = sel => Array.from(root.querySelectorAll(sel));
 
-      // State
-      let player = null;
-      let prepPromise = null;
-      let ready = false;
-      let failed = false;
-      let started = false;
-      let paused = true;
-      let muted = true;
-      let duration = 0;
-      let current = 0;
-      let idleTimer = null;
-      let seekEdit = false;
-      let qualities = [];
-      let currentQuality = 'auto';
-      const speedRates = [0.5, 1, 1.5, 2];
-      let speedIndex = 1;
+    const videoLayer   = q('[data-video-layer]');
+    const cameraBtn    = q('[data-camera-btn]');
+    const cameraStage  = q('[data-camera-stage]');
+    const titleBlock   = q('[data-title-block]');
+    const filmTitle    = q('[data-film-title]');
+    const filmDesc     = q('[data-film-desc]');
+    const controls     = q('[data-controls]');
+    const playpauseBtn = q('[data-playpause-btn]');
+    const ppPath       = q('.pp-path');
+    const volumeBtn    = q('[data-volume-btn]');
+    const volumeSlider = q('[data-volume-slider]');
+    const timeEl       = q('[data-time]');
+    const speedBtn     = q('[data-speed-btn]');
+    const speedMenu    = q('[data-speed-menu]');
+    const qualityBtn   = q('[data-quality-btn]');
+    const qualityMenu  = q('[data-quality-menu]');
+    const qualityLabel = q('[data-quality-label]');
+    const fullscreenBtn = q('[data-fullscreen-btn]');
+    const progress     = q('[data-progress]');
+    const progressFill = q('[data-progress-fill]');
 
-      // ===== UI helpers =====
-      function clearIdle() {
-        if (idleTimer) { window.clearTimeout(idleTimer); idleTimer = null; }
+    filmTitle.textContent = root.dataset.title || '';
+    filmDesc.textContent  = root.dataset.subtitle || '';
+
+    let player = null;
+    let prepPromise = null;
+    let ready = false;
+    let failed = false;
+    let morphing = false;
+    let morphDone = false;
+    let started = false;
+    let duration = 0;
+    let current = 0;
+    let seeking = false;
+    let idleTimer = null;
+    let muted = true;
+    let qualities = [];
+    let currentQuality = 'auto';
+    let lastVolume = 1;
+
+    function setState(s) {
+      root.dataset.state = s;
+      if (s === 'playing') {
+        root.classList.add('is-ui-visible');
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => root.classList.remove('is-ui-visible'), 3000);
+      } else if (s === 'paused') {
+        root.classList.add('is-ui-visible');
+        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
       }
-      function markOpen() {
-        root.classList.add('ui-open');
-        clearIdle();
-        if (started && !paused && !failed) {
-          idleTimer = window.setTimeout(function () {
-            root.classList.remove('ui-open');
-          }, 3000);
-        }
+    }
+
+    function setPlayPauseIcon(playing) {
+      if (!ppPath) return;
+      ppPath.setAttribute('d', playing
+        ? 'M6 19h4V5H6v14zm8-14v14h4V5h-4z'
+        : 'M8 5v14l11-7z');
+      if (playpauseBtn) playpauseBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
+    }
+
+    function setVolumeIcon(volume, isMuted) {
+      if (!volumeBtn) return;
+      const v = isMuted ? 0 : volume;
+      let d;
+      if (v === 0) {
+        d = 'M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z';
+      } else if (v < 0.5) {
+        d = 'M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z';
+      } else {
+        d = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z';
       }
+      volumeBtn.querySelector('path').setAttribute('d', d);
+    }
 
-      // ===== Paused / Muted =====
-      function setPaused(v) {
-        paused = v;
-        const playSVG = '<svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M8 5v14l11-7z"/></svg>';
-        const pauseSVG = '<svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-        toggle.innerHTML = v ? playSVG : pauseSVG;
-        toggle.setAttribute('aria-label', v ? 'Play film' : 'Pause film');
-        if (cameraLabel) cameraLabel.textContent = v ? 'Play' : 'Pause';
-        root.classList.toggle('is-paused', v);
-        if (v) root.classList.remove('is-ended');
-      }
-      function setMuted(v) {
-        muted = v;
-        const muteSVG = '<svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
-        const unmuteSVG = '<svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
-        sound.innerHTML = v ? muteSVG : unmuteSVG;
-        sound.setAttribute('aria-label', v ? 'Unmute film' : 'Mute film');
-      }
-
-      function updateTime() {
-        const pct = duration > 0 ? (current / duration * 100) : 0;
-        if (!seekEdit) {
-          progress.value = duration > 0 ? Math.round(current / duration * 1000) : 0;
-          if (progressFill) progressFill.style.width = pct + '%';
-        }
-        progress.setAttribute('aria-valuetext', fmt(current) + ' of ' + fmt(duration));
-      }
-
-      function fail(err) {
-        if (failed) return;
-        failed = true;
-        clearIdle();
-        root.classList.add('has-error');
-        root.classList.remove('ui-open', 'is-hover');
-        fallback.hidden = false;
-        status.textContent = '';
-        if (player) try { player.pause(); } catch (e) {}
-        console.warn('[Cinema] failure:', err);
-      }
-
-      function notify(msg, err) {
-        status.textContent = msg;
-        markOpen();
-        if (err) console.warn('[Cinema]', err);
-      }
-
-      // ===== Quality menu =====
-      function buildQualityMenu() {
-        qualityMenu.innerHTML = '';
-        const all = [{ id: 'auto', label: 'Auto' }].concat(
-          qualities.map(function (q) { return { id: q.id, label: q.label || (q.id + 'p') }; })
-        );
-        all.forEach(function (opt) {
-          const btn = document.createElement('button');
-          btn.type = 'button';
-          btn.className = 'cinema-quality-item' + (String(opt.id) === String(currentQuality) ? ' is-active' : '');
-          btn.textContent = opt.label;
-          btn.addEventListener('click', function (e) {
-            e.stopPropagation();
-            selectQuality(opt.id);
-          });
-          qualityMenu.appendChild(btn);
-        });
-      }
-
-      function loadQualities() {
-        return withTimeout(player.getQualities(), 8000).then(function (opts) {
-          if (failed || !Array.isArray(opts) || !opts.length) return;
-          qualities = opts;
-          buildQualityMenu();
-        }).catch(function () {});
-      }
-
-      function selectQuality(id) {
-        return withTimeout(player.setQuality(id), 10000).then(function (actual) {
-          currentQuality = actual;
-          quality.textContent = actual === 'auto' ? 'Auto' : actual + 'p';
-          buildQualityMenu();
-        }).catch(function (err) {
-          notify('Quality change failed.', err);
-        }).finally(function () {
-          qualityMenu.hidden = true;
-        });
-      }
-
-      function openQualityMenu() {
-        qualityMenu.hidden = false;
-        markOpen();
-        const close = function (e) {
-          if (!qualityWrap.contains(e.target)) {
-            qualityMenu.hidden = true;
-            document.removeEventListener('click', close, true);
-          }
-        };
-        setTimeout(function () {
-          document.addEventListener('click', close, true);
-        }, 0);
-      }
-
-      // ===== Prepare / Launch =====
-      function prepare() {
-        if (prepPromise) return prepPromise;
-        prepPromise = (async function () {
-          const Vimeo = await loadVimeoSDK();
-          if (failed) return;
-          const vid = String(root.dataset.videoId || '');
-          if (!/^\d+$/.test(vid)) throw new Error('Invalid Vimeo ID');
-
-          const iframe = document.createElement('iframe');
-          iframe.src = 'https://player.vimeo.com/video/' + vid +
-            '?background=1&autoplay=0&loop=0&byline=0&title=0&portrait=0&controls=0&muted=1&playsinline=1&keyboard=0&dnt=1';
-          iframe.title = 'Vimeo film';
-          iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
-          iframe.allowFullscreen = true;
-          iframe.tabIndex = -1;
-          iframe.setAttribute('loading', 'eager');
-          videoLayer.appendChild(iframe);
-
-          player = new Vimeo.Player(iframe);
-
-          player.on('play', function () { setPaused(false); });
-          player.on('pause', function () { setPaused(true); });
-          player.on('ended', function () {
-            setPaused(true);
-            current = duration;
-            updateTime();
-            root.classList.add('is-paused', 'is-ended');
-          });
-          player.on('timeupdate', function (e) {
-            current = Number(e.seconds) || 0;
-            duration = Number(e.duration) || duration;
-            updateTime();
-          });
-          player.on('durationchange', function (e) {
-            duration = Number(e.duration) || 0;
-            updateTime();
-          });
-          player.on('playbackratechange', function (e) {
-            speed.textContent = e.playbackRate + 'x';
-            const i = speedRates.indexOf(e.playbackRate);
-            if (i !== -1) speedIndex = i;
-          });
-          player.on('qualitychange', function (e) {
-            if (e && e.id) {
-              currentQuality = e.id;
-              quality.textContent = e.id === 'auto' ? 'Auto' : e.id + 'p';
-              buildQualityMenu();
-            }
-          });
-          player.on('volumechange', function (e) {
-            setMuted(Boolean(e.muted) || e.volume === 0);
-          });
-          player.on('error', function (e) {
-            const METHODS = ['setQuality','getQuality','getQualities','setPlaybackRate','setCurrentTime','setMuted','setVolume','getMuted','getPaused','getDuration'];
-            if (e && e.method && METHODS.indexOf(e.method) !== -1) return;
-            fail(e);
-          });
-
-          await withTimeout(player.ready(), 20000);
-          if (failed) return;
-          ready = true;
-          player.getDuration().then(function (v) { duration = Number(v) || 0; updateTime(); }).catch(function () {});
-          player.getMuted().then(setMuted).catch(function () {});
-          loadQualities();
-        })().catch(function (e) { fail(e); });
-        return prepPromise;
-      }
-
-      async function launch() {
-        if (started && !paused) return;
-        cameraBtn.disabled = true;
-        await prepare();
-        if (failed || !ready) { cameraBtn.disabled = false; return; }
-        try {
-          await withTimeout(player.play(), 20000);
-          if (failed) { cameraBtn.disabled = false; return; }
-          started = true;
-          root.classList.add('is-started');
-          root.classList.remove('is-paused', 'is-ended');
-          cameraBtn.disabled = false;
-          markOpen();
-        } catch (e) {
-          fail(e);
-          cameraBtn.disabled = false;
-        }
-      }
-
-      // ===== Events =====
-      screen.addEventListener('mouseenter', function () {
-        root.classList.add('is-hover');
-      });
-      screen.addEventListener('mouseleave', function () {
-        root.classList.remove('is-hover');
-        clearIdle();
-      });
-
-      screen.addEventListener('click', function (e) {
-        if (e.target.closest('.cinema-controls')) return;
-        if (!started) { launch(); return; }
-        // If UI is open, collapse to camera-only.
-        if (root.classList.contains('ui-open')) {
-          root.classList.remove('ui-open');
-          clearIdle();
-        }
-        // Otherwise do nothing (no accidental play/pause toggle)
-      });
-
-      cameraBtn.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (!started) { launch(); return; }
-        if (paused) {
-          root.classList.remove('is-paused', 'is-ended');
-          player.play().catch(function () {});
-        } else {
-          root.classList.add('is-paused');
-          player.pause().catch(function () {});
-        }
-        markOpen();
-      });
-
-      $('refresh').addEventListener('click', function () { window.location.reload(); });
-      poster.addEventListener('error', function () { poster.hidden = true; });
-
-      toggle.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (!ready || failed) return;
-        withTimeout(player.getPaused(), 8000).then(function (p) {
-          return withTimeout(p ? player.play() : player.pause(), 15000);
-        }).catch(function (err) {
-          notify('Playback could not be changed.', err);
-        }).finally(markOpen);
-      });
-
-      replay.addEventListener('click', function (e) {
-        e.stopPropagation();
-        withTimeout(player.setCurrentTime(0).then(function () { return player.play(); }), 15000)
-          .then(function () { root.classList.remove('is-ended'); })
-          .catch(function (err) { notify('Could not replay.', err); })
-          .finally(markOpen);
-      });
-
-      sound.addEventListener('click', function (e) {
-        e.stopPropagation();
-        withTimeout(player.setMuted(!muted), 8000)
-          .then(function () { return withTimeout(player.getMuted(), 8000); })
-          .then(setMuted)
-          .catch(function (err) { notify('Sound could not be changed.', err); })
-          .finally(markOpen);
-      });
-
-      speed.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (!ready || failed) return;
-        speedIndex = (speedIndex + 1) % speedRates.length;
-        const next = speedRates[speedIndex];
-        withTimeout(player.setPlaybackRate(next), 8000)
-          .then(function (actual) { speed.textContent = actual + 'x'; })
-          .catch(function (err) { notify('Speed change failed.', err); })
-          .finally(markOpen);
-      });
-
-      quality.addEventListener('click', function (e) {
-        e.stopPropagation();
-        if (!ready || failed) return;
-        if (qualityMenu.hidden) openQualityMenu();
-        else qualityMenu.hidden = true;
-      });
-
-      progress.addEventListener('input', function (e) {
-        e.stopPropagation();
-        seekEdit = true;
-        const pct = Number(progress.value) / 10;
+    function updateTime() {
+      const pct = duration > 0 ? (current / duration * 100) : 0;
+      if (!seeking) {
+        progress.value = duration > 0 ? Math.round(current / duration * 1000) : 0;
         if (progressFill) progressFill.style.width = pct + '%';
-        markOpen();
-      });
-
-      progress.addEventListener('change', function (e) {
-        e.stopPropagation();
-        const target = duration * Number(progress.value) / 1000;
-        withTimeout(player.setCurrentTime(target), 10000)
-          .then(function (v) { current = Number(v) || target; })
-          .catch(function (err) { notify('Seek failed.', err); })
-          .finally(function () {
-            seekEdit = false;
-            updateTime();
-            markOpen();
-          });
-      });
-
-      progress.addEventListener('blur', function () { seekEdit = false; updateTime(); });
-
-      const fsBtn = $('fullscreen');
-      if (fsBtn) {
-        fsBtn.addEventListener('click', function (e) {
-          e.stopPropagation();
-          if (!document.fullscreenElement) root.requestFullscreen().catch(function () {});
-          else document.exitFullscreen().catch(function () {});
-        });
       }
+      if (timeEl) timeEl.textContent = fmt(current) + ' / ' + fmt(duration);
+    }
 
-      // Preload SDK in background (no iframe yet — created on first click)
-      loadVimeoSDK().catch(function () { /* ignore */ });
+    function buildQualityMenu() {
+      if (!qualityMenu) return;
+      qualityMenu.innerHTML = '';
+      const items = [{ id: 'auto', label: 'Auto' }]
+        .concat(qualities.map(o => ({ id: o.id, label: o.label || (o.id + 'p') })));
+      items.forEach(it => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'cine-popup-item' + (String(it.id) === String(currentQuality) ? ' is-active' : '');
+        b.textContent = it.label;
+        b.addEventListener('click', e => {
+          e.stopPropagation();
+          withTimeout(player.setQuality(it.id), 8000)
+            .then(actual => {
+              currentQuality = actual;
+              if (qualityLabel) qualityLabel.textContent = actual === 'auto' ? 'Auto' : actual + 'p';
+              buildQualityMenu();
+            })
+            .catch(() => {})
+            .finally(() => { qualityMenu.hidden = true; });
+        });
+        qualityMenu.appendChild(b);
+      });
+    }
+
+    function fail(err) {
+      if (failed) return;
+      failed = true;
+      console.warn('[Cinema] failed:', err);
+      if (cameraBtn) cameraBtn.disabled = true;
+    }
+
+    function prepare() {
+      if (prepPromise) return prepPromise;
+      prepPromise = (async () => {
+        const Vimeo = await loadVimeoSDK();
+        const vid = String(root.dataset.videoId || '');
+        if (!/^\d+$/.test(vid)) throw new Error('Invalid Vimeo ID');
+
+        const iframe = document.createElement('iframe');
+        iframe.src = 'https://player.vimeo.com/video/' + vid +
+          '?background=1&autoplay=0&loop=0&byline=0&title=0&portrait=0&controls=0&muted=1&playsinline=1&keyboard=0&dnt=1';
+        iframe.title = 'Film';
+        iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
+        iframe.allowFullscreen = true;
+        iframe.tabIndex = -1;
+        iframe.setAttribute('loading', 'eager');
+        videoLayer.appendChild(iframe);
+
+        player = new Vimeo.Player(iframe);
+
+        player.on('play',  () => { setState('playing'); setPlayPauseIcon(true); });
+        player.on('pause', () => { setState('paused');  setPlayPauseIcon(false); });
+        player.on('ended', () => { setState('paused');  setPlayPauseIcon(false); current = duration; updateTime(); });
+        player.on('timeupdate', e => {
+          current = Number(e.seconds) || 0;
+          duration = Number(e.duration) || duration;
+          updateTime();
+        });
+        player.on('durationchange', e => {
+          duration = Number(e.duration) || 0;
+          updateTime();
+        });
+        player.on('volumechange', e => {
+          muted = Boolean(e.muted) || e.volume === 0;
+          if (e.volume > 0) lastVolume = e.volume;
+          if (volumeSlider) volumeSlider.value = e.volume;
+          setVolumeIcon(e.volume, muted);
+        });
+        player.on('qualitychange', e => {
+          if (e && e.id) {
+            currentQuality = e.id;
+            if (qualityLabel) qualityLabel.textContent = e.id === 'auto' ? 'Auto' : e.id + 'p';
+            buildQualityMenu();
+          }
+        });
+        player.on('error', e => {
+          const ignore = ['setQuality','getQuality','getQualities','setPlaybackRate','setCurrentTime','setMuted','setVolume','getMuted','getPaused','getDuration','getVolume'];
+          if (e && e.method && ignore.indexOf(e.method) !== -1) return;
+          fail(e);
+        });
+
+        await withTimeout(player.ready(), 20000);
+        ready = true;
+        player.getDuration().then(v => { duration = Number(v) || 0; updateTime(); }).catch(() => {});
+        player.getMuted().then(m => { muted = m; setVolumeIcon(1, m); }).catch(() => {});
+        player.getVolume().then(v => { if (volumeSlider) volumeSlider.value = v; }).catch(() => {});
+        player.getQualities().then(arr => {
+          if (Array.isArray(arr) && arr.length) {
+            qualities = arr;
+            buildQualityMenu();
+          }
+        }).catch(() => {});
+      })().catch(fail);
+      return prepPromise;
+    }
+
+    /* ---------- The magical morph ---------- */
+    function runMorphAndStart() {
+      if (morphing || morphDone || failed) return;
+      morphing = true;
+      root.classList.add('is-morphing');
+
+      // Kick video load in parallel
+      prepare().then(() => {
+        if (!ready || !player) return;
+        player.play().catch(() => {});
+      });
+
+      const cleanupAndStart = () => {
+        morphing = false;
+        morphDone = true;
+        root.classList.remove('is-morphing');
+        setState('paused');
+        setPlayPauseIcon(true); // will be corrected by vimeo play event
+        started = true;
+      };
+
+      if (hasGSAP) {
+        const tl = window.gsap.timeline({ onComplete: cleanupAndStart });
+
+        // 1) Title + description fade out softly
+        tl.to(titleBlock, { opacity: 0, y: -18, filter: 'blur(4px)', duration: 0.55, ease: 'power2.out' }, 0);
+
+        // 2) Light beam appears
+        tl.to(q('[data-light]'), { opacity: 1, duration: 0.9, ease: 'power2.out' }, 0.15);
+
+        // 3) Holes fade out
+        tl.to(qa('.cam-holes circle'), { opacity: 0, duration: 0.3, ease: 'power2.out' }, 0.2);
+
+        // 4) Body fades out
+        tl.to(q('.cam-body'), { opacity: 0, duration: 0.4, ease: 'power2.out' }, 0.25);
+
+        // 5) Reels morph into pause bars
+        tl.to(q('.cam-reel-left'), {
+          morphSVG: { shape: '.morph-left', shapeIndex: 'auto' },
+          duration: 0.8,
+          ease: 'power3.inOut'
+        }, 0.3);
+        tl.to(q('.cam-reel-right'), {
+          morphSVG: { shape: '.morph-right', shapeIndex: 'auto' },
+          duration: 0.8,
+          ease: 'power3.inOut'
+        }, 0.35);
+
+        // 6) Camera stage fades away once morph is done
+        tl.to(cameraStage, { opacity: 0, duration: 0.4, ease: 'power2.out' }, 1.15);
+
+        // 7) Controls fade in
+        tl.to(controls, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 1.3);
+      } else {
+        // Fallback: no GSAP → just hide camera, show controls
+        cameraStage.style.transition = 'opacity 0.5s ease';
+        cameraStage.style.opacity = '0';
+        controls.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        controls.style.opacity = '1';
+        controls.style.transform = 'none';
+        setTimeout(cleanupAndStart, 600);
+      }
+    }
+
+    /* ---------- Events ---------- */
+    cameraBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!morphDone && !morphing) runMorphAndStart();
+    });
+
+    playpauseBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!ready || !player) return;
+      if (root.dataset.state === 'playing') player.pause().catch(() => {});
+      else player.play().catch(() => {});
+    });
+
+    volumeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!ready || !player) return;
+      if (muted) {
+        player.setVolume(lastVolume || 0.8).then(() => player.setMuted(false)).catch(() => {});
+      } else {
+        player.setMuted(true).catch(() => {});
+      }
+    });
+
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', e => {
+        e.stopPropagation();
+        if (!ready || !player) return;
+        const v = Number(volumeSlider.value);
+        player.setVolume(v).catch(() => {});
+        if (v > 0 && muted) player.setMuted(false).catch(() => {});
+      });
+    }
+
+    speedBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      speedMenu.hidden = !speedMenu.hidden;
+      qualityMenu.hidden = true;
+    });
+
+    qa('[data-speed-value]').forEach(b => {
+      b.addEventListener('click', e => {
+        e.stopPropagation();
+        const v = Number(b.dataset.speedValue);
+        if (ready && player) {
+          player.setPlaybackRate(v).then(() => {
+            speedBtn.textContent = v + 'x';
+            qa('[data-speed-value]').forEach(x => x.classList.toggle('is-active', x === b));
+          }).catch(() => {});
+        }
+        speedMenu.hidden = true;
+      });
+    });
+
+    qualityBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      qualityMenu.hidden = !qualityMenu.hidden;
+      speedMenu.hidden = true;
+    });
+
+    fullscreenBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) root.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+
+    progress.addEventListener('input', e => {
+      e.stopPropagation();
+      seeking = true;
+      const pct = Number(progress.value) / 10;
+      if (progressFill) progressFill.style.width = pct + '%';
+      const preview = duration * Number(progress.value) / 1000;
+      if (timeEl) timeEl.textContent = fmt(preview) + ' / ' + fmt(duration);
+    });
+
+    progress.addEventListener('change', e => {
+      e.stopPropagation();
+      if (!ready || !player) return;
+      const target = duration * Number(progress.value) / 1000;
+      withTimeout(player.setCurrentTime(target), 8000).catch(() => {}).finally(() => {
+        seeking = false;
+        updateTime();
+      });
+    });
+
+    progress.addEventListener('blur', () => { seeking = false; updateTime(); });
+
+    // Auto-hide controls on mouse leave while playing
+    root.addEventListener('mousemove', () => {
+      if (root.dataset.state === 'playing') {
+        root.classList.add('is-ui-visible');
+        if (idleTimer) clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => root.classList.remove('is-ui-visible'), 3000);
+      }
+    });
+    root.addEventListener('mouseleave', () => {
+      if (root.dataset.state === 'playing') {
+        root.classList.remove('is-ui-visible');
+        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+      }
+    });
+
+    // Close popups when clicking outside
+    document.addEventListener('click', e => {
+      if (!root.contains(e.target)) return;
+      if (!e.target.closest('.cine-speed-wrap')) speedMenu.hidden = true;
+      if (!e.target.closest('.cine-quality-wrap')) qualityMenu.hidden = true;
     });
   }
 
