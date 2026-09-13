@@ -218,7 +218,8 @@ title: Short Film Projects
   box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
-.cinematic-projects .cinema [hidden] { display: none !important; }
+/* Root cause: JS never clears [hidden] on controls; exclude them so CSS classes drive visibility. */
+.cinematic-projects .cinema [hidden]:not(.cinema-controls) { display: none !important; }
 
 /* ===== Screen ===== */
 .cinematic-projects .cinema-screen {
@@ -292,11 +293,22 @@ title: Short Film Projects
   display: flex;
   flex-direction: column;
   background: transparent;
-  border: 1px solid transparent;
   border-radius: 10px;
   padding: 0;
   pointer-events: none;
-  transition: background var(--fade-fast) ease, border-color var(--fade-fast) ease;
+}
+/* Panel backdrop fades via opacity only (GPU-friendly, no glass blur). */
+.cinematic-projects .cinema .cinema-controls::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  opacity: 0;
+  transition: opacity var(--fade-fast) ease;
+  will-change: opacity;
 }
 /* Conflict: JS never clears [hidden]; visibility is driven by state classes instead. */
 .cinematic-projects .cinema .cinema-controls[hidden] { display: flex; }
@@ -333,14 +345,30 @@ title: Short Film Projects
   animation: cp-intro-meta var(--intro-duration) ease both;
 }
 
-/* Playback idle: camera icon persists bottom-left. Hover: title + play/pause + soft light. */
+/* Playback idle: camera icon persists bottom-left. Hover: title + play/pause + soft light, fading after idle. */
+@keyframes cp-reveal-fade {
+  0% { opacity: 0; pointer-events: none; }
+  12% { opacity: 1; pointer-events: auto; }
+  70% { opacity: 1; pointer-events: auto; }
+  100% { opacity: 0; pointer-events: none; }
+}
+@keyframes cp-light-fade {
+  0%, 100% { filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.12)); }
+  12%, 70% {
+    filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.12))
+            drop-shadow(0 0 10px rgba(232, 214, 138, var(--light-intensity)));
+  }
+}
 .cinematic-projects .cinema.is-started:not(.is-paused):hover .cinema-info-row,
 .cinematic-projects .cinema.is-started:not(.is-paused):hover [data-toggle] {
-  opacity: 1;
-  pointer-events: auto;
+  animation: cp-reveal-fade calc(var(--idle-timeout) + var(--fade-slow)) ease both;
+  will-change: opacity;
 }
 .cinematic-projects .cinema.is-started:not(.is-paused) .cinema-info-sub { opacity: 0; }
-.cinematic-projects .cinema.is-started:hover [data-cam-btn] .cbtn-cam,
+.cinematic-projects .cinema.is-started:hover [data-cam-btn] .cbtn-cam {
+  animation: cp-light-fade calc(var(--idle-timeout) + var(--fade-slow)) ease both;
+  will-change: filter;
+}
 .cinematic-projects .cinema.is-paused [data-cam-btn] .cbtn-cam {
   filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.12))
           drop-shadow(0 0 10px rgba(232, 214, 138, var(--light-intensity)));
@@ -348,9 +376,10 @@ title: Short Film Projects
 
 /* Paused/ended: full controls per reference. Conflict: camera-icon click plays (existing JS); pause via surface/toggle reveals these. */
 .cinematic-projects .cinema.is-paused .cinema-controls {
-  background: var(--c-surface);
-  border-color: var(--c-border);
   padding: 10px 16px 12px;
+}
+.cinematic-projects .cinema.is-paused .cinema-controls::before {
+  opacity: 1;
 }
 .cinematic-projects .cinema.is-paused .cinema-progress-wrap,
 .cinematic-projects .cinema.is-paused .cinema-info-row,
@@ -360,8 +389,8 @@ title: Short Film Projects
 }
 .cinematic-projects .cinema.is-paused .cinema-info-sub { opacity: 1; }
 
-/* End-card: Vimeo wordmark + channel tag. Conflict: ended shares .is-paused (no JS hook); hidden pre-start. */
-.cinematic-projects .cinema.is-started.is-paused .cinema-screen::after {
+/* End-card: Vimeo wordmark + channel tag. Gated to ended state (progress painted at 100%) via :has; hidden pre-start and on mid-video pauses. */
+.cinematic-projects .cinema.is-started.is-paused:has(.cinema-progress[style*="100%"]) .cinema-screen::after {
   content: "vimeo";
   position: absolute;
   inset: 0;
@@ -376,7 +405,7 @@ title: Short Film Projects
   background: radial-gradient(60% 60% at 50% 45%, rgba(18, 18, 18, 0.55), rgba(10, 10, 10, 0.88));
   pointer-events: none;
 }
-.cinematic-projects .cinema.is-started.is-paused .cinema-screen::before {
+.cinematic-projects .cinema.is-started.is-paused:has(.cinema-progress[style*="100%"]) .cinema-screen::before {
   content: var(--channel-name);
   position: absolute;
   left: 50%;
@@ -433,12 +462,13 @@ title: Short Film Projects
   background: rgba(255,255,255,0.2);
   border-radius: 2px;
   cursor: pointer;
-  transition: height 0.15s ease;
+  transition: transform 0.15s ease;
   outline: none;
+  will-change: transform;
 }
 
 .cinematic-projects .cinema-progress:hover {
-  height: 5px;
+  transform: scaleY(1.6);
 }
 
 /* Conflict: JS paints the fill gradient inline (red); recolored to muted yellow via filter. */
@@ -620,6 +650,10 @@ title: Short Film Projects
 
 .cinematic-projects .cinema-status:not(:empty) {
   opacity: 1;
+}
+/* UI must not appear blocked: hide the "Preparing" pill visually pre-start (still announced to AT). */
+.cinematic-projects .cinema:not(.is-started):not(.has-error) .cinema-status {
+  opacity: 0;
 }
 
 .cinematic-projects .cinema-fallback {
