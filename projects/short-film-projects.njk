@@ -4,26 +4,23 @@ title: Short Film Projects
 ---
 
 <div class="w3-padding-64 w3-content cinematic-projects">
-  <h2 class="w3-text-light-grey">Short Film Projects</h2>
+  <h2 class="w3-text-light-grey section-heading">Short Film Projects</h2>
 
-{% for p in (collections.project or []) | reverse %}
+  {% for p in (collections.project or []) | reverse %}
     {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
-      <div class="film-project w3-margin-bottom">
-        {# Title removed from here, integrated into the player #}
-
-{% if p.data.vimeoId %}
-          {% set playerKey = 'cinema-' ~ loop.index %}
-
-<section
+      <div class="film-project">
+        {% if p.data.vimeoId %}
+          <section
             class="cinema"
             data-cinema
             data-video-id="{{ p.data.vimeoId | escape }}"
+            data-title="{{ p.data.title | escape }}"
+            data-subtitle="{{ (p.data.subtitle or '') | escape }}"
             aria-label="{{ p.data.title | escape }} video player"
           >
             <div class="cinema-screen">
               <div class="cinema-video" data-video-layer></div>
-
-<img
+              <img
                 class="cinema-poster"
                 data-poster
                 src="/img/optimized/projects/short-film/{{ p.data.vimeoId | escape }}.webp"
@@ -34,15 +31,7 @@ title: Short Film Projects
                 height="1080"
               >
 
-<!-- Title Overlay (Top Left) -->
-              <div class="cinema-title-overlay" data-title-overlay>
-                <h3 class="cinema-overlay-title">{{ p.data.title }}</h3>
-                {% if p.data.subtitle %}
-                  <p class="cinema-overlay-subtitle">{{ p.data.subtitle }}</p>
-                {% endif %}
-              </div>
-
-<!-- Camera Layer (Bottom Left) -->
+              <!-- Center Camera Play Button -->
               <div class="cinema-camera-layer" data-camera-layer>
                 <button
                   class="cinema-camera-btn"
@@ -50,158 +39,182 @@ title: Short Film Projects
                   type="button"
                   aria-label="Play {{ p.data.title | escape }}"
                 >
-                  <svg class="cinema-flat-icon" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4zM6 13h2v2H6v-2zm0-3h2v2H6v-2zm3 3h2v2H9v-2zm0-3h2v2H9v-2zm3 3h2v2h-2v-2zm0-3h2v2h-2v-2z"/>
+                  <svg class="cinema-camera-svg" viewBox="0 0 64 64" aria-hidden="true">
+                    <!-- Film reels -->
+                    <circle cx="22" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="42" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <circle cx="22" cy="16" r="2.5" fill="currentColor"/>
+                    <circle cx="42" cy="16" r="2.5" fill="currentColor"/>
+                    <circle cx="16" cy="10" r="1.5" fill="currentColor"/>
+                    <circle cx="28" cy="10" r="1.5" fill="currentColor"/>
+                    <circle cx="16" cy="22" r="1.5" fill="currentColor"/>
+                    <circle cx="28" cy="22" r="1.5" fill="currentColor"/>
+                    <circle cx="36" cy="10" r="1.5" fill="currentColor"/>
+                    <circle cx="48" cy="10" r="1.5" fill="currentColor"/>
+                    <circle cx="36" cy="22" r="1.5" fill="currentColor"/>
+                    <circle cx="48" cy="22" r="1.5" fill="currentColor"/>
+                    <!-- Camera body -->
+                    <rect x="18" y="26" width="28" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>
+                    <rect x="26" y="31" width="12" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/>
+                    <circle cx="30" cy="34.5" r="1.2" fill="currentColor"/>
+                    <circle cx="34" cy="34.5" r="1.2" fill="currentColor"/>
+                    <!-- Lens -->
+                    <polygon points="46,30 55,27 55,41 46,38" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <polygon points="18,30 13,28 13,36 18,34" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                    <!-- Tripod -->
+                    <line x1="26" y1="42" x2="21" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="32" y1="42" x2="32" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    <line x1="38" y1="42" x2="43" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
                   </svg>
-                  <span class="cinema-play-text" data-caption>Play</span>
+                  <span class="cinema-play-label">Play</span>
                 </button>
               </div>
 
-<div class="cinema-beam" data-beam aria-hidden="true"></div>
-
-<div class="cinema-fallback" data-fallback role="alert" hidden>
+              <div class="cinema-fallback" data-fallback role="alert" hidden>
                 <div>
                   <strong>The picture could not start</strong>
-                  <p>
-                    We could not load the film. Please check your connection
-                    and refresh the page.
-                  </p>
-                  <a
-                    href="https://vimeo.com/{{ p.data.vimeoId | escape }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >Watch on Vimeo</a>
-                  <button
-                    type="button"
-                    data-refresh
-                    aria-label="Refresh the page"
-                  >Refresh</button>
+                  <p>We could not load the film. Please check your connection and refresh the page.</p>
+                  <a href="https://vimeo.com/{{ p.data.vimeoId | escape }}" target="_blank" rel="noopener noreferrer">Watch on Vimeo</a>
+                  <button type="button" data-refresh>Refresh</button>
                 </div>
               </div>
             </div>
 
-<!-- Modern YouTube-style Controls Bar -->
-            <div
-              class="cinema-controls"
-              data-controls
-              aria-label="Film controls"
-              hidden
-            >
-              <div class="cinema-progress-container">
+            <!-- Controls Bar (screenshot.jpg style) -->
+            <div class="cinema-controls" data-controls aria-label="Film controls" hidden>
+              <div class="cinema-progress-wrap">
                 <input
                   class="cinema-progress"
                   data-progress
                   type="range"
-                  min="0"
-                  max="1000"
-                  step="1"
-                  value="0"
+                  min="0" max="1000" step="1" value="0"
                   aria-label="Seek through the film"
-                  aria-valuetext="00:00 of 00:00"
                   disabled
                 >
-                <div class="cinema-progress-buffer"></div>
               </div>
 
-<div class="cinema-control-row">
-                <div class="cinema-controls-left">
-                  <button type="button" data-toggle aria-label="Play film" class="ctrl-btn">
-                    <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  </button>
-                  <button type="button" data-replay aria-label="Replay film" class="ctrl-btn">
-                    <svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                  </button>
-                  <button type="button" data-sound aria-label="Unmute film" class="ctrl-btn">
-                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                  </button>
-                  <span class="cinema-time" data-time aria-live="off">00:00 / 00:00</span>
+              <div class="cinema-info-row">
+                <div class="cinema-info-text">
+                  <span class="cinema-info-title" data-info-title></span>
+                  <span class="cinema-info-sub" data-info-sub></span>
                 </div>
+                <span class="cinema-time" data-time>00:00 / 00:00</span>
+              </div>
 
-<div class="cinema-controls-right">
-                  <label class="ctrl-select-label">
-                    <select data-speed aria-label="Playback speed">
-                      <option value="0.5">0.5x</option>
-                      <option value="1" selected>1x</option>
-                      <option value="1.5">1.5x</option>
-                      <option value="2">2x</option>
-                    </select>
-                  </label>
-                  <label class="ctrl-select-label">
-                    <select data-quality aria-label="Video quality" disabled>
-                      <option value="auto">Auto</option>
-                    </select>
-                  </label>
+              <div class="cinema-btn-row">
+                <div class="cinema-btn-left">
+                  <button class="cbtn" data-cam-btn type="button" aria-label="Play/Pause">
+                    <svg class="cbtn-cam" viewBox="0 0 64 64" aria-hidden="true">
+                      <circle cx="22" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                      <circle cx="42" cy="16" r="9" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                      <circle cx="22" cy="16" r="2.5" fill="currentColor"/>
+                      <circle cx="42" cy="16" r="2.5" fill="currentColor"/>
+                      <rect x="18" y="26" width="28" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2.5"/>
+                      <polygon points="46,30 55,27 55,41 46,38" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+                      <line x1="26" y1="42" x2="21" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                      <line x1="32" y1="42" x2="32" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                      <line x1="38" y1="42" x2="43" y2="56" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                    </svg>
+                  </button>
+                  <button class="cbtn cbtn-toggle" data-toggle type="button" aria-label="Play film">
+                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M8 5v14l11-7z"/></svg>
+                    <span class="cbtn-tip" data-tip>Play</span>
+                  </button>
+                  <button class="cbtn" data-replay type="button" aria-label="Replay film">
+                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                  </button>
+                  <button class="cbtn" data-sound type="button" aria-label="Unmute film">
+                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                  </button>
+                </div>
+                <div class="cinema-btn-right">
+                  <button class="cbtn cbtn-text" data-speed type="button" aria-label="Playback speed">1x</button>
+                  <button class="cbtn cbtn-text" data-quality type="button" aria-label="Video quality">Auto</button>
+                  <button class="cbtn" data-fullscreen type="button" aria-label="Fullscreen">
+                    <svg viewBox="0 0 24 24" class="cbtn-icon"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                  </button>
                 </div>
               </div>
             </div>
 
-<p
-              class="cinema-status"
-              data-status
-              role="status"
-              aria-live="polite"
-            ></p>
-
-<noscript>
-              <p>
-                <a href="https://vimeo.com/{{ p.data.vimeoId | escape }}">
-                  Watch this film on Vimeo
-                </a>.
-                JavaScript is required for the custom player.
-              </p>
+            <p class="cinema-status" data-status role="status" aria-live="polite"></p>
+            <noscript>
+              <p><a href="https://vimeo.com/{{ p.data.vimeoId | escape }}">Watch on Vimeo</a>. JavaScript required.</p>
             </noscript>
           </section>
         {% endif %}
 
-{% if p.templateContent %}
-          <div class="w3-text-grey" style="line-height:1.7;">
-            {{ p.templateContent | safe }}
-          </div>
+        {% if p.templateContent %}
+          <div class="film-description">{{ p.templateContent | safe }}</div>
         {% endif %}
 
-<hr class="w3-opacity">
+        <hr class="film-divider">
       </div>
     {% endif %}
   {% endfor %}
 </div>
 
 <style>
-/*
- * Modern Cinematic Player Styles
- * Clean, flat, YouTube-inspired controls with smooth animations.
- */
+/* ===== Base & Typography ===== */
+.cinematic-projects {
+  --c-bg: #0a0a0a;
+  --c-surface: rgba(18, 18, 18, 0.88);
+  --c-border: rgba(255, 255, 255, 0.12);
+  --c-text: #ffffff;
+  --c-muted: #999999;
+  --c-accent: #e50914;
+  --c-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
 
+.cinematic-projects .section-heading {
+  font-family: var(--c-font);
+  font-size: clamp(24px, 3vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+  color: var(--c-text);
+}
+
+.cinematic-projects .film-project {
+  margin-bottom: 56px;
+}
+
+.cinematic-projects .film-description {
+  font-family: var(--c-font);
+  color: #cccccc;
+  line-height: 1.8;
+  font-size: 15px;
+  margin-top: 20px;
+}
+
+.cinematic-projects .film-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  margin: 40px 0;
+}
+
+/* ===== Cinema Container ===== */
 .cinematic-projects .cinema {
-  --cinema-bg: #0f0f0f;
-  --cinema-ink: #ffffff;
-  --cinema-muted: #aaaaaa;
-  --cinema-accent: #ff0000; /* YouTube red accent */
-  --cinema-space: 16px;
-
   position: relative;
   isolation: isolate;
-  margin-bottom: 40px;
   border-radius: 12px;
   overflow: hidden;
-  color: var(--cinema-ink);
-  background: var(--cinema-bg);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  background: var(--c-bg);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
 }
 
-.cinematic-projects .cinema [hidden] {
-  display: none !important;
-}
+.cinematic-projects .cinema [hidden] { display: none !important; }
 
+/* ===== Screen ===== */
 .cinematic-projects .cinema-screen {
   position: relative;
-  isolation: isolate;
   aspect-ratio: 16 / 9;
   overflow: hidden;
   background: #000;
   cursor: pointer;
 }
 
-/* Cinematic Fade-in for Video */
+/* ===== Video Layer ===== */
 .cinematic-projects .cinema-video,
 .cinematic-projects .cinema-video iframe {
   position: absolute;
@@ -210,8 +223,8 @@ title: Short Film Projects
   height: 100%;
   border: 0;
   opacity: 0;
-  transition: opacity 1.2s ease-in-out;
-  pointer-events: none; /* Let clicks pass to screen */
+  transition: opacity 1s ease;
+  pointer-events: none;
 }
 
 .cinematic-projects .cinema.is-started .cinema-video,
@@ -220,6 +233,7 @@ title: Short Film Projects
   pointer-events: auto;
 }
 
+/* ===== Poster ===== */
 .cinematic-projects .cinema-poster {
   position: absolute;
   inset: 0;
@@ -227,7 +241,7 @@ title: Short Film Projects
   height: 100%;
   object-fit: cover;
   opacity: 1;
-  transition: opacity 0.8s ease;
+  transition: opacity 0.6s ease;
   z-index: 2;
 }
 
@@ -236,111 +250,85 @@ title: Short Film Projects
   pointer-events: none;
 }
 
-/* Title Overlay (Top Left) */
-.cinematic-projects .cinema-title-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 15;
-  padding: 24px;
-  background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  pointer-events: none;
-}
-
-.cinematic-projects .cinema:hover .cinema-title-overlay,
-.cinematic-projects .cinema.controls-visible .cinema-title-overlay {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.cinematic-projects .cinema-overlay-title {
-  margin: 0 0 4px 0;
-  font-size: clamp(20px, 3vw, 32px);
-  font-weight: 600;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.8);
-  line-height: 1.2;
-}
-
-.cinematic-projects .cinema-overlay-subtitle {
-  margin: 0;
-  font-size: 14px;
-  color: #ddd;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-}
-
-/* Camera Layer (Bottom Left) */
+/* ===== Center Camera Button ===== */
 .cinematic-projects .cinema-camera-layer {
   position: absolute;
-  bottom: 20px;
-  left: 20px;
-  z-index: 20;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
 .cinematic-projects .cinema.is-started .cinema-camera-layer {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(20px);
+  transform: scale(0.9);
 }
 
 .cinematic-projects .cinema.is-paused .cinema-camera-layer {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: scale(1);
 }
 
 .cinematic-projects .cinema-camera-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  background: rgba(0,0,0,0.6);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 12px;
-  padding: 16px 24px;
+  gap: 12px;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 24px 32px;
   cursor: pointer;
-  transition: background 0.2s ease, transform 0.2s ease;
-  backdrop-filter: blur(4px);
+  color: #fff;
+  transition: background 0.2s, transform 0.2s;
+  backdrop-filter: blur(8px);
 }
 
 .cinematic-projects .cinema-camera-btn:hover {
-  background: rgba(0,0,0,0.8);
+  background: rgba(0, 0, 0, 0.7);
   transform: scale(1.05);
 }
 
-.cinematic-projects .cinema-flat-icon {
-  width: 48px;
-  height: 48px;
-  fill: #ffffff;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+.cinematic-projects .cinema-camera-svg {
+  width: 72px;
+  height: 72px;
+  fill: none;
+  stroke: #ffffff;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
 }
 
-.cinematic-projects .cinema-play-text {
-  font-size: 14px;
+.cinematic-projects .cinema-play-label {
+  font-family: var(--c-font);
+  font-size: 13px;
   font-weight: 600;
-  color: #ffffff;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  color: #ffffff;
+  background: rgba(0,0,0,0.7);
+  padding: 3px 12px;
+  border-radius: 4px;
+  border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* Modern Controls Bar */
+/* ===== Controls Bar ===== */
 .cinematic-projects .cinema-controls {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  z-index: 30;
-  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
-  padding: 0 16px 12px 16px;
+  z-index: 20;
+  background: var(--c-surface);
+  border-top: 1px solid var(--c-border);
+  border-radius: 0 0 12px 12px;
+  padding: 0 16px 12px;
   opacity: 0;
-  transform: translateY(10px);
+  transform: translateY(8px);
   transition: opacity 0.3s ease, transform 0.3s ease;
   pointer-events: none;
+  backdrop-filter: blur(12px);
 }
 
 .cinematic-projects .cinema.controls-visible .cinema-controls {
@@ -349,44 +337,43 @@ title: Short Film Projects
   pointer-events: auto;
 }
 
-/* Progress Bar */
-.cinematic-projects .cinema-progress-container {
+/* ===== Progress Bar ===== */
+.cinematic-projects .cinema-progress-wrap {
   position: relative;
-  width: 100%;
   height: 20px;
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
   cursor: pointer;
+  margin-bottom: 4px;
 }
 
 .cinematic-projects .cinema-progress {
-  position: absolute;
   width: 100%;
-  height: 4px;
+  height: 3px;
   margin: 0;
   padding: 0;
   appearance: none;
-  background: rgba(255,255,255,0.3);
+  -webkit-appearance: none;
+  background: rgba(255,255,255,0.2);
   border-radius: 2px;
   cursor: pointer;
-  transition: height 0.1s ease;
-  z-index: 2;
+  transition: height 0.15s ease;
+  outline: none;
 }
 
 .cinematic-projects .cinema-progress:hover {
-  height: 6px;
+  height: 5px;
 }
 
 .cinematic-projects .cinema-progress::-webkit-slider-thumb {
-  appearance: none;
-  width: 14px;
-  height: 14px;
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: var(--cinema-accent);
+  background: var(--c-accent);
   cursor: pointer;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.15s;
 }
 
 .cinematic-projects .cinema-progress:hover::-webkit-slider-thumb {
@@ -394,36 +381,80 @@ title: Short Film Projects
 }
 
 .cinematic-projects .cinema-progress::-moz-range-thumb {
-  width: 14px;
-  height: 14px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
-  background: var(--cinema-accent);
+  background: var(--c-accent);
   cursor: pointer;
   border: none;
   opacity: 0;
-  transition: opacity 0.2s ease;
 }
 
 .cinematic-projects .cinema-progress:hover::-moz-range-thumb {
   opacity: 1;
 }
 
-/* Control Row Layout */
-.cinematic-projects .cinema-control-row {
+/* ===== Info Row ===== */
+.cinematic-projects .cinema-info-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  padding: 0 4px;
+}
+
+.cinematic-projects .cinema-info-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cinematic-projects .cinema-info-title {
+  font-family: var(--c-font);
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cinematic-projects .cinema-info-sub {
+  font-family: var(--c-font);
+  font-size: 12px;
+  color: var(--c-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cinematic-projects .cinema-time {
+  font-family: var(--c-font);
+  font-size: 12px;
+  color: var(--c-muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  margin-left: 12px;
+}
+
+/* ===== Button Row ===== */
+.cinematic-projects .cinema-btn-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
 
-.cinematic-projects .cinema-controls-left,
-.cinematic-projects .cinema-controls-right {
+.cinematic-projects .cinema-btn-left,
+.cinematic-projects .cinema-btn-right {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
-.cinematic-projects .ctrl-btn {
+/* ===== Control Buttons ===== */
+.cinematic-projects .cbtn {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -431,68 +462,84 @@ title: Short Film Projects
   height: 36px;
   padding: 0;
   border: none;
-  border-radius: 50%;
+  border-radius: 6px;
   background: transparent;
   color: #ffffff;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.15s;
 }
 
-.cinematic-projects .ctrl-btn:hover {
+.cinematic-projects .cbtn:hover {
   background: rgba(255,255,255,0.1);
 }
 
-.cinematic-projects .ctrl-btn svg {
-  width: 24px;
-  height: 24px;
+.cinematic-projects .cbtn-icon {
+  width: 22px;
+  height: 22px;
   fill: currentColor;
 }
 
-.cinematic-projects .cinema-time {
-  margin-left: 8px;
-  color: #dddddd;
-  font-size: 13px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+.cinematic-projects .cbtn-cam {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
 }
 
-.cinematic-projects .ctrl-select-label {
-  display: flex;
-  align-items: center;
+.cinematic-projects .cbtn-text {
+  width: auto;
+  padding: 0 10px;
+  font-family: var(--c-font);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--c-muted);
 }
 
-.cinematic-projects .ctrl-select-label select {
-  background: transparent;
-  border: none;
-  color: #dddddd;
-  font-size: 13px;
-  cursor: pointer;
-  outline: none;
-}
-
-.cinematic-projects .ctrl-select-label select:hover {
-  color: #ffffff;
-}
-
-.cinematic-projects .ctrl-select-label select option {
-  background: #222;
+.cinematic-projects .cbtn-text:hover {
   color: #fff;
 }
 
-/* Status & Fallback */
+/* ===== Tooltip (like "Pause" in screenshot) ===== */
+.cinematic-projects .cbtn-tip {
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.92);
+  color: #fff;
+  font-family: var(--c-font);
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+  border: 1px solid rgba(255,255,255,0.1);
+  z-index: 30;
+}
+
+.cinematic-projects .cbtn-toggle:hover .cbtn-tip {
+  opacity: 1;
+}
+
+/* ===== Status & Fallback ===== */
 .cinematic-projects .cinema-status {
   position: absolute;
-  bottom: 80px;
+  bottom: 100px;
   left: 50%;
   transform: translateX(-50%);
   z-index: 25;
   background: rgba(0,0,0,0.8);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-family: var(--c-font);
+  font-size: 12px;
   color: #fff;
   opacity: 0;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s;
   pointer-events: none;
 }
 
@@ -510,6 +557,7 @@ title: Short Film Projects
   color: #fff;
   text-align: center;
   padding: 20px;
+  font-family: var(--c-font);
 }
 
 .cinematic-projects .cinema-fallback a,
@@ -517,27 +565,37 @@ title: Short Film Projects
   display: inline-block;
   margin-top: 12px;
   padding: 8px 16px;
-  background: var(--cinema-accent);
+  background: var(--c-accent);
   color: #fff;
   text-decoration: none;
-  border-radius: 4px;
+  border-radius: 6px;
   border: none;
   cursor: pointer;
+  font-family: var(--c-font);
+  font-size: 13px;
 }
 
-/* Responsive */
+/* ===== Responsive ===== */
 @media (max-width: 600px) {
-  .cinematic-projects .cinema-control-row {
+  .cinematic-projects .cinema-btn-row {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 8px;
   }
-  .cinematic-projects .cinema-controls-left,
-  .cinematic-projects .cinema-controls-right {
-    width: 100%;
-    justify-content: center;
+  .cinematic-projects .cinema-info-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
   }
   .cinematic-projects .cinema-time {
     margin-left: 0;
+  }
+  .cinematic-projects .cinema-camera-svg {
+    width: 56px;
+    height: 56px;
+  }
+  .cinematic-projects .cinema-camera-btn {
+    padding: 18px 24px;
   }
 }
 </style>
@@ -549,25 +607,21 @@ title: Short Film Projects
   let sdkPromise;
 
   function loadVimeoSDK() {
-    if (window.Vimeo && window.Vimeo.Player) {
-      return Promise.resolve(window.Vimeo);
-    }
+    if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo);
     if (!sdkPromise) {
       sdkPromise = new Promise(function (resolve, reject) {
         const script = document.createElement('script');
-        const timeout = window.setTimeout(function () {
-          reject(new Error('Vimeo SDK loading timed out.'));
-        }, 20000);
+        const timer = window.setTimeout(function () { reject(new Error('Vimeo SDK timeout.')); }, 20000);
         script.src = 'https://player.vimeo.com/api/player.js';
         script.async = true;
         script.onload = function () {
-          window.clearTimeout(timeout);
+          window.clearTimeout(timer);
           if (window.Vimeo && window.Vimeo.Player) resolve(window.Vimeo);
-          else reject(new Error('Vimeo SDK is unavailable.'));
+          else reject(new Error('Vimeo SDK unavailable.'));
         };
         script.onerror = function () {
-          window.clearTimeout(timeout);
-          reject(new Error('Vimeo SDK could not be loaded.'));
+          window.clearTimeout(timer);
+          reject(new Error('Vimeo SDK load failed.'));
         };
         document.head.appendChild(script);
       });
@@ -575,28 +629,23 @@ title: Short Film Projects
     return sdkPromise;
   }
 
-  function withTimeout(promise, milliseconds) {
+  function withTimeout(promise, ms) {
     return new Promise(function (resolve, reject) {
-      const timer = window.setTimeout(function () {
-        reject(new Error('The player did not respond in time.'));
-      }, milliseconds);
-      Promise.resolve(promise).then(function (value) {
-        window.clearTimeout(timer);
-        resolve(value);
-      }, function (error) {
-        window.clearTimeout(timer);
-        reject(error);
-      });
+      const t = window.setTimeout(function () { reject(new Error('Timeout.')); }, ms);
+      Promise.resolve(promise).then(
+        function (v) { window.clearTimeout(t); resolve(v); },
+        function (e) { window.clearTimeout(t); reject(e); }
+      );
     });
   }
 
-  function formatTime(seconds) {
-    const safe = Math.max(0, Math.floor(Number(seconds) || 0));
-    const hours = Math.floor(safe / 3600);
-    const minutes = Math.floor((safe % 3600) / 60);
-    const remainder = safe % 60;
-    const short = String(minutes).padStart(2, '0') + ':' + String(remainder).padStart(2, '0');
-    return hours ? hours + ':' + short : short;
+  function fmt(s) {
+    const v = Math.max(0, Math.floor(Number(s) || 0));
+    const h = Math.floor(v / 3600);
+    const m = Math.floor((v % 3600) / 60);
+    const sec = v % 60;
+    const str = String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+    return h ? h + ':' + str : str;
   }
 
   function initialize() {
@@ -604,80 +653,79 @@ title: Short Film Projects
       if (root.dataset.initialized) return;
       root.dataset.initialized = 'true';
 
-      const find = function (name) { return root.querySelector('[data-' + name + ']'); };
+      const $ = function (n) { return root.querySelector('[data-' + n + ']'); };
       const screen = root.querySelector('.cinema-screen');
-      const cameraBtn = find('camera');
-      const controls = find('controls');
-      const toggle = find('toggle');
-      const replay = find('replay');
-      const sound = find('sound');
-      const speed = find('speed');
-      const quality = find('quality');
-      const progress = find('progress');
-      const time = find('time');
-      const status = find('status');
-      const fallback = find('fallback');
-      const poster = find('poster');
+      const cameraBtn = $('camera');
+      const controls = $('controls');
+      const toggle = $('toggle');
+      const tip = $('tip');
+      const replay = $('replay');
+      const sound = $('sound');
+      const speed = $('speed');
+      const quality = $('quality');
+      const progress = $('progress');
+      const timeEl = $('time');
+      const status = $('status');
+      const fallback = $('fallback');
+      const poster = $('poster');
+      const infoTitle = $('info-title');
+      const infoSub = $('info-sub');
 
-      let player;
-      let preparation;
-      let ready = false;
-      let failed = false;
-      let started = false;
-      let paused = true;
-      let muted = true;
-      let duration = 0;
-      let current = 0;
-      let hideTimer;
-      let seekEditing = false;
+      // Set info from data attributes
+      infoTitle.textContent = root.dataset.title || '';
+      infoSub.textContent = root.dataset.subtitle || '';
+
+      let player, prep;
+      let ready = false, failed = false, started = false, paused = true, muted = true;
+      let duration = 0, current = 0, hideTimer, seekEdit = false;
+      let speedRates = [0.5, 1, 1.5, 2];
+      let speedIndex = 1; // start at 1x
+      let qualities = [];
+      let qualityIndex = 0;
 
       function showControls() {
         root.classList.add('controls-visible');
         window.clearTimeout(hideTimer);
         if (!started || paused || failed) return;
         hideTimer = window.setTimeout(function () {
-          if (!controls.contains(document.activeElement) && !paused && !seekEditing) {
+          if (!controls.contains(document.activeElement) && !paused && !seekEdit) {
             root.classList.remove('controls-visible');
           }
         }, 3000);
       }
 
-      function setPaused(value) {
-        paused = value;
-        const playIcon = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
-        const pauseIcon = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
-        toggle.innerHTML = value ? playIcon : pauseIcon;
-        toggle.setAttribute('aria-label', value ? 'Play film' : 'Pause film');
-        
-        if (value) {
-          root.classList.add('is-paused');
-        } else {
-          root.classList.remove('is-paused');
-        }
+      function setPaused(v) {
+        paused = v;
+        const playSVG = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+        const pauseSVG = '<svg viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
+        toggle.querySelector('.cbtn-icon').outerHTML = v ? playSVG : pauseSVG;
+        toggle.setAttribute('aria-label', v ? 'Play film' : 'Pause film');
+        tip.textContent = v ? 'Play' : 'Pause';
+        if (v) root.classList.add('is-paused');
+        else root.classList.remove('is-paused');
         showControls();
       }
 
-      function setMuted(value) {
-        muted = value;
-        const muteIcon = '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
-        const unmuteIcon = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
-        sound.innerHTML = value ? muteIcon : unmuteIcon;
-        sound.setAttribute('aria-label', value ? 'Unmute film' : 'Mute film');
+      function setMuted(v) {
+        muted = v;
+        const muteSVG = '<svg viewBox="0 0 24 24"><path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z"/></svg>';
+        const unmuteSVG = '<svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>';
+        sound.querySelector('.cbtn-icon').outerHTML = v ? muteSVG : unmuteSVG;
+        sound.setAttribute('aria-label', v ? 'Unmute film' : 'Mute film');
       }
 
       function updateTime() {
-        time.textContent = formatTime(current) + ' / ' + formatTime(duration);
+        timeEl.textContent = fmt(current) + ' / ' + fmt(duration);
         progress.disabled = duration <= 0;
-        if (!seekEditing) {
+        if (!seekEdit) {
           progress.value = duration > 0 ? Math.round(current / duration * 1000) : 0;
-          // Update progress bar background fill
-          const percent = duration > 0 ? (current / duration * 100) : 0;
-          progress.style.background = `linear-gradient(to right, #ff0000 ${percent}%, rgba(255,255,255,0.3) ${percent}%)`;
+          const pct = duration > 0 ? (current / duration * 100) : 0;
+          progress.style.background = 'linear-gradient(to right, #e50914 ' + pct + '%, rgba(255,255,255,0.2) ' + pct + '%)';
         }
-        progress.setAttribute('aria-valuetext', formatTime(current) + ' of ' + formatTime(duration));
+        progress.setAttribute('aria-valuetext', fmt(current) + ' of ' + fmt(duration));
       }
 
-      function fail(error) {
+      function fail(err) {
         if (failed) return;
         failed = true;
         window.clearTimeout(hideTimer);
@@ -687,78 +735,74 @@ title: Short Film Projects
         cameraBtn.disabled = true;
         fallback.hidden = false;
         status.textContent = '';
-        if (player) player.pause().catch(function () {});
-        console.warn('Cinematic Vimeo player:', error);
+        if (player) player.pause().catch(function(){});
+        console.warn('Cinema player:', err);
       }
 
-      function notify(message, error) {
-        status.textContent = message;
+      function notify(msg, err) {
+        status.textContent = msg;
         showControls();
-        if (error) console.warn('Cinematic Vimeo control:', error);
+        if (err) console.warn('Cinema control:', err);
       }
 
       async function loadQualities() {
         try {
-          const options = await withTimeout(player.getQualities(), 8000);
-          if (failed || !Array.isArray(options) || !options.length) return;
-          quality.replaceChildren(new Option('Auto', 'auto'));
-          const seen = new Set(['auto']);
-          options.forEach(function (option) {
-            if (!option || !option.id || seen.has(String(option.id))) return;
-            const id = String(option.id);
-            seen.add(id);
-            quality.add(new Option(String(option.label || id), id));
-          });
-          try {
-            const active = await withTimeout(player.getQuality(), 8000);
-            if (seen.has(String(active))) {
-              quality.value = String(active);
-            }
-          } catch (error) {}
-          quality.disabled = quality.options.length < 2;
-        } catch (error) {
-          quality.disabled = true;
-        }
+          const opts = await withTimeout(player.getQualities(), 8000);
+          if (failed || !Array.isArray(opts) || !opts.length) return;
+          qualities = opts;
+          qualityIndex = 0;
+        } catch (e) {}
       }
 
       function prepare() {
-        if (preparation) return preparation;
-        preparation = (async function () {
+        if (prep) return prep;
+        prep = (async function () {
           const Vimeo = await loadVimeoSDK();
           if (failed) return;
-          const videoId = String(root.dataset.videoId || '');
-          if (!/^\d+$/.test(videoId)) throw new Error('The project Vimeo ID is invalid.');
+          const vid = String(root.dataset.videoId || '');
+          if (!/^\d+$/.test(vid)) throw new Error('Invalid Vimeo ID.');
 
           const iframe = document.createElement('iframe');
-          iframe.src = 'https://player.vimeo.com/video/' + videoId + '?background=1&autoplay=0&loop=0&byline=0&title=0&portrait=0&controls=0&muted=1&playsinline=1&keyboard=0';
+          iframe.src = 'https://player.vimeo.com/video/' + vid + '?background=1&autoplay=0&loop=0&byline=0&title=0&portrait=0&controls=0&muted=1&playsinline=1&keyboard=0';
           iframe.title = 'Vimeo film';
           iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
           iframe.allowFullscreen = true;
           iframe.tabIndex = -1;
-          find('video-layer').appendChild(iframe);
+          $('video-layer').appendChild(iframe);
 
           player = new Vimeo.Player(iframe);
           player.on('play', function () { setPaused(false); });
           player.on('pause', function () { setPaused(true); });
           player.on('ended', function () { setPaused(true); current = duration; updateTime(); root.classList.add('is-paused'); });
-          player.on('timeupdate', function (event) { current = Number(event.seconds) || 0; duration = Number(event.duration) || duration; updateTime(); });
-          player.on('durationchange', function (event) { duration = Number(event.duration) || 0; updateTime(); });
-          player.on('playbackratechange', function (event) { speed.value = String(event.playbackRate); });
-          player.on('qualitychange', function (event) { if (event && event.id) quality.value = String(event.id); });
-          player.on('volumechange', function (event) { setMuted(Boolean(event.muted) || event.volume === 0); });
-          player.on('error', function (error) {
-            if (error && ['setQuality','getQuality','getQualities','setPlaybackRate','setCurrentTime','setMuted','setVolume'].indexOf(error.method) !== -1) return;
-            fail(error);
+          player.on('timeupdate', function (e) { current = Number(e.seconds) || 0; duration = Number(e.duration) || duration; updateTime(); });
+          player.on('durationchange', function (e) { duration = Number(e.duration) || 0; updateTime(); });
+          player.on('playbackratechange', function (e) {
+            speed.textContent = e.playbackRate + 'x';
+            speedIndex = speedRates.indexOf(e.playbackRate);
+            if (speedIndex === -1) speedIndex = 1;
+          });
+          player.on('qualitychange', function (e) {
+            if (e && e.id) {
+              quality.textContent = e.id === 'auto' ? 'Auto' : e.id + 'p';
+              for (let i = 0; i < qualities.length; i++) {
+                if (String(qualities[i].id) === String(e.id)) { qualityIndex = i; break; }
+              }
+            }
+          });
+          player.on('volumechange', function (e) { setMuted(Boolean(e.muted) || e.volume === 0); });
+          player.on('error', function (e) {
+            if (e && ['setQuality','getQuality','getQualities','setPlaybackRate','setCurrentTime','setMuted','setVolume'].indexOf(e.method) !== -1) return;
+            fail(e);
           });
 
           await withTimeout(player.ready(), 20000);
           if (failed) return;
           ready = true;
-          player.getDuration().then(function (value) { duration = Number(value) || 0; updateTime(); }).catch(function () {});
-          player.getMuted().then(setMuted).catch(function () {});
+          player.getDuration().then(function (v) { duration = Number(v) || 0; updateTime(); }).catch(function(){});
+          player.getMuted().then(setMuted).catch(function(){});
           loadQualities();
-        })().catch(function (error) { fail(error); });
-        return preparation;
+        })().catch(function (e) { fail(e); });
+        return prep;
       }
 
       async function launch() {
@@ -774,39 +818,30 @@ title: Short Film Projects
           root.classList.add('is-started');
           root.classList.remove('is-paused');
           cameraBtn.disabled = false;
+          // FIX: Clear status message after successful launch
+          status.textContent = '';
           showControls();
-        } catch (error) { fail(error); }
+        } catch (e) { fail(e); }
       }
 
-      // Event Listeners
-      screen.addEventListener('click', function(e) {
-        // If clicking on controls or camera, let their handlers deal with it
+      // Events
+      screen.addEventListener('click', function (e) {
         if (controls.contains(e.target) || cameraBtn.contains(e.target)) return;
-        
-        if (!started) {
-          launch();
-        } else if (paused) {
-          player.play().catch(()=>{});
-        } else {
-          // If playing, clicking screen pauses and shows camera
-          player.pause().catch(()=>{});
-          root.classList.add('is-paused');
-        }
+        if (!started) launch();
+        else if (paused) player.play().catch(function(){});
+        else { player.pause().catch(function(){}); root.classList.add('is-paused'); }
       });
 
       screen.addEventListener('mousemove', showControls);
       screen.addEventListener('touchstart', showControls, { passive: true });
 
-      cameraBtn.addEventListener('click', function(e) {
+      cameraBtn.addEventListener('click', function (e) {
         e.stopPropagation();
-        if (!started) {
-          launch();
-        } else {
-          player.play().catch(()=>{});
-        }
+        if (!started) launch();
+        else player.play().catch(function(){});
       });
 
-      find('refresh').addEventListener('click', function () { window.location.reload(); });
+      $('refresh').addEventListener('click', function () { window.location.reload(); });
       poster.addEventListener('error', function () { poster.hidden = true; });
 
       toggle.addEventListener('click', async function (e) {
@@ -814,9 +849,9 @@ title: Short Film Projects
         if (!ready || failed) return;
         toggle.disabled = true;
         try {
-          const isPaused = await withTimeout(player.getPaused(), 8000);
-          await withTimeout(isPaused ? player.play() : player.pause(), 15000);
-        } catch (error) { notify('Playback could not be changed.', error); }
+          const p = await withTimeout(player.getPaused(), 8000);
+          await withTimeout(p ? player.play() : player.pause(), 15000);
+        } catch (err) { notify('Playback could not be changed.', err); }
         finally { toggle.disabled = false; }
       });
 
@@ -825,7 +860,7 @@ title: Short Film Projects
         replay.disabled = true;
         try {
           await withTimeout(player.setCurrentTime(0).then(function () { return player.play(); }), 15000);
-        } catch (error) { notify('The film could not be replayed.', error); }
+        } catch (err) { notify('Could not replay.', err); }
         finally { replay.disabled = false; }
       });
 
@@ -835,57 +870,70 @@ title: Short Film Projects
         try {
           await withTimeout(player.setMuted(!muted), 8000);
           setMuted(await withTimeout(player.getMuted(), 8000));
-        } catch (error) { notify('Sound could not be changed.', error); }
+        } catch (err) { notify('Sound could not be changed.', err); }
         finally { sound.disabled = false; }
       });
 
-      speed.addEventListener('change', async function (e) {
+      // Speed cycle: 0.5x -> 1x -> 1.5x -> 2x -> 0.5x
+      speed.addEventListener('click', async function (e) {
         e.stopPropagation();
-        const previous = speed.value;
+        if (!ready || failed) return;
+        speedIndex = (speedIndex + 1) % speedRates.length;
+        const next = speedRates[speedIndex];
         speed.disabled = true;
         try {
-          const actual = await withTimeout(player.setPlaybackRate(Number(speed.value)), 8000);
-          speed.value = String(actual);
-          status.textContent = '';
-        } catch (error) {
-          speed.value = previous;
-          notify('This film does not support the selected playback speed.', error);
-        } finally { speed.disabled = false; }
+          const actual = await withTimeout(player.setPlaybackRate(next), 8000);
+          speed.textContent = actual + 'x';
+        } catch (err) { notify('Speed change failed.', err); }
+        finally { speed.disabled = false; }
       });
 
-      quality.addEventListener('change', async function (e) {
+      // Quality cycle
+      quality.addEventListener('click', async function (e) {
         e.stopPropagation();
-        const previous = quality.value;
+        if (!ready || failed || qualities.length < 2) return;
+        qualityIndex = (qualityIndex + 1) % qualities.length;
+        const next = qualities[qualityIndex];
         quality.disabled = true;
         try {
-          const actual = await withTimeout(player.setQuality(quality.value), 10000);
-          quality.value = String(actual);
-          status.textContent = '';
-        } catch (error) {
-          quality.value = previous;
-          notify('Manual quality selection is unavailable.', error);
-        } finally { quality.disabled = quality.options.length < 2; }
+          const actual = await withTimeout(player.setQuality(next.id), 10000);
+          quality.textContent = actual === 'auto' ? 'Auto' : actual + 'p';
+        } catch (err) { notify('Quality change failed.', err); }
+        finally { quality.disabled = false; }
       });
 
       progress.addEventListener('input', function (e) {
         e.stopPropagation();
-        seekEditing = true;
+        seekEdit = true;
         showControls();
         const preview = duration * Number(progress.value) / 1000;
-        time.textContent = formatTime(preview) + ' / ' + formatTime(duration);
-        const percent = Number(progress.value) / 10;
-        progress.style.background = `linear-gradient(to right, #ff0000 ${percent}%, rgba(255,255,255,0.3) ${percent}%)`;
+        timeEl.textContent = fmt(preview) + ' / ' + fmt(duration);
+        const pct = Number(progress.value) / 10;
+        progress.style.background = 'linear-gradient(to right, #e50914 ' + pct + '%, rgba(255,255,255,0.2) ' + pct + '%)';
       });
 
       progress.addEventListener('change', async function (e) {
         e.stopPropagation();
         try {
           current = await withTimeout(player.setCurrentTime(duration * Number(progress.value) / 1000), 10000);
-        } catch (error) { notify('Seeking failed.', error); }
-        finally { seekEditing = false; updateTime(); showControls(); }
+        } catch (err) { notify('Seek failed.', err); }
+        finally { seekEdit = false; updateTime(); showControls(); }
       });
 
-      progress.addEventListener('blur', function () { seekEditing = false; updateTime(); });
+      progress.addEventListener('blur', function () { seekEdit = false; updateTime(); });
+
+      // Fullscreen
+      const fsBtn = $('fullscreen');
+      if (fsBtn) {
+        fsBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          if (!document.fullscreenElement) {
+            root.requestFullscreen().catch(function(){});
+          } else {
+            document.exitFullscreen().catch(function(){});
+          }
+        });
+      }
     });
   }
 
