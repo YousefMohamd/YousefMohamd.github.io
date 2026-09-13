@@ -155,14 +155,29 @@ title: Short Film Projects
 </div>
 
 <style>
-/* ===== Base & Typography ===== */
+/*
+  Cinematic player visual layer.
+  States: intro (<=3s on load), idle (playing: camera icon only, bottom-left),
+  hover (title + soft camera light), paused/ended (full controls + end-card), error.
+  Tokens centralized below. Candidate for extraction to /css/player.css
+  (kept scoped under .cinematic-projects to avoid leaks).
+*/
+:root {
+  --intro-duration: 3s;
+  --idle-timeout: 2.5s;
+  --light-intensity: 0.25;
+  --accent-color: #e8d68a;
+  --channel-name: "Portfolio Studio";
+  --fade-fast: 0.35s;
+  --fade-slow: 0.8s;
+}
 .cinematic-projects {
   --c-bg: #0a0a0a;
-  --c-surface: rgba(18, 18, 18, 0.88);
-  --c-border: rgba(255, 255, 255, 0.12);
+  --c-surface: rgba(16, 16, 16, 0.86);
+  --c-border: rgba(255, 255, 255, 0.10);
   --c-text: #ffffff;
   --c-muted: #999999;
-  --c-accent: #e50914;
+  --c-accent: var(--accent-color);
   --c-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
 }
 
@@ -250,14 +265,9 @@ title: Short Film Projects
   pointer-events: none;
 }
 
-/* ===== Center Camera Button ===== */
+/* Center play button removed per redesign. */
 .cinematic-projects .cinema-camera-layer {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: grid;
-  place-items: center;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  display: none !important;
 }
 
 .cinematic-projects .cinema.is-started .cinema-camera-layer {
@@ -272,69 +282,135 @@ title: Short Film Projects
   transform: scale(1);
 }
 
-.cinematic-projects .cinema-camera-btn {
+/* ===== Control bar + state machine (no glass, reference layout) ===== */
+.cinematic-projects .cinema .cinema-controls {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 12px;
+  z-index: 20;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 16px;
-  padding: 24px 32px;
-  cursor: pointer;
-  color: #fff;
-  transition: background 0.2s, transform 0.2s;
-  backdrop-filter: blur(8px);
-}
-
-.cinematic-projects .cinema-camera-btn:hover {
-  background: rgba(0, 0, 0, 0.7);
-  transform: scale(1.05);
-}
-
-.cinematic-projects .cinema-camera-svg {
-  width: 72px;
-  height: 72px;
-  fill: none;
-  stroke: #ffffff;
-  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.5));
-}
-
-.cinematic-projects .cinema-play-label {
-  font-family: var(--c-font);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #ffffff;
-  background: rgba(0,0,0,0.7);
-  padding: 3px 12px;
-  border-radius: 4px;
-  border: 1px solid rgba(255,255,255,0.15);
-}
-
-/* ===== Controls Bar ===== */
-.cinematic-projects .cinema-controls {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  background: var(--c-surface);
-  border-top: 1px solid var(--c-border);
-  border-radius: 0 0 12px 12px;
-  padding: 0 16px 12px;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.3s ease, transform 0.3s ease;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  padding: 0;
   pointer-events: none;
-  backdrop-filter: blur(12px);
+  transition: background var(--fade-fast) ease, border-color var(--fade-fast) ease;
+}
+/* Conflict: JS never clears [hidden]; visibility is driven by state classes instead. */
+.cinematic-projects .cinema .cinema-controls[hidden] { display: flex; }
+.cinematic-projects .cinema.has-error .cinema-controls { display: none !important; }
+.cinematic-projects .cinema-info-row { order: 1; }
+.cinematic-projects .cinema-progress-wrap { order: 2; }
+.cinematic-projects .cinema-btn-row { order: 3; }
+
+.cinematic-projects .cinema-progress-wrap,
+.cinematic-projects .cinema-info-row,
+.cinematic-projects .cinema-btn-row .cbtn:not([data-cam-btn]) {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--fade-fast) ease;
+  will-change: opacity;
+}
+.cinematic-projects .cinema-info-sub { transition: opacity var(--fade-fast) ease; }
+.cinematic-projects [data-cam-btn] {
+  width: 44px;
+  height: 44px;
+  pointer-events: auto;
 }
 
-.cinematic-projects .cinema.controls-visible .cinema-controls {
+/* Intro (<=3s), pre-start only. Conflict: autoplay needs a gesture; film starts on first click. */
+@keyframes cp-intro-bar { 0% { opacity: 0; transform: scaleX(0); } 55% { opacity: 1; transform: scaleX(1); } 100% { opacity: 0; } }
+@keyframes cp-intro-meta { 0% { opacity: 0; transform: translate3d(0, 6px, 0); } 50% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes cp-fade-in { from { opacity: 0; } to { opacity: 1; } }
+.cinematic-projects .cinema:not(.is-started) { animation: cp-fade-in 0.9s ease both; }
+.cinematic-projects .cinema:not(.is-started) .cinema-progress-wrap {
+  animation: cp-intro-bar var(--intro-duration) ease both;
+  transform-origin: left center;
+}
+.cinematic-projects .cinema:not(.is-started) .cinema-info-row {
+  animation: cp-intro-meta var(--intro-duration) ease both;
+}
+
+/* Playback idle: camera icon persists bottom-left. Hover: title + play/pause + soft light. */
+.cinematic-projects .cinema.is-started:not(.is-paused):hover .cinema-info-row,
+.cinematic-projects .cinema.is-started:not(.is-paused):hover [data-toggle] {
   opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
+}
+.cinematic-projects .cinema.is-started:not(.is-paused) .cinema-info-sub { opacity: 0; }
+.cinematic-projects .cinema.is-started:hover [data-cam-btn] .cbtn-cam,
+.cinematic-projects .cinema.is-paused [data-cam-btn] .cbtn-cam {
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.12))
+          drop-shadow(0 0 10px rgba(232, 214, 138, var(--light-intensity)));
+}
+
+/* Paused/ended: full controls per reference. Conflict: camera-icon click plays (existing JS); pause via surface/toggle reveals these. */
+.cinematic-projects .cinema.is-paused .cinema-controls {
+  background: var(--c-surface);
+  border-color: var(--c-border);
+  padding: 10px 16px 12px;
+}
+.cinematic-projects .cinema.is-paused .cinema-progress-wrap,
+.cinematic-projects .cinema.is-paused .cinema-info-row,
+.cinematic-projects .cinema.is-paused .cinema-btn-row .cbtn:not([data-cam-btn]) {
+  opacity: 1;
+  pointer-events: auto;
+}
+.cinematic-projects .cinema.is-paused .cinema-info-sub { opacity: 1; }
+
+/* End-card: Vimeo wordmark + channel tag. Conflict: ended shares .is-paused (no JS hook); hidden pre-start. */
+.cinematic-projects .cinema.is-started.is-paused .cinema-screen::after {
+  content: "vimeo";
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  display: grid;
+  place-items: center;
+  font-family: var(--c-font);
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+  background: radial-gradient(60% 60% at 50% 45%, rgba(18, 18, 18, 0.55), rgba(10, 10, 10, 0.88));
+  pointer-events: none;
+}
+.cinematic-projects .cinema.is-started.is-paused .cinema-screen::before {
+  content: var(--channel-name);
+  position: absolute;
+  left: 50%;
+  top: calc(50% + 30px);
+  transform: translateX(-50%);
+  z-index: 31;
+  font-family: var(--c-font);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent-color);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(232, 214, 138, 0.35);
+  border-radius: 999px;
+  padding: 3px 10px;
+  pointer-events: none;
+}
+
+/* Wheel-driven camera shift (transform only, GPU-friendly). */
+.cinematic-projects .cinema-video,
+.cinematic-projects .cinema-poster {
+  transform: translate3d(0, var(--cam-shift, 0px), 0) scale(1.035);
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cinematic-projects *,
+  .cinematic-projects *::before,
+  .cinematic-projects *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .cinematic-projects .cinema-video,
+  .cinematic-projects .cinema-poster { transform: none !important; }
 }
 
 /* ===== Progress Bar ===== */
@@ -365,18 +441,17 @@ title: Short Film Projects
   height: 5px;
 }
 
+/* Conflict: JS paints the fill gradient inline (red); recolored to muted yellow via filter. */
+.cinematic-projects .cinema-progress {
+  filter: hue-rotate(48deg) saturate(0.55);
+}
 .cinematic-projects .cinema-progress::-webkit-slider-thumb {
   -webkit-appearance: none;
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--c-accent);
+  background: #ffffff;
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.15s;
-}
-
-.cinematic-projects .cinema-progress:hover::-webkit-slider-thumb {
   opacity: 1;
 }
 
@@ -384,13 +459,9 @@ title: Short Film Projects
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: var(--c-accent);
+  background: #ffffff;
   cursor: pointer;
   border: none;
-  opacity: 0;
-}
-
-.cinematic-projects .cinema-progress:hover::-moz-range-thumb {
   opacity: 1;
 }
 
@@ -480,11 +551,13 @@ title: Short Film Projects
 }
 
 .cinematic-projects .cbtn-cam {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: 34px;
   fill: none;
   stroke: currentColor;
   stroke-width: 2;
+  filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.12));
+  will-change: transform, opacity, filter;
 }
 
 .cinematic-projects .cbtn-text {
@@ -521,7 +594,9 @@ title: Short Film Projects
   z-index: 30;
 }
 
-.cinematic-projects .cbtn-toggle:hover .cbtn-tip {
+.cinematic-projects .cbtn-toggle:hover .cbtn-tip,
+.cinematic-projects .cinema:not(.is-started) .cbtn-tip,
+.cinematic-projects .cinema.is-paused .cbtn-tip {
   opacity: 1;
 }
 
@@ -942,5 +1017,25 @@ title: Short Film Projects
   } else {
     initialize();
   }
+})();
+</script>
+
+<script>
+/* Wheel-driven camera shift (transform only, GPU-friendly). */
+(function () {
+  'use strict';
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  document.querySelectorAll('[data-cinema]').forEach(function (root) {
+    var target = 0, cur = 0, raf = null;
+    function tick() {
+      cur += (target - cur) * 0.12;
+      root.style.setProperty('--cam-shift', cur.toFixed(2) + 'px');
+      raf = Math.abs(target - cur) > 0.1 ? requestAnimationFrame(tick) : null;
+    }
+    root.addEventListener('wheel', function (e) {
+      target = Math.max(-8, Math.min(8, target + e.deltaY * 0.05));
+      if (!raf) raf = requestAnimationFrame(tick);
+    }, { passive: true });
+  });
 })();
 </script>
