@@ -325,11 +325,16 @@ title: Short Film Projects
   transform: none;
   pointer-events: none;
 }
-/* Started: hidden by default */
-.cinematic-projects .cinema.is-started .cinema-controls {
+/* Started: hidden by default, EXCEPT camera button */
+.cinematic-projects .cinema.is-started:not(.is-hover):not(.ui-open):not(.is-paused):not(.is-ended) .cinema-controls {
   opacity: 0;
   transform: translate3d(0, 8px, 0);
   pointer-events: none;
+}
+.cinematic-projects .cinema.is-started:not(.is-hover):not(.ui-open):not(.is-paused):not(.is-ended) .cbtn-cam-btn {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
 }
 /* Visible during hover / ui-open / paused / ended */
 .cinematic-projects .cinema.is-started.is-hover .cinema-controls,
@@ -388,20 +393,39 @@ title: Short Film Projects
 .cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn,
 .cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn {
   animation: cp-magical-in 0.9s cubic-bezier(0.16, 1, 0.3, 1) both,
-             cp-magical-out 1.4s ease 1.6s forwards;
+             cp-magical-out 0.7s ease 1.6s forwards;
 }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(1) { animation-delay: 0.15s, 1.75s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(2) { animation-delay: 0.25s, 1.85s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(3) { animation-delay: 0.35s, 1.95s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(4) { animation-delay: 0.45s, 2.05s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(1) { animation-delay: 0.55s, 2.15s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(2) { animation-delay: 0.65s, 2.25s; }
-.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(3) { animation-delay: 0.75s, 2.35s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(1) { animation-delay: 0.15s, 1.7s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(2) { animation-delay: 0.25s, 1.8s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(3) { animation-delay: 0.35s, 1.9s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(4) { animation-delay: 0.45s, 2.0s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(1) { animation-delay: 0.55s, 2.1s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(2) { animation-delay: 0.65s, 2.2s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(3) { animation-delay: 0.75s, 2.3s; }
 
 /* Camera stays visible during intro (no fade-out) */
 .cinematic-projects .cinema:not(.is-started) .cbtn-cam-btn {
   animation: cp-magical-in 1s cubic-bezier(0.16, 1, 0.3, 1) 0.2s both !important;
 }
+
+/* ===== UI reveal stagger (right → left) ===== */
+@keyframes cp-ui-reveal-right {
+  from { opacity: 0; transform: translate3d(12px, 0, 0); }
+  to   { opacity: 1; transform: none; }
+}
+.cinematic-projects .cinema.is-started.ui-open .cinema-progress-wrap {
+  animation: cp-ui-reveal-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.05s;
+}
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-row .cbtn:not(.cbtn-cam-btn) {
+  animation: cp-ui-reveal-right 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-right .cbtn:nth-child(1) { animation-delay: 0.08s; }
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-right .cbtn:nth-child(2) { animation-delay: 0.13s; }
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-right .cbtn:nth-child(3) { animation-delay: 0.18s; }
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-left .cbtn:nth-child(2) { animation-delay: 0.23s; }
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-left .cbtn:nth-child(3) { animation-delay: 0.28s; }
+.cinematic-projects .cinema.is-started.ui-open .cinema-btn-left .cbtn:nth-child(4) { animation-delay: 0.33s; }
 
 /* ===== Camera icon (left) ===== */
 .cinematic-projects .cbtn-cam-wrap {
@@ -531,10 +555,6 @@ title: Short Film Projects
   -webkit-backdrop-filter: blur(10px);
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.06);
   overflow: hidden;
-  transition: height 0.2s ease;
-}
-.cinematic-projects .cinema-progress-wrap:hover .cinema-progress-track {
-  height: 5px;
 }
 .cinematic-projects .cinema-progress-fill {
   position: absolute;
@@ -569,7 +589,6 @@ title: Short Film Projects
   background: var(--off-white);
   cursor: pointer;
   box-shadow: 0 0 0 4px rgba(242,240,235,0.18), 0 2px 6px rgba(0,0,0,0.5);
-  transition: transform 0.15s ease;
 }
 .cinematic-projects .cinema-progress-wrap:hover .cinema-progress::-webkit-slider-thumb {
   transform: scale(1.15);
@@ -1057,24 +1076,21 @@ title: Short Film Projects
       // ===== Events =====
       screen.addEventListener('mouseenter', function () {
         root.classList.add('is-hover');
-        markOpen();
       });
       screen.addEventListener('mouseleave', function () {
         root.classList.remove('is-hover');
         clearIdle();
       });
-      screen.addEventListener('mousemove', markOpen);
 
       screen.addEventListener('click', function (e) {
         if (e.target.closest('.cinema-controls')) return;
         if (!started) { launch(); return; }
-        if (paused) {
-          root.classList.remove('is-paused', 'is-ended');
-          player.play().catch(function () {});
-        } else {
-          root.classList.add('is-paused');
-          player.pause().catch(function () {});
+        // If UI is open, collapse to camera-only.
+        if (root.classList.contains('ui-open')) {
+          root.classList.remove('ui-open');
+          clearIdle();
         }
+        // Otherwise do nothing (no accidental play/pause toggle)
       });
 
       cameraBtn.addEventListener('click', function (e) {
