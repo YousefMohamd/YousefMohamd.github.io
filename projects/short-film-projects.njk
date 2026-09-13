@@ -243,10 +243,10 @@ title: Short Film Projects
   pointer-events: none;
 }
 
+/* iframe must never capture pointers: custom controls drive playback. */
 .cinematic-projects .cinema.is-started .cinema-video,
 .cinematic-projects .cinema.is-started .cinema-video iframe {
   opacity: 1;
-  pointer-events: auto;
 }
 
 /* ===== Poster ===== */
@@ -344,6 +344,21 @@ title: Short Film Projects
 .cinematic-projects .cinema:not(.is-started) .cinema-info-row {
   animation: cp-intro-meta var(--intro-duration) ease both;
 }
+@keyframes cp-stagger-in {
+  0% { opacity: 0; transform: translate3d(0, 4px, 0); }
+  55% { opacity: 1; transform: none; }
+  100% { opacity: 0; transform: none; }
+}
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-row .cbtn:not([data-cam-btn]) {
+  animation: cp-stagger-in 1.2s ease both;
+  will-change: opacity, transform;
+}
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(2) { animation-delay: 0.8s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(3) { animation-delay: 1.1s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-left .cbtn:nth-child(4) { animation-delay: 1.4s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(1) { animation-delay: 1.7s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(2) { animation-delay: 1.9s; }
+.cinematic-projects .cinema:not(.is-started) .cinema-btn-right .cbtn:nth-child(3) { animation-delay: 2.1s; }
 
 /* Playback idle: camera icon persists bottom-left. Hover: title + play/pause + soft light, fading after idle. */
 @keyframes cp-reveal-fade {
@@ -360,7 +375,8 @@ title: Short Film Projects
   }
 }
 .cinematic-projects .cinema.is-started:not(.is-paused):hover .cinema-info-row,
-.cinematic-projects .cinema.is-started:not(.is-paused):hover [data-toggle] {
+.cinematic-projects .cinema.is-started:not(.is-paused):hover [data-toggle],
+.cinematic-projects .cinema.is-started:not(.is-paused):hover .cbtn-tip {
   animation: cp-reveal-fade calc(var(--idle-timeout) + var(--fade-slow)) ease both;
   will-change: opacity;
 }
@@ -583,11 +599,30 @@ title: Short Film Projects
 .cinematic-projects .cbtn-cam {
   width: 34px;
   height: 34px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 2;
+  fill: currentColor;
+  stroke: none;
   filter: drop-shadow(0 1px 0 rgba(255, 255, 255, 0.12));
   will-change: transform, opacity, filter;
+}
+.cinematic-projects .cbtn-cam line {
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+/* Reel holes orbiting = subtle reel rotation. */
+@keyframes cp-reel-spin { to { transform: rotate(360deg); } }
+.cinematic-projects .cbtn-cam circle:nth-of-type(3),
+.cinematic-projects .cbtn-cam circle:nth-of-type(4) {
+  fill: var(--c-bg);
+  will-change: transform;
+}
+.cinematic-projects .cbtn-cam circle:nth-of-type(3) { transform-origin: 22px 16px; }
+.cinematic-projects .cbtn-cam circle:nth-of-type(4) { transform-origin: 42px 16px; }
+.cinematic-projects .cinema.is-started:hover .cbtn-cam circle:nth-of-type(3),
+.cinematic-projects .cinema.is-started:hover .cbtn-cam circle:nth-of-type(4),
+.cinematic-projects .cinema.is-paused .cbtn-cam circle:nth-of-type(3),
+.cinematic-projects .cinema.is-paused .cbtn-cam circle:nth-of-type(4) {
+  animation: cp-reel-spin 5s linear infinite;
 }
 
 .cinematic-projects .cbtn-text {
@@ -784,6 +819,9 @@ title: Short Film Projects
       infoTitle.textContent = root.dataset.title || '';
       infoSub.textContent = root.dataset.subtitle || '';
 
+      // Preload SDK + iframe asynchronously so the first click never waits.
+      prepare();
+
       let player, prep;
       let ready = false, failed = false, started = false, paused = true, muted = true;
       let duration = 0, current = 0, hideTimer, seekEdit = false;
@@ -938,7 +976,6 @@ title: Short Film Projects
         if (controls.contains(e.target) || cameraBtn.contains(e.target)) return;
         if (!started) launch();
         else if (paused) player.play().catch(function(){});
-        else { player.pause().catch(function(){}); root.classList.add('is-paused'); }
       });
 
       screen.addEventListener('mousemove', showControls);
@@ -947,7 +984,7 @@ title: Short Film Projects
       cameraBtn.addEventListener('click', function (e) {
         e.stopPropagation();
         if (!started) launch();
-        else player.play().catch(function(){});
+        else player.pause().catch(function(){});
       });
 
       $('refresh').addEventListener('click', function () { window.location.reload(); });
