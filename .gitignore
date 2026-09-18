@@ -1,8 +1,40 @@
+# Build output
 _site/
+_site/**/*
+
+# Dependencies
 node_modules/
-package-lock.json
+
+# Backups
+*.bak
+*.bak.*
+*.OLD
+*.before-*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-error.log*
+
+# Env
+.env
+.env.local
+
+# Eleventy cache
+.eleventy-cache/
+
+# Aider (AI assistant)
+.aider.chat.history.md
+.aider.input.history
+.aider.tags.cache.v4/
 .aider*
+
+# Local binaries (ffmpeg, ffprobe — large)
 ffmpeg
 ffprobe
-.history/
-.continue/
+
+# Design reference screenshots (not needed in production)
+docs/

@@ -3,148 +3,80 @@ layout: layouts/base.njk
 title: Short Film Projects
 ---
 
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/MorphSVGPlugin.min.js" defer></script>
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://player.vimeo.com" crossorigin>
+<link rel="preconnect" href="https://i.vimeocdn.com" crossorigin>
+<link rel="dns-prefetch" href="https://player.vimeo.com">
+<link rel="preload" as="script" href="https://player.vimeo.com/api/player.js" crossorigin>
 
 <div class="w3-padding-64 w3-content cinematic-projects">
-  <h2 class="w3-text-light-grey section-heading reveal-on-scroll">Short Film Projects</h2>
+  <h2 class="section-heading">Short Film Projects</h2>
 
   {% for p in (collections.project or []) | reverse %}
     {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
-      <div class="film-project reveal-on-scroll">
-        {% if p.data.vimeoId %}
-          <section
-            class="cinema"
-            data-cinema
-            data-video-id="{{ p.data.vimeoId | escape }}"
-            data-title="{{ p.data.title | escape }}"
-            data-subtitle="{{ (p.data.subtitle or '') | escape }}"
-            data-state="idle"
-            aria-label="{{ p.data.title | escape }} video player"
-          >
+      <div class="film-project" data-film-project>
+        {% if p.data.videoSrc or p.data.vimeoId %}
+          <section class="cinema" data-cinema data-state="idle"
+            data-video-id="{{ p.data.vimeoId | default('') | escape }}"
+            data-video-src="{{ p.data.videoSrc | default('') | escape }}"
+            aria-label="{{ p.data.title | escape }} video player">
             <div class="cinema-screen">
-              <div class="cinema-video" data-video-layer></div>
-              <img
-                class="cinema-poster"
-                data-poster
-                src="/img/optimized/projects/short-film/{{ p.data.vimeoId | escape }}.webp"
-                alt=""
-                loading="eager"
-                decoding="async"
-                fetchpriority="high"
-                width="1920"
-                height="1080"
-              >
+              <div class="cinema-video-layer" data-video-layer></div>
 
-              <div class="cine-light" data-light aria-hidden="true"></div>
+              {% if p.data.poster %}
+                <img class="cinema-poster" data-poster src="{{ p.data.poster }}" alt="" decoding="async">
+              {% elif p.data.vimeoId %}
+                <img class="cinema-poster" data-poster src="https://vumbnail.com/{{ p.data.vimeoId }}_large.jpg" alt="" decoding="async" onerror="this.onerror=null;this.src='https://vumbnail.com/{{ p.data.vimeoId }}.jpg'">
+              {% endif %}
 
-              <div class="cine-end-card" data-end-card aria-hidden="true">
-                <div class="end-card-content">
-                  <div class="end-card-vimeo-wordmark">Vimeo</div>
-                  <div class="end-card-name">Yousef Mohamed</div>
-                  <div class="end-card-socials">
-                    <a href="https://www.instagram.com/_yousefmohamad/" target="_blank" rel="noopener noreferrer">Instagram</a>
-                    <a href="https://vimeo.com/yousefmohamed2004" target="_blank" rel="noopener noreferrer">Vimeo</a>
-                  </div>
+              <div class="cine-shield" data-shield aria-hidden="true"></div>
+
+              <div class="cine-dots" data-cine-dots aria-hidden="true">
+                <span></span><span></span><span></span>
+              </div>
+
+              <button class="cinema-hit" data-play-hit type="button" aria-label="Play"></button>
+
+              <div class="cine-fade" data-fade aria-hidden="true"></div>
+
+              <div class="cine-title-stage">
+                <div class="cine-title-inner label-reveal">
+                  <h3 class="cine-film-title">{{ p.data.title | escape }}</h3>
+                  <p class="cine-film-desc" data-film-desc></p>
                 </div>
               </div>
 
-              <div class="cine-camera-stage" data-camera-stage>
-                <button class="cine-camera-btn" data-camera-btn type="button" aria-label="Play film">
-                  <svg class="cbtn-cam" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" aria-hidden="true">
-                    <g class="cam-body">
-                      <rect x="60" y="88" width="120" height="76" rx="9" fill="currentColor"/>
-                      <rect x="52" y="114" width="10" height="14" fill="currentColor"/>
-                      <polygon points="53,114 32,106 32,136 53,128" fill="currentColor"/>
-                      <rect x="178" y="106" width="10" height="28" fill="currentColor"/>
-                      <polygon points="187,106 225,82 225,158 187,134" fill="currentColor"/>
-                      <path d="M 104 163 A 16 16 0 0 0 136 163 Z" fill="currentColor"/>
-                      <polygon points="116,168 124,168 124,230 116,230" fill="currentColor"/>
-                      <polygon points="112,168 102,168 60,230 73,230" fill="currentColor"/>
-                      <polygon points="128,168 138,168 180,230 167,230" fill="currentColor"/>
-                    </g>
-                    <g class="cam-holes" fill="var(--cam-bg,#000)">
-                      <circle cx="95" cy="60" r="4.5"/><circle cx="95" cy="42" r="6"/><circle cx="95" cy="78" r="6"/><circle cx="77" cy="60" r="6"/><circle cx="113" cy="60" r="6"/>
-                      <circle cx="150" cy="48" r="4.5"/><circle cx="150" cy="24" r="7.5"/><circle cx="172.83" cy="40.58" r="7.5"/><circle cx="164.11" cy="67.42" r="7.5"/><circle cx="135.89" cy="67.42" r="7.5"/><circle cx="127.17" cy="40.58" r="7.5"/>
-                    </g>
-                    <path class="cam-reel-left" d="M 63 60 a 32 32 0 1 0 64 0 a 32 32 0 1 0 -64 0" fill="currentColor"/>
-                    <path class="cam-reel-right" d="M 110 48 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0" fill="currentColor"/>
-                    <g class="cam-reel-details" fill="var(--cam-bg,#000)">
-                      <circle cx="95" cy="40" r="4"/><circle cx="95" cy="80" r="4"/><circle cx="75" cy="60" r="4"/><circle cx="115" cy="60" r="4"/>
-                      <circle cx="150" cy="23" r="5"/><circle cx="150" cy="73" r="5"/><circle cx="125" cy="48" r="5"/><circle cx="175" cy="48" r="5"/>
-                    </g>
-                    <path class="morph-left"  d="M 88 60 H 106 V 180 H 88 Z" fill="currentColor" style="opacity:0;visibility:hidden"/>
-                    <path class="morph-right" d="M 134 60 H 152 V 180 H 134 Z" fill="currentColor" style="opacity:0;visibility:hidden"/>
-                  </svg>
-                  <span class="camera-label label-reveal">{{ p.data.title | escape }}</span>
-                </button>
-              </div>
-
-              <div class="cine-controls" data-controls aria-label="Film controls">
+              <div class="cine-controls" data-controls>
                 <div class="cine-main-row">
                   <div class="cine-timeline">
                     <div class="cine-timeline-track">
                       <div class="cine-timeline-fill" data-progress-fill></div>
-                      <input class="cine-timeline-input" data-progress type="range" min="0" max="1000" step="1" value="0" aria-label="Seek through the film" disabled>
+                      <input class="cine-timeline-input" data-progress type="range" min="0" max="1000" value="0" aria-label="Seek">
                     </div>
                   </div>
                   <span class="cine-time" data-time>00:00 / 00:00</span>
                 </div>
-
                 <div class="cine-btn-row">
                   <div class="cine-btn-left">
-                    <div class="cine-camera-label-small">
-                      <svg class="cbtn-cam-small" viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" shape-rendering="geometricPrecision" aria-hidden="true">
-                        <g class="cam-body">
-                          <rect x="60" y="88" width="120" height="76" rx="9" fill="currentColor"/>
-                          <rect x="52" y="114" width="10" height="14" fill="currentColor"/>
-                          <polygon points="53,114 32,106 32,136 53,128" fill="currentColor"/>
-                          <rect x="178" y="106" width="10" height="28" fill="currentColor"/>
-                          <polygon points="187,106 225,82 225,158 187,134" fill="currentColor"/>
-                          <path d="M 104 163 A 16 16 0 0 0 136 163 Z" fill="currentColor"/>
-                          <polygon points="116,168 124,168 124,230 116,230" fill="currentColor"/>
-                          <polygon points="112,168 102,168 60,230 73,230" fill="currentColor"/>
-                          <polygon points="128,168 138,168 180,230 167,230" fill="currentColor"/>
-                        </g>
-                        <g class="cam-holes" fill="var(--cam-bg,#000)">
-                          <circle cx="95" cy="60" r="4.5"/><circle cx="95" cy="42" r="6"/><circle cx="95" cy="78" r="6"/><circle cx="77" cy="60" r="6"/><circle cx="113" cy="60" r="6"/>
-                          <circle cx="150" cy="48" r="4.5"/><circle cx="150" cy="24" r="7.5"/><circle cx="172.83" cy="40.58" r="7.5"/><circle cx="164.11" cy="67.42" r="7.5"/><circle cx="135.89" cy="67.42" r="7.5"/><circle cx="127.17" cy="40.58" r="7.5"/>
-                        </g>
-                        <path class="cam-reel-left" d="M 63 60 a 32 32 0 1 0 64 0 a 32 32 0 1 0 -64 0" fill="currentColor"/>
-                        <path class="cam-reel-right" d="M 110 48 a 40 40 0 1 0 80 0 a 40 40 0 1 0 -80 0" fill="currentColor"/>
-                        <g class="cam-reel-details" fill="var(--cam-bg,#000)">
-                          <circle cx="95" cy="40" r="4"/><circle cx="95" cy="80" r="4"/><circle cx="75" cy="60" r="4"/><circle cx="115" cy="60" r="4"/>
-                          <circle cx="150" cy="23" r="5"/><circle cx="150" cy="73" r="5"/><circle cx="125" cy="48" r="5"/><circle cx="175" cy="48" r="5"/>
-                        </g>
-                      </svg>
-                      <span>{{ p.data.title | escape }}</span>
-                    </div>
                     <button class="cine-playpause" data-playpause-btn type="button" aria-label="Play">
-                      <svg class="pp-svg" viewBox="0 0 24 24" aria-hidden="true"><path class="pp-path" d="M8 5v14l11-7z" fill="currentColor"/></svg>
-                    </button>
-                    <button class="cine-replay" data-replay-btn type="button" aria-label="Replay">
-                      <svg viewBox="0 0 24 24" class="cine-btn-icon" aria-hidden="true"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                      <svg class="pp-svg" viewBox="0 0 24 24"><path class="pp-path" d="M8 5v14l11-7z" fill="currentColor"/></svg>
                     </button>
                     <div class="cine-volume">
-                      <button class="cine-btn" data-volume-btn type="button" aria-label="Unmute film">
-                        <svg viewBox="0 0 24 24" class="cine-btn-icon" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+                      <button class="cine-btn" data-volume-btn type="button" aria-label="Mute">
+                        <svg viewBox="0 0 24 24" class="cine-btn-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
                       </button>
                       <input class="cine-volume-slider" data-volume-slider type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume">
                     </div>
                   </div>
-
                   <div class="cine-btn-right">
-                    <button class="cine-btn cine-btn-text" data-overflow-btn type="button" aria-label="More options">•••</button>
                     <div class="cine-quality-wrap">
-                      <button class="cine-btn cine-btn-text" data-quality-btn type="button" aria-label="Video quality">Auto</button>
+                      <button class="cine-btn cine-btn-text" data-quality-btn type="button" aria-label="Quality">Auto</button>
                       <div class="cine-popup" data-quality-menu hidden></div>
                     </div>
                     <div class="cine-speed-wrap">
-                      <button class="cine-btn cine-btn-text" data-speed-btn type="button" aria-label="Playback speed">1x</button>
+                      <button class="cine-btn cine-btn-text" data-speed-btn type="button" aria-label="Speed">1x</button>
                       <div class="cine-popup" data-speed-menu hidden>
                         <button class="cine-popup-item" data-speed-value="0.5">0.5x</button>
                         <button class="cine-popup-item" data-speed-value="0.75">0.75x</button>
@@ -155,20 +87,75 @@ title: Short Film Projects
                       </div>
                     </div>
                     <button class="cine-btn" data-fullscreen-btn type="button" aria-label="Fullscreen">
-                      <svg viewBox="0 0 24 24" class="cine-btn-icon" aria-hidden="true"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                      <svg viewBox="0 0 24 24" class="cine-btn-icon"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
                     </button>
                   </div>
                 </div>
+              </div>
+
+              <div class="cine-end-card" data-end-card aria-hidden="true">
+                <div class="end-card-glow" aria-hidden="true"></div>
+
+                <div class="end-card-top">
+                  <div class="end-card-photo">
+                    <span class="end-card-initials">YM</span>
+                    <img data-vimeo-avatar alt="" loading="lazy">
+                  </div>
+
+                  <div class="end-card-meta">
+                    <div class="end-card-profile-name" data-end-author>Yousef Mohamed</div>
+
+                    <div class="end-card-icons">
+                      {% if contacts.linkedin %}
+                      <a class="linkedin" href="{{ contacts.linkedin }}" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
+                        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                      </a>
+                      {% endif %}
+                      {% if contacts.instagram %}
+                      <a class="instagram" href="{{ contacts.instagram }}" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
+                        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
+                      </a>
+                      {% endif %}
+                      {% if contacts.vimeo %}
+                      <a class="vimeo" href="{{ contacts.vimeo }}" target="_blank" rel="noopener" title="Vimeo" aria-label="Vimeo">
+                        <svg viewBox="0 0 24 24"><path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2818 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.377-1.881 1.132L.0073 7.1971a315.06 315.06 0 0 0 3.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4799 4.7978z"/></svg>
+                      </a>
+                      {% endif %}
+                      {% if contacts.behance %}
+                      <a class="behance" href="{{ contacts.behance }}" target="_blank" rel="noopener" title="Behance" aria-label="Behance">
+                        <svg viewBox="0 0 24 24"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H0V5.021h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zM3 11h3.584c2.508 0 2.906-3-.312-3H3v3zm3.391 3H3v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg>
+                      </a>
+                      {% endif %}
+                    </div>
+
+                    {% if contacts.email %}
+                    <a class="end-card-email" href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="end-card-film">
+                  <h3 class="end-card-film-title">{{ p.data.title | escape }}</h3>
+                  <p class="end-card-film-desc" data-end-desc></p>
+                </div>
+
+                <a class="end-card-vimeo-link" href="{{ contacts.vimeo or 'https://vimeo.com/' }}" target="_blank" rel="noopener" aria-label="Vimeo profile">
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2818 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.377-1.881 1.132L.0073 7.1971a315.06 315.06 0 0 0 3.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4799 4.7978z"/></svg>
+                </a>
+
+                <button class="end-card-replay" data-replay-btn type="button" aria-label="Replay">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
+                </button>
               </div>
             </div>
           </section>
         {% endif %}
 
         {% if p.templateContent %}
-          <div class="film-description reveal-on-scroll">{{ p.templateContent | safe }}</div>
+          <div class="film-description" data-film-markdown>{{ p.templateContent | safe }}</div>
         {% endif %}
 
-        <hr class="film-divider reveal-on-scroll">
+        <hr class="film-divider">
       </div>
     {% endif %}
   {% endfor %}
@@ -176,132 +163,587 @@ title: Short Film Projects
 
 <style>
 .cinematic-projects {
-  --cine-bg: #0a0a0a;
   --cine-surface: rgba(10, 10, 10, 0.85);
-  --cine-text: #e6e6e6;
-  --cine-desc: #cccccc;
   --cine-accent: #e8d68a;
-  --cine-title-font: 'Bebas Neue', 'Oswald', 'Impact', sans-serif;
+  --cine-title-font: 'Anton', 'Oswald', 'Impact', sans-serif;
   --cine-body-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'AppleSystemUIFont', 'Inter', 'Helvetica Neue', 'Segoe UI', sans-serif;
-}
-
-.reveal-on-scroll {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal-on-scroll.is-visible {
-  opacity: 1;
-  transform: translateY(0);
 }
 
 .label-reveal {
   opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+  transform: translateY(18px);
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
-.label-reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
+.label-reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+.cinematic-projects .section-heading {
+  font-family: var(--cine-body-font);
+  font-size: 38px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: normal;
+  color: #f2e9d8;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  margin-bottom: 44px;
 }
 
-.cinematic-projects .section-heading { font-family: var(--cine-body-font); font-size: clamp(24px, 3vw, 36px); font-weight: 700; letter-spacing: -0.02em; margin-bottom: 48px; color: #f0f0f0; }
 .cinematic-projects .film-project { margin-bottom: 56px; }
-.cinematic-projects .film-description { font-family: var(--cine-body-font); color: #c8c8c8; line-height: 1.8; font-size: 15px; margin-top: 20px; }
-.cinematic-projects .film-divider { border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 40px 0; }
+.cinematic-projects .film-description {
+  font-family: var(--cine-body-font);
+  color: #c8c8c8; line-height: 1.8; font-size: 15px; margin-top: 20px;
+}
+.cinematic-projects .film-description p { margin: 0 0 14px 0; }
+.cinematic-projects .film-description strong { color: #e6e6e6; font-weight: 600; }
+.cinematic-projects .film-description ul { padding-left: 22px; margin: 8px 0 14px 0; }
+.cinematic-projects .film-description li { margin-bottom: 4px; }
+.cinematic-projects .film-divider {
+  border: none; border-top: 1px solid rgba(255,255,255,0.08); margin: 40px 0 0 0;
+}
 
-.cinematic-projects .cinema { position: relative; isolation: isolate; border-radius: 12px; overflow: hidden; background: #000; box-shadow: 0 24px 72px rgba(0,0,0,0.65); }
-.cinematic-projects .cinema-screen { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #000; }
+.cinematic-projects .cinema {
+  position: relative; isolation: isolate; border-radius: 12px; overflow: hidden;
+  background: #000; box-shadow: 0 24px 72px rgba(0,0,0,0.65);
+}
+.cinematic-projects .cinema-screen {
+  position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: #000;
+}
 
-.cinematic-projects .cinema-video, .cinematic-projects .cinema-video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; opacity: 0; transition: opacity 0.7s ease; pointer-events: none; }
-.cinematic-projects .cinema[data-state="playing"] .cinema-video, .cinematic-projects .cinema[data-state="paused"] .cinema-video, .cinematic-projects .cinema[data-state="playing"] .cinema-video iframe, .cinematic-projects .cinema[data-state="paused"] .cinema-video iframe { opacity: 1; }
-.cinematic-projects .cinema-poster { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 1; transition: opacity 0.6s ease; z-index: 2; }
-.cinematic-projects .cinema[data-state="playing"] .cinema-poster, .cinematic-projects .cinema[data-state="paused"] .cinema-poster { opacity: 0; pointer-events: none; }
+/* ── Video layer (iframe) — invisible until started ── */
+.cinematic-projects .cinema-video-layer {
+  position: absolute; inset: 0; z-index: 1;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cinematic-projects .cinema.is-started .cinema-video-layer {
+  opacity: 1; pointer-events: auto;
+}
+.cinematic-projects .cinema-video-layer iframe,
+.cinematic-projects .cinema-video-layer video {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: 0; background: #000; display: block;
+}
 
-.cinematic-projects .cine-light { position: absolute; inset: 0; z-index: 3; opacity: 0; pointer-events: none; background: radial-gradient(ellipse 60% 60% at 15% 80%, rgba(255, 235, 180, 0.42) 0%, rgba(255, 235, 180, 0.14) 32%, transparent 65%); mix-blend-mode: screen; transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1); }
-.cinematic-projects .cinema.is-morphing .cine-light, .cinematic-projects .cinema[data-state="playing"] .cine-light, .cinematic-projects .cinema[data-state="paused"] .cine-light { opacity: 1; }
+/* ── Poster — sits ON TOP of iframe, hides Vimeo's own poster/spinner ── */
+.cinematic-projects .cinema-poster {
+  position: absolute; inset: 0; z-index: 2;
+  width: 100%; height: 100%;
+  object-fit: cover; background: #000;
+  opacity: 1; transform: scale(1);
+  filter: blur(0px) brightness(1);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+.cinematic-projects .cinema.is-started .cinema-poster {
+  opacity: 0;
+  transform: scale(1.08);
+  filter: blur(14px) brightness(0.6);
+}
 
-.cinematic-projects .cine-end-card { position: absolute; inset: 0; z-index: 15; display: flex; flex-direction: column; justify-content: center; align-items: center; background: #000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease; }
-.cinematic-projects .cinema.is-ended .cine-end-card { opacity: 1; pointer-events: auto; }
-.cinematic-projects .end-card-content { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 16px; }
-.cinematic-projects .end-card-vimeo-wordmark { font-family: var(--cine-title-font); font-size: 64px; color: #f2f0eb; letter-spacing: -0.02em; }
-.cinematic-projects .end-card-name { font-family: var(--cine-body-font); font-size: 18px; color: #f2f0eb; }
-.cinematic-projects .end-card-socials { display: flex; gap: 24px; margin-top: 8px; }
-.cinematic-projects .end-card-socials a { color: #f2f0eb; text-decoration: none; font-family: var(--cine-body-font); font-size: 14px; transition: opacity 0.2s; }
-.cinematic-projects .end-card-socials a:hover { opacity: 0.7; }
+/* ── Shield (top-right corner — blocks Vimeo hover icons) ── */
+.cinematic-projects .cine-shield {
+  position: absolute; top: 0; right: 0;
+  width: 220px; height: 80px;
+  z-index: 4; background: transparent;
+  cursor: pointer; pointer-events: auto;
+}
+.cinematic-projects .cinema.is-started .cine-shield { display: none; }
 
-.cinematic-projects .cine-camera-stage { position: absolute; bottom: 24px; left: 24px; z-index: 12; opacity: 1; pointer-events: auto; transition: opacity 0.4s ease; }
-.cinematic-projects .cinema.is-morphing .cine-camera-stage, .cinematic-projects .cinema[data-state="playing"] .cine-camera-stage, .cinematic-projects .cinema[data-state="paused"] .cine-camera-stage, .cinematic-projects .cinema.is-ended .cine-camera-stage { opacity: 0; pointer-events: none; }
-.cinematic-projects .cine-camera-btn { display: inline-flex; align-items: center; gap: 16px; padding: 0; border: none; background: transparent; color: #f2f0eb; cursor: pointer; border-radius: 8px; transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease; }
-.cinematic-projects .cine-camera-btn:hover { transform: scale(1.08); background: rgba(255,255,255,0.04); }
-.cinematic-projects .cbtn-cam { width: 96px; height: 96px; color: #f2f0eb; --cam-bg: #000; display: block; }
-.cinematic-projects .camera-label { font-family: var(--cine-title-font); font-size: 56px; font-weight: 700; color: #e6e6e6; text-transform: uppercase; letter-spacing: 0.02em; text-shadow: 0 2px 12px rgba(0,0,0,0.85); }
+/* ── Loading dots ── */
+.cinematic-projects .cine-dots {
+  position: absolute; inset: 0; z-index: 5;
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; opacity: 0; pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+.cinematic-projects .cinema.is-loading .cine-dots { opacity: 1; }
+.cinematic-projects .cine-dots span {
+  display: block; width: 14px; height: 14px;
+  border-radius: 50%; background: #f2f0eb;
+  box-shadow: 0 0 18px rgba(242,240,235,0.55), 0 0 36px rgba(242,240,235,0.25);
+  animation: cine-dot-pulse 1.15s ease-in-out infinite both;
+}
+.cinematic-projects .cine-dots span:nth-child(1) { animation-delay: 0s; }
+.cinematic-projects .cine-dots span:nth-child(2) { animation-delay: 0.16s; }
+.cinematic-projects .cine-dots span:nth-child(3) { animation-delay: 0.32s; }
+@keyframes cine-dot-pulse {
+  0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
+  40%           { transform: scale(1.1);  opacity: 1;   }
+}
 
-.cinema.is-started .cam-reel-left { animation: spin 5s linear infinite; transform-origin: 95px 60px; }
-.cinema.is-started .cam-reel-right { animation: spin 5s linear infinite; transform-origin: 150px 48px; animation-delay: -1.8s; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* ── Hit area (click anywhere) ── */
+.cinematic-projects .cinema-hit {
+  position: absolute; inset: 0; z-index: 6;
+  border: 0; padding: 0; margin: 0;
+  background: transparent; cursor: pointer;
+}
+.cinematic-projects .cinema.is-ended .cinema-hit { opacity: 0; pointer-events: none; }
 
-.cinematic-projects .cine-controls { position: absolute; left: 0; right: 0; bottom: 0; z-index: 20; display: flex; flex-direction: column; gap: 10px; padding: 64px 22px 18px; background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.72) 42%, rgba(0,0,0,0.24) 78%, rgba(0,0,0,0) 100%); opacity: 0; transform: translate3d(0, 12px, 0); pointer-events: none; transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
-.cinematic-projects .cinema.is-morphing .cine-controls, .cinematic-projects .cinema[data-state="playing"].is-ui-visible .cine-controls, .cinematic-projects .cinema[data-state="playing"]:hover .cine-controls, .cinematic-projects .cinema[data-state="paused"] .cine-controls, .cinematic-projects .cinema.is-ended .cine-controls { opacity: 1; transform: none; pointer-events: auto; }
+/* ── Gradient fade behind title ── */
+.cinematic-projects .cine-fade {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
+  z-index: 7; pointer-events: none;
+  background: linear-gradient(
+    to top,
+    rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.58) 20%, rgba(0,0,0,0.38) 42%,
+    rgba(0,0,0,0.18) 66%, rgba(0,0,0,0.06) 86%, rgba(0,0,0,0) 100%
+  );
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cinematic-projects .cinema.is-started .cine-fade { opacity: 0; }
 
-.cinematic-projects .cine-main-row { display: flex; align-items: center; gap: 10px; width: 100%; }
-.cinematic-projects .cine-timeline { display: flex; align-items: center; flex: 1; min-width: 0; }
-.cinematic-projects .cine-timeline-track { position: relative; flex: 1; height: 3px; border-radius: 3px; background: rgba(242, 240, 235, 0.18); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transform: scaleY(1); transform-origin: center; transition: transform 0.2s ease; will-change: transform; }
-.cinematic-projects .cine-timeline:hover .cine-timeline-track { transform: scaleY(1.6667); }
-.cinematic-projects .cine-timeline-fill { position: absolute; top: 0; left: 0; height: 100%; width: 100%; background: rgba(242, 240, 235, 0.88); border-radius: 3px; pointer-events: none; transform: scaleX(0); transform-origin: left center; box-shadow: 0 0 8px rgba(242,240,235,0.35); will-change: transform; }
-.cinematic-projects .cine-timeline-input { position: absolute; inset: -6px 0; width: 100%; height: calc(100% + 12px); margin: 0; padding: 0; appearance: none; -webkit-appearance: none; background: transparent; cursor: pointer; outline: none; z-index: 2; }
-.cinematic-projects .cine-timeline-input:disabled { cursor: default; }
-.cinematic-projects .cine-timeline-input::-webkit-slider-thumb { -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #f2f0eb; cursor: pointer; box-shadow: 0 0 0 4px rgba(242,240,235,0.18), 0 2px 6px rgba(0,0,0,0.5); }
-.cinematic-projects .cine-timeline-input::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #f2f0eb; cursor: pointer; border: none; }
+/* ── Title + description ── */
+.cinematic-projects .cine-title-stage {
+  position: absolute; left: 32px; right: 32px; bottom: 32px; z-index: 8;
+  pointer-events: none;
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cinematic-projects .cinema.is-started .cine-title-stage {
+  opacity: 0; transform: translateY(24px);
+}
+.cinematic-projects .cine-title-inner {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+.cinematic-projects .cine-film-title {
+  margin: 0; font-family: var(--cine-title-font); font-weight: 400;
+  font-size: 48px; line-height: 1; letter-spacing: 0.01em;
+  color: #f2f0eb; text-transform: uppercase;
+}
+.cinematic-projects .cine-film-desc {
+  margin: 0; max-width: 620px; font-family: var(--cine-body-font);
+  font-size: 12px; line-height: 1.6; color: #cccccc;
+}
+.cinematic-projects .cine-film-desc:empty { display: none; }
+/* ── Custom controls ── */
+.cinematic-projects .cine-controls {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 12;
+  display: flex; flex-direction: column; gap: 8px;
+  padding: 60px 20px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 40%, transparent 100%);
+  opacity: 0; transform: translateY(12px); pointer-events: none;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.cinematic-projects .cinema.is-ui-visible .cine-controls {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+.cinematic-projects .cinema.is-loading .cine-controls,
+.cinematic-projects .cinema.is-ended .cine-controls { opacity: 0 !important; pointer-events: none !important; }
 
-.cinematic-projects .cine-btn-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.cinematic-projects .cine-btn-left, .cinematic-projects .cine-btn-right { display: flex; align-items: center; gap: 4px; }
+.cinematic-projects .cine-main-row {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+}
+.cinematic-projects .cine-timeline {
+  display: flex; align-items: center; flex: 1; min-width: 0;
+}
+.cinematic-projects .cine-timeline-track {
+  position: relative; flex: 1; height: 3px; border-radius: 3px;
+  background: rgba(242, 240, 235, 0.22); transition: height 0.2s ease;
+}
+.cinematic-projects .cine-timeline:hover .cine-timeline-track { height: 5px; }
+.cinematic-projects .cine-timeline-fill {
+  position: absolute; top: 0; left: 0; height: 100%; width: 100%;
+  background: #f2f0eb; border-radius: 3px; pointer-events: none;
+  transform: scaleX(0); transform-origin: left center;
+}
+.cinematic-projects .cine-timeline-input {
+  position: absolute; inset: -6px 0; width: 100%; height: calc(100% + 12px);
+  margin: 0; padding: 0; appearance: none; -webkit-appearance: none;
+  background: transparent; cursor: pointer; outline: none; z-index: 2;
+}
+.cinematic-projects .cine-timeline-input::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
+  background: #f2f0eb; cursor: pointer;
+  box-shadow: 0 0 0 4px rgba(242,240,235,0.18), 0 2px 6px rgba(0,0,0,0.5);
+}
+.cinematic-projects .cine-timeline-input::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%; background: #f2f0eb;
+  cursor: pointer; border: none;
+}
 
-.cinematic-projects .cine-camera-label-small { display: inline-flex; align-items: center; gap: 8px; margin-right: 8px; }
-.cinematic-projects .cbtn-cam-small { width: 28px; height: 28px; color: #f2f0eb; --cam-bg: #000; }
-.cinematic-projects .cine-camera-label-small span { font-family: var(--cine-body-font); font-size: 12px; color: #f2f0eb; }
+.cinematic-projects .cine-btn-row {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+}
+.cinematic-projects .cine-btn-left,
+.cinematic-projects .cine-btn-right {
+  display: flex; align-items: center; gap: 4px;
+}
+.cinematic-projects .cine-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  height: 36px; min-width: 36px; padding: 0 8px;
+  border: none; border-radius: 6px; background: transparent;
+  color: #f2f0eb; cursor: pointer; font-family: var(--cine-body-font);
+  font-size: 12px; font-weight: 500;
+  transition: background 0.15s ease;
+}
+.cinematic-projects .cine-btn:hover { background: rgba(255,255,255,0.1); }
+.cinematic-projects .cine-btn-icon { width: 20px; height: 20px; fill: currentColor; }
+.cinematic-projects .cine-btn-text { opacity: 0.9; }
 
-.cinematic-projects .cine-btn { display: inline-flex; align-items: center; justify-content: center; height: 40px; min-width: 40px; padding: 0 10px; border: none; border-radius: 6px; background: transparent; color: #f2f0eb; cursor: pointer; transition: background 0.15s ease, transform 0.15s ease; font-family: var(--cine-body-font); font-size: 12px; font-weight: 500; }
-.cinematic-projects .cine-btn:hover { background: rgba(255,255,255,0.09); }
-.cinematic-projects .cine-btn:active { transform: scale(0.94); }
-.cinematic-projects .cine-btn-icon { width: 22px; height: 22px; fill: currentColor; }
-.cinematic-projects .cine-btn-text { color: #f2f0eb; opacity: 0.88; }
-.cinematic-projects .cine-btn-text:hover { opacity: 1; }
-
-.cinematic-projects .cine-playpause { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; padding: 0; border: none; border-radius: 8px; background: transparent; color: #f2f0eb; cursor: pointer; flex: 0 0 auto; transition: background 0.15s ease, transform 0.15s ease; }
-.cinematic-projects .cine-playpause:hover { background: rgba(255,255,255,0.09); }
-.cinematic-projects .cine-playpause:active { transform: scale(0.94); }
-.cinematic-projects .pp-svg { width: 28px; height: 28px; fill: currentColor; }
+.cinematic-projects .cine-playpause {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; padding: 0; border: none; border-radius: 8px;
+  background: transparent; color: #f2f0eb; cursor: pointer;
+  transition: background 0.15s ease;
+}
+.cinematic-projects .cine-playpause:hover { background: rgba(255,255,255,0.1); }
+.cinematic-projects .pp-svg { width: 24px; height: 24px; fill: currentColor; }
 
 .cinematic-projects .cine-volume { display: inline-flex; align-items: center; }
-.cinematic-projects .cine-volume-slider { width: 80px; height: 3px; margin: 0 0 0 8px; padding: 0; appearance: none; -webkit-appearance: none; background: rgba(242,240,235,0.25); border-radius: 2px; cursor: pointer; outline: none; opacity: 0; transform: scaleX(0); transform-origin: left center; pointer-events: none; transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; will-change: transform, opacity; }
-.cinematic-projects .cine-volume:hover .cine-volume-slider, .cinematic-projects .cine-volume-slider:focus { opacity: 1; transform: scaleX(1); pointer-events: auto; }
-.cinematic-projects .cine-volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%; background: #f2f0eb; cursor: pointer; box-shadow: 0 0 0 3px rgba(242,240,235,0.15); }
-.cinematic-projects .cine-volume-slider::-moz-range-thumb { width: 10px; height: 10px; border-radius: 50%; background: #f2f0eb; cursor: pointer; border: none; box-shadow: 0 0 0 3px rgba(242,240,235,0.15); }
+.cinematic-projects .cine-volume-slider {
+  width: 0; height: 3px; margin: 0; padding: 0;
+  appearance: none; -webkit-appearance: none;
+  background: rgba(242,240,235,0.25); border-radius: 2px; cursor: pointer;
+  outline: none; opacity: 0; pointer-events: none;
+  transition: width 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
+}
+.cinematic-projects .cine-volume:hover .cine-volume-slider,
+.cinematic-projects .cine-volume-slider:focus {
+  width: 70px; margin: 0 0 0 8px; opacity: 1; pointer-events: auto;
+}
+.cinematic-projects .cine-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%;
+  background: #f2f0eb; cursor: pointer;
+}
+.cinematic-projects .cine-volume-slider::-moz-range-thumb {
+  width: 10px; height: 10px; border-radius: 50%; background: #f2f0eb;
+  cursor: pointer; border: none;
+}
 
-.cinematic-projects .cine-time { font-family: var(--cine-body-font); font-size: 12px; color: rgba(242, 240, 235, 0.7); font-variant-numeric: tabular-nums; letter-spacing: 0.02em; white-space: nowrap; padding: 0 6px; user-select: none; flex: 0 0 auto; }
+.cinematic-projects .cine-time {
+  font-family: var(--cine-body-font); font-size: 12px;
+  color: rgba(242, 240, 235, 0.75);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap; padding: 0 4px; flex: 0 0 auto;
+}
 
-.cinematic-projects .cine-speed-wrap, .cinematic-projects .cine-quality-wrap { position: relative; }
-.cinematic-projects .cine-popup { position: absolute; bottom: calc(100% + 10px); right: 0; min-width: 100px; padding: 6px; background: var(--cine-surface); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-radius: 8px; display: flex; flex-direction: column; gap: 2px; z-index: 40; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+.cinematic-projects .cine-quality-wrap,
+.cinematic-projects .cine-speed-wrap { position: relative; }
+.cinematic-projects .cine-popup {
+  position: absolute; bottom: calc(100% + 8px); right: 0;
+  min-width: 90px; padding: 6px;
+  background: #050505;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px; display: flex; flex-direction: column; gap: 2px;
+  z-index: 40;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(0,0,0,0.5);
+}
 .cinematic-projects .cine-popup[hidden] { display: none; }
-.cinematic-projects .cine-popup-item { background: transparent; border: none; color: #f2f0eb; font-family: var(--cine-body-font); font-size: 12px; font-weight: 500; padding: 7px 12px; text-align: left; border-radius: 5px; cursor: pointer; transition: background 0.12s ease; }
-.cinematic-projects .cine-popup-item:hover { background: rgba(255,255,255,0.1); }
-.cinematic-projects .cine-popup-item.is-active { background: rgba(232,214,138,0.16); color: var(--cine-accent); }
+.cinematic-projects .cine-popup-item {
+  position: relative;
+  background: transparent; border: none; color: #f2f0eb;
+  font-family: var(--cine-body-font); font-size: 12px; font-weight: 500;
+  padding: 6px 12px 6px 24px;
+  text-align: left; border-radius: 5px; cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.cinematic-projects .cine-popup-item:hover { background: rgba(255,255,255,0.06); }
+.cinematic-projects .cine-popup-item.is-active { color: #e6c84a; }
+.cinematic-projects .cine-popup-item.is-active::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffd400;
+}
 
 @media (max-width: 640px) {
-  .cinematic-projects .cine-title { font-size: 28px; }
-  .cinematic-projects .cine-desc { font-size: 11px; }
-  .cinematic-projects .cine-camera-stage { bottom: 16px; left: 16px; }
-  .cinematic-projects .cine-camera-btn { gap: 8px; }
-  .cinematic-projects .cbtn-cam { width: 64px; height: 64px; }
-  .cinematic-projects .camera-label { font-size: 32px; }
-  .cinematic-projects .cine-controls { padding: 52px 14px 14px; }
-  .cinematic-projects .cine-time { font-size: 11px; padding: 0 3px; }
-  .cinematic-projects .end-card-vimeo-wordmark { font-size: 40px; }
+  }
+
+@media (max-width: 640px) {
+  .cinematic-projects .section-heading { font-size: 28px; }
+  .cinematic-projects .cine-title-stage { left: 18px; right: 18px; bottom: 20px; }
+  .cinematic-projects .cine-film-title { font-size: 30px; }
+  .cinematic-projects .cine-film-desc { font-size: 11px; }
+  .cinematic-projects .cine-fade { height: 54%; }
+  .cinematic-projects .cine-shield { width: 160px; height: 60px; }
+  }
+
+/* ── End card ── */
+.cinematic-projects .cine-end-card {
+  position: absolute; inset: 0; z-index: 15;
+  background: #000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease;
+  overflow: hidden;
+}
+.cinematic-projects .cinema.is-ended .cine-end-card { opacity: 1; pointer-events: auto; }
+
+@media (max-width: 640px) {
+  }
+
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   END CARD — Full layout reset (clean rebuild)
+   ═══════════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cine-end-card {
+  position: absolute; inset: 0;
+  z-index: 15;
+  background: #000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease;
+  overflow: hidden;
+}
+.cinematic-projects .cinema.is-ended .cine-end-card {
+  opacity: 1; pointer-events: auto;
+}
+
+/* Glow (soft golden bottom-left) */
+/* ── Top area: profile + meta ── */
+/* Profile picture */
+/* Meta column (name + icons + email) */
+/* ── Bottom-left: film title + desc ── */
+/* ── Bottom-right: Vimeo logo ── */
+/* ── Replay button (small, bottom-left corner) ── */
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  }
+
+
+/* ═══════════════════════════════════════════════════════════════
+   END CARD — Full layout reset (clean rebuild)
+   ═══════════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cine-end-card {
+  position: absolute; inset: 0;
+  z-index: 15;
+  background: #000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.6s ease;
+  overflow: hidden;
+}
+.cinematic-projects .cinema.is-ended .cine-end-card {
+  opacity: 1; pointer-events: auto;
+}
+
+/* Glow (soft golden bottom-left) */
+.cinematic-projects .end-card-glow {
+  position: absolute;
+  left: 0; bottom: 4%;
+  width: 70%; height: 60%;
+  pointer-events: none;
+  background: radial-gradient(
+    ellipse at 14% 92%,
+    rgba(255, 235, 170, 0.36) 0%,
+    rgba(255, 225, 140, 0.20) 22%,
+    rgba(255, 215, 110, 0.09) 44%,
+    rgba(255, 205, 90, 0.03) 64%,
+    transparent 82%
+  );
+  filter: blur(26px);
+  z-index: 1;
+}
+
+/* ── Top area: profile + meta ── */
+.cinematic-projects .end-card-top {
+  position: absolute;
+  top: 68px; left: 56px; right: 56px;
+  display: flex;
+  align-items: flex-start;
+  gap: 18px;
+  z-index: 2;
+}
+
+/* Profile picture */
+.cinematic-projects .end-card-photo {
+  position: relative;
+  width: 130px; height: 130px;
+  border-radius: 50%;
+  background: #1a1a1a;
+  border: 1.5px solid rgba(255,255,255,0.12);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; overflow: hidden;
+}
+.cinematic-projects .end-card-photo img {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.cinematic-projects .end-card-photo img.is-loaded { opacity: 1; }
+.cinematic-projects .end-card-initials {
+  font-family: 'Oswald', var(--cine-body-font);
+  font-weight: 400;
+  font-size: 34px;
+  color: #e6e6e6;
+  letter-spacing: 0.04em;
+}
+
+/* Meta column (name + icons + email) */
+.cinematic-projects .end-card-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding-top: 6px;
+}
+.cinematic-projects .end-card-profile-name {
+  font-family: 'Oswald', 'Anton', var(--cine-body-font) !important;
+  font-size: 28px !important;
+  font-weight: 400 !important;
+  color: #f2f0eb !important;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin: 0;
+}
+.cinematic-projects .end-card-icons {
+  display: flex !important;
+  align-items: center;
+  gap: 12px;
+  padding: 0;
+  margin: 0;
+}
+.cinematic-projects .end-card-icons a {
+  display: inline-flex !important;
+  align-items: center; justify-content: center;
+  width: 36px !important; height: 36px !important;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.045);
+  border: 1px solid rgba(255,255,255,0.05);
+  color: #f2f0eb;
+  text-decoration: none;
+  transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.cinematic-projects .end-card-icons a:hover {
+  background: rgba(255,255,255,0.12);
+  transform: translateY(-2px);
+  color: #ffffff;
+  border-color: rgba(255,255,255,0.12);
+}
+.cinematic-projects .end-card-icons svg {
+  width: 15px !important; height: 15px !important;
+  fill: currentColor !important;
+  flex-shrink: 0;
+}
+.cinematic-projects .end-card-icons a.linkedin:hover { color: #0a66c2; }
+.cinematic-projects .end-card-icons a.instagram:hover { color: #e1306c; }
+.cinematic-projects .end-card-icons a.vimeo:hover { color: #1ab7ea; }
+.cinematic-projects .end-card-icons a.behance:hover { color: #1769ff; }
+
+.cinematic-projects .end-card-email {
+  font-family: var(--cine-body-font) !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  color: rgba(200, 200, 200, 0.85) !important;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  line-height: 1.5;
+}
+.cinematic-projects .end-card-email:hover { color: #f2f0eb !important; }
+
+/* ── Bottom-left: film title + desc ── */
+.cinematic-projects .end-card-film {
+  position: absolute;
+  left: 56px;
+  bottom: 44px;
+  right: 160px;
+  z-index: 3;
+}
+.cinematic-projects .end-card-film-title {
+  margin: 0 0 12px 0;
+  font-family: var(--cine-title-font);
+  font-weight: 400;
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  color: #f2f0eb;
+  text-transform: uppercase;
+}
+.cinematic-projects .end-card-film-desc {
+  margin: 0;
+  max-width: 520px;
+  font-family: var(--cine-body-font);
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(210, 210, 210, 0.88);
+}
+.cinematic-projects .end-card-film-desc:empty { display: none; }
+
+/* ── Bottom-right: Vimeo logo ── */
+.cinematic-projects .end-card-vimeo-link {
+  position: absolute;
+  right: 56px;
+  bottom: 44px;
+  display: inline-flex !important;
+  align-items: center;
+  text-decoration: none;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  opacity: 0.85;
+  z-index: 3;
+  width: auto !important; height: auto !important;
+}
+.cinematic-projects .end-card-vimeo-link:hover {
+  transform: scale(1.06);
+  opacity: 1;
+}
+.cinematic-projects .end-card-vimeo-link svg {
+  display: block !important;
+  height: 40px !important;
+  width: 40px !important;
+  max-width: 40px !important;
+  max-height: 40px !important;
+  fill: #1ab7ea !important;
+  filter: drop-shadow(0 0 14px rgba(26, 183, 234, 0.28));
+}
+
+/* ── Replay button (small, bottom-left corner) ── */
+.cinematic-projects .end-card-replay {
+  position: absolute;
+  bottom: 14px; left: 14px;
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(242,240,235,0.28);
+  color: #f2f0eb;
+  cursor: pointer; padding: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
+  z-index: 4;
+  opacity: 0.55;
+}
+.cinematic-projects .end-card-replay:hover {
+  transform: scale(1.12);
+  background: rgba(255,255,255,0.16);
+  border-color: rgba(242,240,235,0.75);
+  opacity: 1;
+}
+.cinematic-projects .end-card-replay svg { width: 13px; height: 13px; }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  .cinematic-projects .end-card-top { top: 32px; left: 22px; right: 22px; gap: 12px; }
+  .cinematic-projects .end-card-photo { width: 78px; height: 78px; }
+  .cinematic-projects .end-card-initials { font-size: 22px; }
+  .cinematic-projects .end-card-meta { gap: 8px; padding-top: 4px; }
+  .cinematic-projects .end-card-profile-name { font-size: 20px !important; }
+  .cinematic-projects .end-card-icons { gap: 8px; }
+  .cinematic-projects .end-card-icons a { width: 30px !important; height: 30px !important; }
+  .cinematic-projects .end-card-icons svg { width: 13px !important; height: 13px !important; }
+  .cinematic-projects .end-card-email { font-size: 10px !important; }
+  .cinematic-projects .end-card-film { left: 22px; bottom: 24px; right: 90px; }
+  .cinematic-projects .end-card-film-title { font-size: 26px; }
+  .cinematic-projects .end-card-film-desc { font-size: 11px; max-width: 100%; }
+  .cinematic-projects .end-card-vimeo-link { right: 22px; bottom: 24px; }
+  .cinematic-projects .end-card-vimeo-link svg { height: 28px !important; width: 28px !important; }
+  .cinematic-projects .end-card-replay { width: 26px; height: 26px; bottom: 10px; left: 10px; }
+  .cinematic-projects .end-card-replay svg { width: 11px; height: 11px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .cinematic-projects *, .cinematic-projects *::before, .cinematic-projects *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+  .cinematic-projects *, .cinematic-projects *::before, .cinematic-projects *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 </style>
 
@@ -309,39 +751,162 @@ title: Short Film Projects
 (function () {
   'use strict';
 
+  // ═══════════════════════════════════════════════════════════════
+  // 1. Soft scroll reveal
+  // ═══════════════════════════════════════════════════════════════
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('is-visible');
-      } else {
-        entry.target.classList.remove('is-visible');
-      }
+      if (entry.isIntersecting) entry.target.classList.add('is-visible');
+      else entry.target.classList.remove('is-visible');
     });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.label-reveal').forEach(el => observer.observe(el));
 
-  document.querySelectorAll('.reveal-on-scroll, .label-reveal').forEach(el => observer.observe(el));
+  // ═══════════════════════════════════════════════════════════════
+  // 2. Remove first markdown paragraph
+  // ═══════════════════════════════════════════════════════════════
+  document.querySelectorAll('[data-film-markdown]').forEach(el => {
+    const firstP = el.querySelector('p');
+    if (firstP) firstP.remove();
+  });
 
+  // ═══════════════════════════════════════════════════════════════
+  // 3. Vimeo oEmbed — single fetch per video (title + desc + author)
+  // ═══════════════════════════════════════════════════════════════
+  const vimeoInfoCache = new Map();
+
+  function fetchVimeoInfo(id) {
+    if (!id) return Promise.resolve(null);
+    if (vimeoInfoCache.has(id)) return Promise.resolve(vimeoInfoCache.get(id));
+
+    return new Promise(resolve => {
+      const cbName = 'vimeoInfo_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      let done = false;
+
+      const cleanup = () => {
+        if (done) return;
+        done = true;
+        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      };
+
+      window[cbName] = (data) => {
+        const payload = data || null;
+        if (payload && payload.description) {
+          payload.description = String(payload.description)
+            .replace(/<[^>]*>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        }
+        vimeoInfoCache.set(id, payload);
+        resolve(payload);
+        cleanup();
+      };
+
+      script.src = 'https://vimeo.com/api/oembed.json?url=' +
+        encodeURIComponent('https://vimeo.com/' + id) +
+        '&callback=' + cbName;
+      script.async = true;
+      script.onerror = () => {
+        vimeoInfoCache.set(id, null);
+        resolve(null);
+        cleanup();
+      };
+      document.head.appendChild(script);
+
+      setTimeout(() => {
+        if (!done) { resolve(null); cleanup(); }
+      }, 6000);
+    });
+  }
+
+  // Populate description + author for every video
+  document.querySelectorAll('[data-cinema]').forEach(cinema => {
+    const descEl = cinema.querySelector('[data-film-desc]');
+    const endDescEl = cinema.querySelector('[data-end-desc]');
+    const endAuthorEl = cinema.querySelector('[data-end-author]');
+    const vimeoId = cinema.dataset.videoId || '';
+    if (!vimeoId) return;
+
+    fetchVimeoInfo(vimeoId).then(info => {
+      if (!info) return;
+      if (info.description) {
+        if (descEl) descEl.textContent = info.description;
+        if (endDescEl) endDescEl.textContent = info.description;
+      }
+      if (info.author_name && endAuthorEl) {
+        endAuthorEl.textContent = info.author_name;
+      }
+      // Extract username from author_url → fetch avatar from Vimeo v2 API
+      const authorUrl = info.author_url || '';
+      const usernameMatch = authorUrl.match(/vimeo\.com\/([^\/?#]+)/);
+      if (usernameMatch) {
+        const username = usernameMatch[1];
+        const avatarImg = cinema.querySelector('[data-vimeo-avatar]');
+        if (avatarImg && !avatarImg.dataset.fetched) {
+          avatarImg.dataset.fetched = '1';
+          fetchVimeoAvatar(username).then(url => {
+            if (!url) return;
+            avatarImg.src = url;
+            avatarImg.onload = () => avatarImg.classList.add('is-loaded');
+            avatarImg.onerror = () => { avatarImg.removeAttribute('src'); };
+          });
+        }
+      }
+    }).catch(() => {});
+  });
+
+  // ── Vimeo avatar (v2 API, JSONP) ──
+  const avatarCache = new Map();
+  function fetchVimeoAvatar(username) {
+    if (!username) return Promise.resolve('');
+    if (avatarCache.has(username)) return Promise.resolve(avatarCache.get(username));
+    return new Promise(resolve => {
+      const cbName = 'vimeoAvatar_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const script = document.createElement('script');
+      let done = false;
+      const cleanup = () => {
+        if (done) return; done = true;
+        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
+        if (script.parentNode) script.parentNode.removeChild(script);
+      };
+      window[cbName] = (data) => {
+        const url = (data && (data.portrait_large || data.portrait_medium || data.portrait_small)) || '';
+        avatarCache.set(username, url);
+        resolve(url);
+        cleanup();
+      };
+      script.src = 'https://vimeo.com/api/v2/' + encodeURIComponent(username) + '/info.json?callback=' + cbName;
+      script.async = true;
+      script.onerror = () => { avatarCache.set(username, ''); resolve(''); cleanup(); };
+      document.head.appendChild(script);
+      setTimeout(() => { if (!done) { resolve(''); cleanup(); } }, 5000);
+    });
+  }
+
+  // ═══════════════════════════════════════════════════════════════
+  // 4. Vimeo SDK loader
+  // ═══════════════════════════════════════════════════════════════
   let sdkPromise;
   function loadVimeoSDK() {
     if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo);
     if (sdkPromise) return sdkPromise;
     sdkPromise = new Promise(function (resolve, reject) {
       const s = document.createElement('script');
-      const t = setTimeout(() => reject(new Error('Vimeo SDK timeout')), 20000);
       s.src = 'https://player.vimeo.com/api/player.js';
       s.async = true;
-      s.onload = () => { clearTimeout(t); (window.Vimeo && window.Vimeo.Player) ? resolve(window.Vimeo) : reject(new Error('missing')); };
-      s.onerror = () => { clearTimeout(t); reject(new Error('load failed')); };
+      s.onload = () => (window.Vimeo && window.Vimeo.Player) ? resolve(window.Vimeo) : reject(new Error('missing'));
+      s.onerror = () => reject(new Error('load failed'));
       document.head.appendChild(s);
     });
     return sdkPromise;
   }
 
-  function withTimeout(p, ms) {
-    return new Promise((res, rej) => { const t = setTimeout(() => rej(new Error('timeout')), ms); Promise.resolve(p).then(v => { clearTimeout(t); res(v); }, e => { clearTimeout(t); rej(e); }); });
-  }
-
-  function fmt(s) {
+  // ═══════════════════════════════════════════════════════════════
+  // 5. Utilities
+  // ═══════════════════════════════════════════════════════════════
+  function fmtTime(s) {
     const v = Math.max(0, Math.floor(Number(s) || 0));
     const h = Math.floor(v / 3600);
     const m = Math.floor((v % 3600) / 60);
@@ -350,73 +915,46 @@ title: Short Film Projects
     return h ? h + ':' + str : str;
   }
 
-  function preconnect() {
-    ['https://player.vimeo.com', 'https://i.vimeocdn.com', 'https://f.vimeocdn.com'].forEach(href => {
-      if (document.querySelector('link[rel="preconnect"][href="' + href + '"]')) return;
-      const l = document.createElement('link'); l.rel = 'preconnect'; l.href = href; l.crossOrigin = ''; document.head.appendChild(l);
-    });
-  }
+  const MIN_LOADING_MS = 700;
 
-  function waitForGSAP(maxMs) {
-    return new Promise(resolve => {
-      const start = Date.now();
-      (function poll() { if (window.gsap && window.MorphSVGPlugin) return resolve(true); if (Date.now() - start > (maxMs || 3000)) return resolve(false); requestAnimationFrame(poll); })();
-    });
-  }
-
-  function initialize() {
-    preconnect();
-    const sections = document.querySelectorAll('[data-cinema]');
-    if (!sections.length) return;
-    waitForGSAP(3000).then(hasGSAP => { sections.forEach(root => initSection(root, hasGSAP)); });
-  }
-
-  function initSection(root, hasGSAP) {
+  // ═══════════════════════════════════════════════════════════════
+  // 6. Per-section initialization
+  // ═══════════════════════════════════════════════════════════════
+  function initSection(root) {
     if (root.dataset.initialized) return;
     root.dataset.initialized = 'true';
 
-    const q  = sel => root.querySelector(sel);
-    const qa = sel => Array.from(root.querySelectorAll(sel));
+    const layer = root.querySelector('[data-video-layer]');
+    const hit = root.querySelector('[data-play-hit]');
+    const shield = root.querySelector('[data-shield]');
+    const playpauseBtn = root.querySelector('[data-playpause-btn]');
+    const ppPath = root.querySelector('.pp-path');
+    const volumeBtn = root.querySelector('[data-volume-btn]');
+    const volumeSlider = root.querySelector('[data-volume-slider]');
+    const speedBtn = root.querySelector('[data-speed-btn]');
+    const speedMenu = root.querySelector('[data-speed-menu]');
+    const qualityBtn = root.querySelector('[data-quality-btn]');
+    const qualityMenu = root.querySelector('[data-quality-menu]');
+    const fullscreenBtn = root.querySelector('[data-fullscreen-btn]');
+    const replayBtn = root.querySelector('[data-replay-btn]');
+    const timeEl = root.querySelector('[data-time]');
+    const progress = root.querySelector('[data-progress]');
+    const progressFill = root.querySelector('[data-progress-fill]');
 
-    const videoLayer = q('[data-video-layer]');
-    const cameraBtn = q('[data-camera-btn]');
-    const cameraStage = q('[data-camera-stage]');
-    const controls = q('[data-controls]');
-    const playpauseBtn = q('[data-playpause-btn]');
-    const ppPath = q('.pp-path');
-    const replayBtn = q('[data-replay-btn]');
-    const volumeBtn = q('[data-volume-btn]');
-    const volumeSlider = q('[data-volume-slider]');
-    const timeEl = q('[data-time]');
-    
-    const speedBtn = q('[data-speed-btn]');
-    const speedMenu = q('[data-speed-menu]');
-    const qualityBtn = q('[data-quality-btn]');
-    const qualityMenu = q('[data-quality-menu]');
-    const fullscreenBtn = q('[data-fullscreen-btn]');
+    const vimeoId = root.dataset.videoId;
+    const videoSrc = root.dataset.videoSrc;
+    if (!layer) return;
 
-    const progress = q('[data-progress]');
-    const progressFill = q('[data-progress-fill]');
-
-    let player = null; let prepPromise = null; let ready = false; let failed = false;
-    let morphing = false; let morphDone = false; let duration = 0; let current = 0; let seeking = false;
-    let idleTimer = null; let muted = true; let currentQuality = 'auto';
-
-    function setState(s) {
-      root.dataset.state = s;
-      if (s === 'playing') {
-        root.classList.remove('is-ended');
-        root.classList.add('is-started', 'is-ui-visible');
-        if (idleTimer) clearTimeout(idleTimer);
-        idleTimer = setTimeout(() => root.classList.remove('is-ui-visible'), 3000);
-      } else if (s === 'paused') {
-        root.classList.add('is-ui-visible');
-        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
-      } else if (s === 'ended') {
-        root.classList.add('is-ended');
-        root.classList.add('is-ui-visible');
-      }
-    }
+    let player = null;
+    let prepared = false;
+    let preparing = false;
+    let duration = 0;
+    let current = 0;
+    let isSeeking = false;
+    let isMuted = false;
+    let currentQuality = 'auto';
+    let firstPlayHandled = false;
+    let idleTimer = null;
 
     function setPlayPauseIcon(playing) {
       if (!ppPath) return;
@@ -424,144 +962,364 @@ title: Short Film Projects
       if (playpauseBtn) playpauseBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
     }
 
-    function setVolumeIcon(volume, isMuted) {
-      if (!volumeBtn) return;
-      const v = isMuted ? 0 : volume;
-      volumeBtn.setAttribute('aria-label', v === 0 ? 'Unmute film' : 'Mute film');
-      let d;
-      if (v === 0) d = 'M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73 4.27 3zM12 4L9.91 6.09 12 8.18V4z';
-      else if (v < 0.5) d = 'M18.5 12c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM5 9v6h4l5 5V4L9 9H5z';
-      else d = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z';
-      volumeBtn.querySelector('path').setAttribute('d', d);
-    }
-
     function updateTime() {
-      const pct = duration > 0 ? (current / duration * 100) : 0;
-      if (!seeking) {
-        progress.value = duration > 0 ? Math.round(current / duration * 1000) : 0;
-        if (progressFill) progressFill.style.transform = 'scaleX(' + (pct / 100) + ')';
+      const pct = duration > 0 ? (current / duration) : 0;
+      if (!isSeeking) {
+        if (progress) progress.value = Math.round(pct * 1000);
+        if (progressFill) progressFill.style.transform = 'scaleX(' + pct + ')';
       }
-      if (timeEl) timeEl.textContent = fmt(current) + ' / ' + fmt(duration);
+      if (timeEl) timeEl.textContent = fmtTime(current) + ' / ' + fmtTime(duration);
     }
 
-    function fail(err) { if (failed) return; failed = true; console.warn('[Cinema] failed:', err); if (cameraBtn) cameraBtn.disabled = true; }
+    function showControls() {
+      root.classList.add('is-ui-visible');
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => root.classList.remove('is-ui-visible'), 3200);
+    }
+
+    function revealVideo() {
+      root.classList.remove('is-loading');
+      root.classList.add('is-started');
+      root.dataset.state = 'playing';
+      if (player) {
+        player.setCurrentTime(0).catch(() => {});
+        player.play().catch(() => {});
+      } else if (videoSrc) {
+        const v = layer.querySelector('video');
+        if (v) { v.currentTime = 0; v.play().catch(() => {}); }
+      }
+      showControls();
+    }
 
     function prepare() {
-      if (prepPromise) return prepPromise;
-      prepPromise = (async () => {
-        const Vimeo = await loadVimeoSDK();
-        const vid = String(root.dataset.videoId || '');
-        if (!/^\d+$/.test(vid)) throw new Error('Invalid Vimeo ID');
+      if (prepared) return Promise.resolve();
+      if (preparing) return;
+      preparing = true;
+
+      if (videoSrc) {
+        const v = document.createElement('video');
+        v.playsInline = true; v.preload = 'auto'; v.controls = false;
+        v.muted = true;
+        v.src = videoSrc;
+        v.addEventListener('ended', () => { root.classList.add('is-ended'); });
+        v.addEventListener('timeupdate', () => {
+          current = v.currentTime; duration = v.duration || 0; updateTime();
+        });
+        v.addEventListener('volumechange', () => {
+          isMuted = v.muted || v.volume === 0;
+          if (volumeSlider) volumeSlider.value = v.muted ? 0 : v.volume;
+        });
+        v.addEventListener('play', () => {
+          if (!firstPlayHandled) {
+            firstPlayHandled = true;
+            v.pause();
+            v.currentTime = 0;
+            const startAt = parseInt(root.dataset.loadingStart || '0', 10);
+            const wait = Math.max(0, MIN_LOADING_MS - (Date.now() - startAt));
+            setTimeout(revealVideo, wait);
+          } else {
+            setPlayPauseIcon(true);
+            root.dataset.state = 'playing';
+          }
+        });
+        v.addEventListener('pause', () => {
+          if (root.classList.contains('is-loading')) return;
+          if (root.dataset.state === 'ended') return;
+          setPlayPauseIcon(false);
+          root.dataset.state = 'paused';
+        });
+        layer.appendChild(v);
+        prepared = true; preparing = false;
+        return Promise.resolve();
+      }
+
+      return loadVimeoSDK().then(Vimeo => {
         const iframe = document.createElement('iframe');
-        iframe.src = 'https://player.vimeo.com/video/' + vid + '?background=1&autoplay=0&loop=0&byline=0&title=0&portrait=0&controls=0&muted=1&playsinline=1&keyboard=0&dnt=1';
-        iframe.title = 'Film'; iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media'; iframe.allowFullscreen = true; iframe.tabIndex = -1; iframe.setAttribute('loading', 'eager');
-        videoLayer.appendChild(iframe);
+        iframe.src = 'https://player.vimeo.com/video/' + vimeoId +
+          '?autoplay=0&muted=1&controls=0&byline=0&title=0&portrait=0&dnt=1&playsinline=1';
+        iframe.title = 'Film';
+        iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
+        iframe.allowFullscreen = true;
+        iframe.tabIndex = -1;
+        layer.appendChild(iframe);
         player = new Vimeo.Player(iframe);
 
-        player.on('play', () => { root.classList.remove('is-ended'); setState('playing'); setPlayPauseIcon(true); });
-        player.on('pause', () => { setState('paused'); setPlayPauseIcon(false); });
-        player.on('ended', () => { setState('ended'); setPlayPauseIcon(false); current = duration; updateTime(); });
-        player.on('timeupdate', e => { current = Number(e.seconds) || 0; duration = Number(e.duration) || duration; updateTime(); });
-        player.on('durationchange', e => { duration = Number(e.duration) || 0; updateTime(); });
-        player.on('volumechange', e => { muted = Boolean(e.muted) || e.volume === 0; if (volumeSlider) volumeSlider.value = e.volume; setVolumeIcon(e.volume, muted); });
-        player.on('qualitychange', e => { if (e && e.id) { currentQuality = e.id; qualityBtn.textContent = e.id === 'auto' ? 'Auto' : e.id + 'p'; } });
-        player.on('error', e => { const ignore = ['setQuality','getQuality','getQualities','setPlaybackRate','setCurrentTime','setMuted','setVolume','getMuted','getPaused','getDuration','getVolume']; if (e && e.method && ignore.indexOf(e.method) !== -1) return; fail(e); });
+        player.on('play', () => {
+          if (!firstPlayHandled) {
+            firstPlayHandled = true;
+            player.pause().catch(() => {});
+            player.setCurrentTime(0).catch(() => {});
+            const startAt = parseInt(root.dataset.loadingStart || '0', 10);
+            const wait = Math.max(0, MIN_LOADING_MS - (Date.now() - startAt));
+            setTimeout(revealVideo, wait);
+          } else {
+            setPlayPauseIcon(true);
+            root.dataset.state = 'playing';
+            root.classList.remove('is-ended');
+          }
+        });
+        player.on('pause', () => {
+          if (root.classList.contains('is-loading')) return;
+          if (root.dataset.state === 'ended') return;
+          setPlayPauseIcon(false);
+          root.dataset.state = 'paused';
+        });
+        player.on('ended', () => {
+          root.classList.add('is-ended');
+          root.classList.remove('is-loading');
+        });
+        player.on('timeupdate', (e) => {
+          current = Number(e.seconds) || 0;
+          duration = Number(e.duration) || duration;
+          updateTime();
+        });
+        player.on('durationchange', (e) => {
+          duration = Number(e.duration) || 0;
+          updateTime();
+        });
+        player.on('volumechange', (e) => {
+          isMuted = Boolean(e.muted) || e.volume === 0;
+          if (volumeSlider) volumeSlider.value = e.volume;
+        });
+        player.on('qualitychange', (e) => {
+          if (e && e.id) {
+            currentQuality = e.id;
+            if (qualityBtn) qualityBtn.textContent = e.id === 'auto' ? 'Auto' : (parseInt(e.id, 10) + 'p');
+          }
+        });
 
-        await withTimeout(player.ready(), 20000);
-        ready = true; progress.disabled = false;
-        player.getDuration().then(v => { duration = Number(v) || 0; updateTime(); }).catch(() => {});
-        player.getMuted().then(m => { muted = m; setVolumeIcon(1, m); }).catch(() => {});
-        player.getVolume().then(v => { if (volumeSlider) volumeSlider.value = v; }).catch(() => {});
-        
-        player.getQualities().then(qualities => {
-          if (!qualityMenu) return;
-          qualityMenu.innerHTML = '';
-          qualities.forEach(q => {
-            const btn = document.createElement('button');
-            btn.className = 'cine-popup-item' + (q.id === currentQuality ? ' is-active' : '');
-            btn.dataset.qualityValue = q.id;
-            btn.textContent = q.id === 'auto' ? 'Auto' : q.id + 'p';
-            qualityMenu.appendChild(btn);
-          });
-        }).catch(() => {});
-      })().catch(fail);
-      return prepPromise;
+        return player.ready().then(() => {
+          prepared = true; preparing = false;
+          player.getDuration().then(d => { duration = Number(d) || 0; updateTime(); }).catch(() => {});
+          player.getQualities().then(list => {
+            if (!qualityMenu) return;
+            qualityMenu.innerHTML = '';
+            list.forEach(q => {
+              const b = document.createElement('button');
+              b.className = 'cine-popup-item' + (q.id === currentQuality ? ' is-active' : '');
+              b.dataset.qualityValue = q.id;
+              b.textContent = q.id === 'auto' ? 'Auto' : (parseInt(q.id, 10) + 'p');
+              qualityMenu.appendChild(b);
+            });
+          }).catch(() => {});
+        });
+      }).catch(err => {
+        preparing = false;
+        console.warn('[Cinema] prepare failed', err);
+      });
     }
 
-    function runMorphAndStart() {
-      if (morphing || morphDone || failed) return;
-      morphing = true; root.classList.add('is-morphing');
-      prepare().then(() => { if (!ready || !player) return; player.play().catch(() => {}); });
-      const cleanupAndStart = () => { morphing = false; morphDone = true; root.classList.remove('is-morphing'); setState('paused'); setPlayPauseIcon(true); };
-      if (hasGSAP) {
-        window.gsap.registerPlugin(window.MorphSVGPlugin);
-        const tl = window.gsap.timeline({ onComplete: cleanupAndStart });
-        tl.to(q('[data-light]'), { opacity: 1, duration: 0.75, ease: 'power2.out' }, 0.15);
-        tl.to(cameraStage, { opacity: 0, duration: 0.4, ease: 'power2.out' }, 1.15);
-        tl.to(controls, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, 1.3);
-      } else {
-        cameraStage.style.transition = 'opacity 0.5s ease'; cameraStage.style.opacity = '0';
-        controls.style.transition = 'opacity 0.5s ease, transform 0.5s ease'; controls.style.opacity = '1'; controls.style.transform = 'none';
-        setTimeout(cleanupAndStart, 600);
+    function play() {
+      if (root.classList.contains('is-started')) {
+        if (player) player.play().catch(() => {});
+        else if (videoSrc) {
+          const v = layer.querySelector('video');
+          if (v) v.play().catch(() => {});
+        }
+        return;
+      }
+
+      root.dataset.loadingStart = String(Date.now());
+      root.classList.add('is-loading');
+
+      const safety = setTimeout(() => {
+        if (root.classList.contains('is-loading')) revealVideo();
+      }, 5000);
+
+      if (prepared && player) {
+        player.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
+        return;
+      }
+      if (prepared && videoSrc) {
+        const v = layer.querySelector('video');
+        if (v) v.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
+        return;
+      }
+      prepare().then(() => {
+        if (player) player.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
+        else if (videoSrc) {
+          const v = layer.querySelector('video');
+          if (v) v.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
+        }
+      }).catch(() => {
+        clearTimeout(safety);
+        root.classList.remove('is-loading');
+      });
+    }
+
+    function pause() {
+      if (player) player.pause().catch(() => {});
+      else if (videoSrc) {
+        const v = layer.querySelector('video');
+        if (v) v.pause();
       }
     }
 
-    cameraBtn.addEventListener('click', e => { e.stopPropagation(); if (!morphDone && !morphing) runMorphAndStart(); });
-    playpauseBtn.addEventListener('click', e => { e.stopPropagation(); if (!ready || !player) return; if (root.dataset.state === 'playing') player.pause().catch(() => {}); else player.play().catch(() => {}); });
-    if (replayBtn) {
-      replayBtn.addEventListener('click', e => {
-        e.stopPropagation();
-        if (!ready || !player) return;
-        player.setCurrentTime(0).then(() => player.play().catch(() => {})).catch(() => {});
-      });
+    function togglePlay() {
+      if (root.dataset.state === 'playing') pause();
+      else play();
     }
-    volumeBtn.addEventListener('click', e => { e.stopPropagation(); if (!ready || !player) return; if (muted) { player.setVolume(0.8).then(() => player.setMuted(false)).catch(() => {}); } else { player.setMuted(true).catch(() => {}); } });
-    if (volumeSlider) { volumeSlider.addEventListener('input', e => { e.stopPropagation(); if (!ready || !player) return; const v = Number(volumeSlider.value); player.setVolume(v).catch(() => {}); if (v > 0 && muted) player.setMuted(false).catch(() => {}); }); }
 
-    function bindSpeedMenu(btn, menu) {
-      btn.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; if (qualityMenu) qualityMenu.hidden = true; });
-      qa('[data-speed-value]', menu).forEach(b => {
-        b.addEventListener('click', e => {
-          e.stopPropagation(); const v = Number(b.dataset.speedValue);
-          if (ready && player) player.setPlaybackRate(v).then(() => { btn.textContent = v + 'x'; qa('[data-speed-value]', menu).forEach(x => x.classList.toggle('is-active', x === b)); }).catch(() => {});
-          menu.hidden = true;
+    function prewarm() {
+      if (!prepared && !preparing) prepare();
+    }
+
+    if (hit) hit.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (root.classList.contains('is-loading')) return;
+      if (!root.classList.contains('is-started')) { play(); return; }
+      if (root.classList.contains('is-ui-visible')) {
+        root.classList.remove('is-ui-visible');
+        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+      } else {
+        showControls();
+      }
+    });
+    if (hit) hit.addEventListener('mouseenter', prewarm, { passive: true });
+
+    if (shield) shield.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (root.classList.contains('is-loading')) return;
+      if (!root.classList.contains('is-started')) { play(); return; }
+      if (root.classList.contains('is-ui-visible')) {
+        root.classList.remove('is-ui-visible');
+        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+      } else {
+        showControls();
+      }
+    });
+    if (shield) shield.addEventListener('mouseenter', prewarm, { passive: true });
+
+    if (playpauseBtn) playpauseBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (root.classList.contains('is-loading')) return;
+      togglePlay();
+    });
+
+    if (replayBtn) replayBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      root.classList.remove('is-ended');
+      root.dataset.state = 'playing';
+      if (player) {
+        player.setCurrentTime(0).then(() => player.play()).catch(() => {});
+      } else if (videoSrc) {
+        const v = layer.querySelector('video');
+        if (v) { v.currentTime = 0; v.play().catch(() => {}); }
+      }
+    });
+
+    if (volumeBtn) volumeBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (player) {
+        if (isMuted) player.setMuted(false).catch(() => {});
+        else player.setMuted(true).catch(() => {});
+      } else {
+        const v = layer.querySelector('video');
+        if (v) v.muted = !v.muted;
+      }
+    });
+
+    if (volumeSlider) volumeSlider.addEventListener('input', (e) => {
+      e.stopPropagation();
+      const val = Number(volumeSlider.value);
+      if (player) { player.setVolume(val).catch(() => {}); if (val > 0) player.setMuted(false).catch(() => {}); }
+      else { const v = layer.querySelector('video'); if (v) { v.volume = val; v.muted = val === 0; } }
+    });
+
+    if (speedBtn && speedMenu) {
+      speedBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        speedMenu.hidden = !speedMenu.hidden;
+        if (qualityMenu) qualityMenu.hidden = true;
+      });
+      speedMenu.querySelectorAll('[data-speed-value]').forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const v = Number(b.dataset.speedValue);
+          if (player) player.setPlaybackRate(v).catch(() => {});
+          else { const vid = layer.querySelector('video'); if (vid) vid.playbackRate = v; }
+          speedBtn.textContent = v + 'x';
+          speedMenu.querySelectorAll('[data-speed-value]').forEach(x => x.classList.toggle('is-active', x === b));
+          speedMenu.hidden = true;
         });
       });
     }
-    function bindQualityMenu(btn, menu) {
-      btn.addEventListener('click', e => { e.stopPropagation(); menu.hidden = !menu.hidden; if (speedMenu) speedMenu.hidden = true; });
-      menu.addEventListener('click', e => {
+
+    if (qualityBtn && qualityMenu) {
+      qualityBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        qualityMenu.hidden = !qualityMenu.hidden;
+        if (speedMenu) speedMenu.hidden = true;
+      });
+      qualityMenu.addEventListener('click', (e) => {
         const b = e.target.closest('[data-quality-value]');
         if (!b) return;
         e.stopPropagation();
-        const qVal = b.dataset.qualityValue;
-        if (ready && player) player.setQuality(qVal).then(() => { currentQuality = qVal; qa('[data-quality-value]', menu).forEach(x => x.classList.toggle('is-active', x === b)); btn.textContent = qVal === 'auto' ? 'Auto' : qVal + 'p'; }).catch(() => {});
-        menu.hidden = true;
+        const q = b.dataset.qualityValue;
+        if (player && !videoSrc) {
+          player.setQuality(q).then(() => {
+            currentQuality = q;
+            qualityBtn.textContent = q === 'auto' ? 'Auto' : (parseInt(q, 10) + 'p');
+            qualityMenu.querySelectorAll('.cine-popup-item').forEach(x => x.classList.toggle('is-active', x === b));
+          }).catch(() => {});
+        }
+        qualityMenu.hidden = true;
       });
     }
 
-    if (speedBtn && speedMenu) bindSpeedMenu(speedBtn, speedMenu);
-    if (qualityBtn && qualityMenu) bindQualityMenu(qualityBtn, qualityMenu);
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) root.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
 
-    function handleFullscreen() {
-      if (!document.fullscreenElement) root.requestFullscreen().catch(() => {}); else document.exitFullscreen().catch(() => {});
+    if (progress) {
+      progress.addEventListener('input', (e) => {
+        e.stopPropagation();
+        isSeeking = true;
+        const pct = Number(progress.value) / 1000;
+        if (progressFill) progressFill.style.transform = 'scaleX(' + pct + ')';
+        if (timeEl) timeEl.textContent = fmtTime(duration * pct) + ' / ' + fmtTime(duration);
+      });
+      progress.addEventListener('change', (e) => {
+        e.stopPropagation();
+        const target = duration * Number(progress.value) / 1000;
+        if (player) player.setCurrentTime(target).catch(() => {}).finally(() => { isSeeking = false; });
+        else { const v = layer.querySelector('video'); if (v) v.currentTime = target; isSeeking = false; }
+      });
+      progress.addEventListener('blur', () => { isSeeking = false; });
     }
-    if (fullscreenBtn) fullscreenBtn.addEventListener('click', e => { e.stopPropagation(); handleFullscreen(); });
 
-    progress.addEventListener('input', e => { e.stopPropagation(); seeking = true; const pct = Number(progress.value) / 10; if (progressFill) progressFill.style.transform = 'scaleX(' + (pct / 100) + ')'; const preview = duration * Number(progress.value) / 1000; if (timeEl) timeEl.textContent = fmt(preview) + ' / ' + fmt(duration); });
-    progress.addEventListener('change', e => { e.stopPropagation(); if (!ready || !player) return; const target = duration * Number(progress.value) / 1000; withTimeout(player.setCurrentTime(target), 8000).catch(() => {}).finally(() => { seeking = false; updateTime(); }); });
-    progress.addEventListener('blur', () => { seeking = false; updateTime(); });
-
-    root.addEventListener('mousemove', () => { if (root.dataset.state === 'playing') { root.classList.add('is-ui-visible'); if (idleTimer) clearTimeout(idleTimer); idleTimer = setTimeout(() => root.classList.remove('is-ui-visible'), 3000); } });
-    root.addEventListener('mouseleave', () => { if (root.dataset.state === 'playing') { root.classList.remove('is-ui-visible'); if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; } } });
-
-    document.addEventListener('click', e => {
+    document.addEventListener('click', (e) => {
       if (!root.contains(e.target)) return;
-      if (speedMenu && !e.target.closest('[data-speed-wrap]')) speedMenu.hidden = true;
-      if (qualityMenu && !e.target.closest('[data-quality-wrap]')) qualityMenu.hidden = true;
+      if (speedMenu && !e.target.closest('.cine-speed-wrap')) speedMenu.hidden = true;
+      if (qualityMenu && !e.target.closest('.cine-quality-wrap')) qualityMenu.hidden = true;
     });
   }
 
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true }); else initialize();
+  // ═══════════════════════════════════════════════════════════════
+  // 7. Boot
+  // ═══════════════════════════════════════════════════════════════
+  loadVimeoSDK().catch(() => {});
+
+  function boot() {
+    document.querySelectorAll('[data-cinema]').forEach(initSection);
+    setTimeout(() => {
+      document.querySelectorAll('[data-cinema]').forEach(root => {
+        if (root.dataset.prewarmed) return;
+        if (!root.dataset.videoId && !root.dataset.videoSrc) return;
+        if (root.classList.contains('is-started')) return;
+        const hit = root.querySelector('[data-play-hit]');
+        if (hit) hit.dispatchEvent(new MouseEvent('mouseenter'));
+        root.dataset.prewarmed = 'true';
+      });
+    }, 300);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', boot, { once: true });
+  } else {
+    boot();
+  }
 })();
 </script>
