@@ -94,11 +94,16 @@ download() {
   [ -f "$raw" ] && { info "[$slug] raw موجود"; return 0; }
   info "[$slug] ⬇  $url"
   local ck=(); [ -f "$COOKIES" ] && ck=(--cookies "$COOKIES")
-  yt-dlp "${ck[@]}" --no-playlist \
+  local dl_log="$WORK/$slug-download.log"
+  if yt-dlp "${ck[@]}" --no-playlist \
     --format "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best" \
     --merge-output-format mp4 --no-part --no-warnings \
-    -o "${slug}-raw.%(ext)s" "$url" >> "$LOG" 2>&1
-  [ -f "$raw" ]
+    -o "${slug}-raw.%(ext)s" "$url" > "$dl_log" 2>&1; then
+    [ -f "$raw" ] && return 0
+  fi
+  err "[$slug] download فشل — آخر 15 سطر من yt-dlp:"
+  tail -15 "$dl_log" | sed 's/^/    /'
+  return 1
 }
 
 transcode() {
