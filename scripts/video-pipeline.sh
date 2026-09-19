@@ -13,6 +13,7 @@ B2_CDN="${B2_CDN:-https://b2-video.mohamedyou1357.workers.dev}"
 QUALITIES="${QUALITIES:-720 480 360}"
 PRESET="${PRESET:-fast}"
 CRF="${CRF:-23}"
+COOKIE_WARN_DAYS="${COOKIE_WARN_DAYS:-90}"
 LOG="$WORK/pipeline.log"
 
 mkdir -p "$WORK"
@@ -25,14 +26,45 @@ warn() { echo "${Y}⚠  $*${N}"; }
 err()  { echo "${R}❌ $*${N}"; }
 info() { echo "${B}ℹ  $*${N}"; }
 
+
+# ── Cookie age checker ──
+check_cookies_age() {
+  [ -f "$COOKIES" ] || return 0
+  local mtime
+  # macOS / Linux compatible stat
+  mtime=$(stat -c %Y "$COOKIES" 2>/dev/null || stat -f %m "$COOKIES" 2>/dev/null || echo 0)
+  [ "$mtime" -eq 0 ] && return 0
+
+  local age_days=$(( ($(date +%s) - mtime) / 86400 ))
+
+  if [ "$age_days" -ge "$COOKIE_WARN_DAYS" ]; then
+    echo ""
+    warn "⚠️  Cookies عمرها ${age_days} يوم — قد تحتاج تجديد قريبًا"
+    warn "   (العتبة: $COOKIE_WARN_DAYS يوم)"
+    warn "   جدّدها من: Firefox → Get cookies.txt LOCALLY"
+    warn "   ثم: base64 -i cookies.txt | pbcopy → update GitHub secret"
+    echo ""
+  else
+    info "🍪 Cookies عمرها ${age_days} يوم (< $COOKIE_WARN_DAYS) — سليمة"
+  fi
+}
+
 resolve_source() {
   local src="$1"
   case "$src" in
     vimeo:*)     echo "https://vimeo.com/${src#vimeo:}" ;;
     youtube:*)   echo "${src#youtube:}" ;;
     twitter:*)   echo "${src#twitter:}" ;;
+    x:*)         echo "${src#x:}" ;;
     instagram:*) echo "${src#instagram:}" ;;
     tiktok:*)    echo "${src#tiktok:}" ;;
+    facebook:*)  echo "${src#facebook:}" ;;
+    fb:*)        echo "${src#fb:}" ;;
+    dailymotion:*) echo "${src#dailymotion:}" ;;
+    reddit:*)    echo "${src#reddit:}" ;;
+    snapchat:*)  echo "${src#snapchat:}" ;;
+    linkedin:*)  echo "${src#linkedin:}" ;;
+    streamable:*) echo "${src#streamable:}" ;;
     raw:*)       echo "${src#raw:}" ;;
     http*)       echo "$src" ;;
     [0-9]*)      echo "https://vimeo.com/$src" ;;
@@ -77,14 +109,25 @@ parse_md_folder() {
 }
 
 is_complete() {
-  local slug="$1" h found=0 total=0
+  local slug="$1" src="$2" h found=0 total=0
+
+  # 1. هل كل الجودات موجودة؟
   local remote
   remote=$(rclone lsf "$B2_BUCKET/$slug/" 2>/dev/null)
   for h in $QUALITIES; do
     total=$((total+1))
     echo "$remote" | grep -q "${slug}-${h}\.mp4" && found=$((found+1))
   done
-  [ "$found" -ge "$total" ]
+  [ "$found" -lt "$total" ] && return 1
+
+  # 2. هل المصدر لم يتغير؟ (مقارنة .videosrc على B2)
+  local remote_marker
+  remote_marker=$(rclone cat "$B2_BUCKET/$slug/.videosrc" 2>/dev/null | tr -d '
+')
+  [ "$remote_marker" = "$src" ] && return 0
+
+  # المصدر تغيّر → إعادة معالجة
+  return 1
 }
 
 download() {
@@ -125,10 +168,15 @@ transcode() {
 
 upload() {
   local slug="$1"
+  local src="$2"
   local outdir="$WORK/$slug"
   [ -d "$outdir" ] || return 1
   info "[$slug] ☁  رفع"
   rclone copy "$outdir" "$B2_BUCKET/$slug/" --no-traverse >> "$LOG" 2>&1
+
+  # اكتب marker يحتوي على المصدر (vimeoId أو videoSource)
+  echo -n "$src" > "$WORK/$slug.videosrc"
+  rclone copyto "$WORK/$slug.videosrc" "$B2_BUCKET/$slug/.videosrc" >> "$LOG" 2>&1
 }
 
 process_video() {
@@ -138,9 +186,16 @@ process_video() {
   echo "🎬  [$slug] $title"
   echo "════════════════════════════════════════"
 
-  if is_complete "$slug"; then
-    ok "[$slug] موجود على B2 — تخطي"
+  if is_complete "$slug" "$src"; then
+    ok "[$slug] موجود على B2 + المصدر لم يتغير — تخطي"
     return 0
+  fi
+
+  # إذا الملفات موجودة لكن المصدر تغير → حذف القديم أولًا
+  if rclone lsf "$B2_BUCKET/$slug/" 2>/dev/null | grep -q "\.mp4$"; then
+    warn "[$slug] المصدر تغيّر — حذف النسخة القديمة من B2"
+    rclone purge "$B2_BUCKET/$slug/" >> "$LOG" 2>&1
+    rm -rf "$WORK/$slug" "$WORK/$slug-raw.mp4" 2>/dev/null
   fi
 
   download "$slug" "$src" || { err "[$slug] download فشل"; return 1; }
@@ -150,7 +205,7 @@ process_video() {
     transcode "$slug" "$h" || { err "[$slug] ${h}p فشل"; return 1; }
   done
 
-  upload "$slug" || { err "[$slug] upload فشل"; return 1; }
+  upload "$slug" "$src" || { err "[$slug] upload فشل"; return 1; }
   ok "[$slug] اكتمل"
 }
 
@@ -169,6 +224,9 @@ main() {
   echo "  Bucket:    $B2_BUCKET"
   echo "  CDN:       $B2_CDN"
   echo "════════════════════════════════════════"
+
+  # فحص عمر cookies
+  check_cookies_age
 
   local entries=()
   if [ -n "$md_folder" ]; then
