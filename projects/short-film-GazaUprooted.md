@@ -1,6 +1,7 @@
 ---
 layout: layouts/project.njk
 title: Gaza Uprooted
+videoSlug: gaza
 section: Short Film Projects
 date: 2023-11-09
 tools: [Photoshop, Video Maker]

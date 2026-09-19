@@ -1,6 +1,7 @@
 ---
 layout: layouts/project.njk
 title: Torture Waiter | Short
+videoSlug: torture-waiter
 section: Short Film Projects
 date: 2022-10-14
 tools: ibisPaint X, Video Maker

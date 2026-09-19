@@ -1,6 +1,7 @@
 ---
 layout: layouts/project.njk
 title: Caricature Aya Araffa | Short
+videoSlug: caricature
 section: Short Film Projects
 date: 2023-02-02
 tools: ["ibisPaint X", "Video Maker"]

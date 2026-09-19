@@ -5,11 +5,10 @@ title: Short Film Projects
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.13.0/MorphSVGPlugin.min.js" defer></script>
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="preconnect" href="https://player.vimeo.com" crossorigin>
 <link rel="preconnect" href="https://i.vimeocdn.com" crossorigin>
-<link rel="dns-prefetch" href="https://player.vimeo.com">
-<link rel="preload" as="script" href="https://player.vimeo.com/api/player.js" crossorigin>
 
 <div class="w3-padding-64 w3-content cinematic-projects">
   <h2 class="section-heading">Short Film Projects</h2>
@@ -18,134 +17,215 @@ title: Short Film Projects
     {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
       <div class="film-project" data-film-project>
         {% if p.data.videoSrc or p.data.vimeoId %}
-          <section class="cinema" data-cinema data-state="idle"
-            data-video-id="{{ p.data.vimeoId | default('') | escape }}"
-            data-video-src="{{ p.data.videoSrc | default('') | escape }}"
-            aria-label="{{ p.data.title | escape }} video player">
+          <section
+            class="cinema"
+            data-cinema
+            data-state="idle"
+            data-video-slug="{{ p.data.videoSlug | default('') | escape }}"
+            data-vimeo-id="{{ p.data.vimeoId | default('') | escape }}"
+            aria-label="{{ p.data.title | escape }} video player"
+          >
             <div class="cinema-screen">
-              <div class="cinema-video-layer" data-video-layer></div>
+              <video
+                class="cinema-video"
+                data-video
+                playsinline
+                preload="metadata"
+                {% if p.data.poster %}poster="{{ p.data.poster }}"{% endif %}
+              >
+                {% if p.data.videoSlug and site.videoCdn %}
+                  <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-720.mp4" data-quality="720" type="video/mp4">
+                  <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-480.mp4" data-quality="480" type="video/mp4">
+                  <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-360.mp4" data-quality="360" type="video/mp4">
+                {% endif %}
+              </video>
+              <!-- Double-tap feedback -->
+              <div class="cine-dtap-feedback" data-dtap-feedback aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="1 7 1 10 4 10"></polyline>
+                  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                </svg>
+                <span>−5s</span>
+              </div>
 
-              {% if p.data.poster %}
-                <img class="cinema-poster" data-poster src="{{ p.data.poster }}" alt="" decoding="async">
-              {% elif p.data.vimeoId %}
-                <img class="cinema-poster" data-poster src="https://vumbnail.com/{{ p.data.vimeoId }}_large.jpg" alt="" decoding="async" onerror="this.onerror=null;this.src='https://vumbnail.com/{{ p.data.vimeoId }}.jpg'">
-              {% endif %}
 
-              <div class="cine-shield" data-shield aria-hidden="true"></div>
+              <!-- Custom controls -->
+              <!-- Loading dots (only during first play) -->
+              
 
+              <!-- Loading dots (first play only) -->
               <div class="cine-dots" data-cine-dots aria-hidden="true">
                 <span></span><span></span><span></span>
               </div>
 
-              <button class="cinema-hit" data-play-hit type="button" aria-label="Play"></button>
+              <!-- Progress bar: red, thin, at bottom edge -->
+              <div class="cine-progress" data-progress-wrap>
+                <div class="cine-progress-track">
+                  <div class="cine-progress-buffer" data-progress-buffer></div>
+                  <div class="cine-progress-fill" data-progress-fill></div>
+                </div>
+                <input type="range" class="cine-progress-input" data-progress min="0" max="1000" step="1" value="0" aria-label="Seek">
+              </div>
+
+              <!-- Controls row: left | time | right -->
+              <div class="cine-controls" data-controls>
+                <div class="cine-controls-row">
+
+                  <!-- CENTER: time -->
+                  <div class="cine-center-group">
+                    <span class="cine-time" data-time>00:00 / 00:00</span>
+                  </div>
+
+                  <!-- RIGHT: all controls -->
+                  <div class="cine-right-group">
+
+                    <!-- Settings menu (three dots) -->
+                    <div class="cine-menu-wrap">
+                      <button class="cine-ctrl-btn cine-menu-btn" data-settings-trigger type="button" aria-label="Settings">
+                        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                          <circle cx="6" cy="12" r="1.7"/>
+                          <circle cx="12" cy="12" r="1.7"/>
+                          <circle cx="18" cy="12" r="1.7"/>
+                        </svg>
+                      </button>
+                      <div class="cine-menu" data-settings-menu hidden>
+                        <div class="cine-submenu-wrap">
+                          <button class="cine-submenu-trigger" type="button">
+                            <span>Quality</span>
+                            <svg class="cine-submenu-arrow" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M7 10l5 5 5-5z"/></svg>
+                          </button>
+                          <div class="cine-submenu">
+                            <button type="button" data-quality-value="720">720p</button>
+                            <button type="button" data-quality-value="480">480p</button>
+                            <button type="button" data-quality-value="360">360p</button>
+                          </div>
+                        </div>
+                        <div class="cine-submenu-wrap">
+                          <button class="cine-submenu-trigger" type="button">
+                            <span>Speed</span>
+                            <svg class="cine-submenu-arrow" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M7 10l5 5 5-5z"/></svg>
+                          </button>
+                          <div class="cine-submenu">
+                            <button type="button" data-speed-value="0.5">0.5x</button>
+                            <button type="button" data-speed-value="0.75">0.75x</button>
+                            <button type="button" data-speed-value="1">1x</button>
+                            <button type="button" data-speed-value="1.25">1.25x</button>
+                            <button type="button" data-speed-value="1.5">1.5x</button>
+                            <button type="button" data-speed-value="2">2x</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Rewind 5s: text "5" + small arrow -->
+
+                    <!-- Volume (vertical slider) -->
+                    <div class="cine-volume-wrap">
+                      <button class="cine-ctrl-btn" data-volume type="button" aria-label="Mute">
+                        <svg class="cine-icon-vol-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                          <path d="M 11 5 L 6 9 L 3 9 L 3 15 L 6 15 L 11 19 Z" fill="currentColor"/>
+                          <path d="M 15.5 9.5 a4 4 0 0 1 0 5"/>
+                          <path d="M 18 7 a7 7 0 0 1 0 10"/>
+                        </svg>
+                        <svg class="cine-icon-vol-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+                          <path d="M 11 5 L 6 9 L 3 9 L 3 15 L 6 15 L 11 19 Z" fill="currentColor"/>
+                          <line x1="16" y1="9" x2="21" y2="14"/>
+                          <line x1="21" y1="9" x2="16" y2="14"/>
+                        </svg>
+                      </button>
+                      <div class="cine-volume-slider-wrap">
+                        <input type="range" class="cine-volume-slider" data-volume-slider min="0" max="1" step="0.01" value="1" aria-label="Volume">
+                      </div>
+                    </div>
+
+                    <!-- Play/Pause (last) -->
+                    <button class="cine-ctrl-btn cine-pp-btn" data-playpause type="button" aria-label="Play">
+                      <svg class="cine-pp-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M 9 5.5 L 9 18.5 L 18.5 12 Z"/>
+                      </svg>
+                      <svg class="cine-pp-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none">
+                        <line x1="9" y1="5.5" x2="9" y2="18.5"/>
+                        <line x1="15" y1="5.5" x2="15" y2="18.5"/>
+                      </svg>
+                    </button>
+
+                    <!-- Fullscreen -->
+                    <button class="cine-ctrl-btn" data-fullscreen type="button" aria-label="Fullscreen">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <polyline points="4 9 4 4 9 4"/>
+                        <polyline points="20 9 20 4 15 4"/>
+                        <polyline points="4 15 4 20 9 20"/>
+                        <polyline points="20 15 20 20 15 20"/>
+                      </svg>
+                    </button>
+
+                  </div>
+
+                </div>
+              </div>
+
+              
+
+              
+
+              
 
               <div class="cine-fade" data-fade aria-hidden="true"></div>
 
-              <div class="cine-title-stage">
+              <div class="cine-title-stage" data-title-stage>
                 <div class="cine-title-inner label-reveal">
                   <h3 class="cine-film-title">{{ p.data.title | escape }}</h3>
                   <p class="cine-film-desc" data-film-desc></p>
                 </div>
               </div>
 
-              <div class="cine-controls" data-controls>
-                <div class="cine-main-row">
-                  <div class="cine-timeline">
-                    <div class="cine-timeline-track">
-                      <div class="cine-timeline-fill" data-progress-fill></div>
-                      <input class="cine-timeline-input" data-progress type="range" min="0" max="1000" value="0" aria-label="Seek">
-                    </div>
-                  </div>
-                  <span class="cine-time" data-time>00:00 / 00:00</span>
-                </div>
-                <div class="cine-btn-row">
-                  <div class="cine-btn-left">
-                    <button class="cine-playpause" data-playpause-btn type="button" aria-label="Play">
-                      <svg class="pp-svg" viewBox="0 0 24 24"><path class="pp-path" d="M8 5v14l11-7z" fill="currentColor"/></svg>
-                    </button>
-                    <div class="cine-volume">
-                      <button class="cine-btn" data-volume-btn type="button" aria-label="Mute">
-                        <svg viewBox="0 0 24 24" class="cine-btn-icon"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                      </button>
-                      <input class="cine-volume-slider" data-volume-slider type="range" min="0" max="1" step="0.01" value="1" aria-label="Volume">
-                    </div>
-                  </div>
-                  <div class="cine-btn-right">
-                    <div class="cine-quality-wrap">
-                      <button class="cine-btn cine-btn-text" data-quality-btn type="button" aria-label="Quality">Auto</button>
-                      <div class="cine-popup" data-quality-menu hidden></div>
-                    </div>
-                    <div class="cine-speed-wrap">
-                      <button class="cine-btn cine-btn-text" data-speed-btn type="button" aria-label="Speed">1x</button>
-                      <div class="cine-popup" data-speed-menu hidden>
-                        <button class="cine-popup-item" data-speed-value="0.5">0.5x</button>
-                        <button class="cine-popup-item" data-speed-value="0.75">0.75x</button>
-                        <button class="cine-popup-item is-active" data-speed-value="1">1x</button>
-                        <button class="cine-popup-item" data-speed-value="1.25">1.25x</button>
-                        <button class="cine-popup-item" data-speed-value="1.5">1.5x</button>
-                        <button class="cine-popup-item" data-speed-value="2">2x</button>
-                      </div>
-                    </div>
-                    <button class="cine-btn" data-fullscreen-btn type="button" aria-label="Fullscreen">
-                      <svg viewBox="0 0 24 24" class="cine-btn-icon"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-
               <div class="cine-end-card" data-end-card aria-hidden="true">
                 <div class="end-card-glow" aria-hidden="true"></div>
-
                 <div class="end-card-top">
                   <div class="end-card-photo">
                     <span class="end-card-initials">YM</span>
                     <img data-vimeo-avatar alt="" loading="lazy">
                   </div>
-
                   <div class="end-card-meta">
                     <div class="end-card-profile-name" data-end-author>Yousef Mohamed</div>
-
                     <div class="end-card-icons">
-                      {% if contacts.linkedin %}
-                      <a class="linkedin" href="{{ contacts.linkedin }}" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn">
-                        <svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
-                      </a>
-                      {% endif %}
-                      {% if contacts.instagram %}
-                      <a class="instagram" href="{{ contacts.instagram }}" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram">
-                        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>
-                      </a>
-                      {% endif %}
-                      {% if contacts.vimeo %}
-                      <a class="vimeo" href="{{ contacts.vimeo }}" target="_blank" rel="noopener" title="Vimeo" aria-label="Vimeo">
-                        <svg viewBox="0 0 24 24"><path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2818 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.377-1.881 1.132L.0073 7.1971a315.06 315.06 0 0 0 3.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4799 4.7978z"/></svg>
-                      </a>
-                      {% endif %}
-                      {% if contacts.behance %}
-                      <a class="behance" href="{{ contacts.behance }}" target="_blank" rel="noopener" title="Behance" aria-label="Behance">
-                        <svg viewBox="0 0 24 24"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H0V5.021h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zM3 11h3.584c2.508 0 2.906-3-.312-3H3v3zm3.391 3H3v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg>
-                      </a>
-                      {% endif %}
+                      {% if contacts.linkedin %}<a class="linkedin" href="{{ contacts.linkedin }}" target="_blank" rel="noopener" title="LinkedIn" aria-label="LinkedIn"><svg viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>{% endif %}
+                      {% if contacts.instagram %}<a class="instagram" href="{{ contacts.instagram }}" target="_blank" rel="noopener" title="Instagram" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zm0 10.162a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg></a>{% endif %}
+                      {% if contacts.vimeo %}<a class="vimeo" href="{{ contacts.vimeo }}" target="_blank" rel="noopener" title="Vimeo" aria-label="Vimeo"><svg viewBox="0 0 24 24"><path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2818 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.377-1.881 1.132L.0073 7.1971a315.06 315.06 0 0 0 3.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4799 4.7978z"/></svg></a>{% endif %}
+                      {% if contacts.behance %}<a class="behance" href="{{ contacts.behance }}" target="_blank" rel="noopener" title="Behance" aria-label="Behance"><svg viewBox="0 0 24 24"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029h3.168zm-7.686-4h4.965c-.105-1.547-1.136-2.219-2.477-2.219-1.466 0-2.277.768-2.488 2.219zm-9.574 6.988H0V5.021h6.953c5.476.081 5.58 5.444 2.72 6.906 3.461 1.26 3.577 8.061-3.207 8.061zM3 11h3.584c2.508 0 2.906-3-.312-3H3v3zm3.391 3H3v3.016h3.341c3.055 0 2.868-3.016.05-3.016z"/></svg></a>{% endif %}
                     </div>
-
-                    {% if contacts.email %}
-                    <a class="end-card-email" href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>
-                    {% endif %}
+                    {% if contacts.email %}<a class="end-card-email" href="mailto:{{ contacts.email }}">{{ contacts.email }}</a>{% endif %}
                   </div>
                 </div>
-
                 <div class="end-card-film">
                   <h3 class="end-card-film-title">{{ p.data.title | escape }}</h3>
                   <p class="end-card-film-desc" data-end-desc></p>
                 </div>
 
-                <a class="end-card-vimeo-link" href="{{ contacts.vimeo or 'https://vimeo.com/' }}" target="_blank" rel="noopener" aria-label="Vimeo profile">
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M23.9765 6.4168c-.105 2.338-1.739 5.5429-4.894 9.6088-3.2679 4.247-6.0258 6.3699-8.2818 6.3699-1.409 0-2.578-1.294-3.553-3.881l-1.9179-7.1138c-.719-2.584-1.488-3.878-2.312-3.878-.179 0-.806.377-1.881 1.132L.0073 7.1971a315.06 315.06 0 0 0 3.501-3.1279c1.579-1.368 2.765-2.085 3.5539-2.159 1.867-.18 3.016 1.1 3.447 3.838.465 2.953.789 4.789.971 5.5069.5389 2.45 1.1309 3.674 1.7759 3.674.502 0 1.256-.796 2.265-2.385 1.004-1.589 1.54-2.797 1.612-3.628.144-1.371-.395-2.061-1.614-2.061-.574 0-1.167.121-1.777.391 1.186-3.8679 3.434-5.7568 6.7619-5.6368 2.4729.06 3.6279 1.664 3.4799 4.7978z"/></svg>
-                </a>
+                <!-- Mini controls — bottom-right -->
+                <div class="end-card-buttons">
+                  <button class="end-card-btn end-card-btn-play" data-end-play type="button" aria-label="Play">
+                    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                      <path d="M 8 5 L 8 19 L 19 12 Z"/>
+                    </svg>
+                  </button>
+                  <button class="end-card-btn end-card-btn-fullscreen" data-end-fullscreen type="button" aria-label="Fullscreen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="4 9 4 4 9 4"/>
+                      <polyline points="20 9 20 4 15 4"/>
+                      <polyline points="4 15 4 20 9 20"/>
+                      <polyline points="20 15 20 20 15 20"/>
+                    </svg>
+                  </button>
+                  <button class="end-card-btn end-card-btn-replay" data-replay type="button" aria-label="Replay">
+                    <svg class="end-card-replay-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <polyline points="23 4 23 10 17 10"></polyline>
+                      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                  </button>
+                </div>
 
-                <button class="end-card-replay" data-replay-btn type="button" aria-label="Replay">
-                  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>
-                </button>
+
               </div>
             </div>
           </section>
@@ -209,77 +289,13 @@ title: Short Film Projects
 }
 
 /* ── Video layer (iframe) — invisible until started ── */
-.cinematic-projects .cinema-video-layer {
-  position: absolute; inset: 0; z-index: 1;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-}
-.cinematic-projects .cinema.is-started .cinema-video-layer {
-  opacity: 1; pointer-events: auto;
-}
-.cinematic-projects .cinema-video-layer iframe,
-.cinematic-projects .cinema-video-layer video {
-  position: absolute; inset: 0; width: 100%; height: 100%;
-  border: 0; background: #000; display: block;
-}
-
-/* ── Poster — sits ON TOP of iframe, hides Vimeo's own poster/spinner ── */
-.cinematic-projects .cinema-poster {
-  position: absolute; inset: 0; z-index: 2;
-  width: 100%; height: 100%;
-  object-fit: cover; background: #000;
-  opacity: 1; transform: scale(1);
-  filter: blur(0px) brightness(1);
-  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 1.4s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  pointer-events: none;
-}
-.cinematic-projects .cinema.is-started .cinema-poster {
-  opacity: 0;
-  transform: scale(1.08);
-  filter: blur(14px) brightness(0.6);
-}
-
-/* ── Shield (top-right corner — blocks Vimeo hover icons) ── */
-.cinematic-projects .cine-shield {
-  position: absolute; top: 0; right: 0;
-  width: 220px; height: 80px;
-  z-index: 4; background: transparent;
-  cursor: pointer; pointer-events: auto;
-}
-.cinematic-projects .cinema.is-started .cine-shield { display: none; }
-
 /* ── Loading dots ── */
-.cinematic-projects .cine-dots {
-  position: absolute; inset: 0; z-index: 5;
-  display: flex; align-items: center; justify-content: center;
-  gap: 14px; opacity: 0; pointer-events: none;
-  transition: opacity 0.35s ease;
-}
-.cinematic-projects .cinema.is-loading .cine-dots { opacity: 1; }
-.cinematic-projects .cine-dots span {
-  display: block; width: 14px; height: 14px;
-  border-radius: 50%; background: #f2f0eb;
-  box-shadow: 0 0 18px rgba(242,240,235,0.55), 0 0 36px rgba(242,240,235,0.25);
-  animation: cine-dot-pulse 1.15s ease-in-out infinite both;
-}
-.cinematic-projects .cine-dots span:nth-child(1) { animation-delay: 0s; }
-.cinematic-projects .cine-dots span:nth-child(2) { animation-delay: 0.16s; }
-.cinematic-projects .cine-dots span:nth-child(3) { animation-delay: 0.32s; }
 @keyframes cine-dot-pulse {
   0%, 80%, 100% { transform: scale(0.55); opacity: 0.35; }
   40%           { transform: scale(1.1);  opacity: 1;   }
 }
 
 /* ── Hit area (click anywhere) ── */
-.cinematic-projects .cinema-hit {
-  position: absolute; inset: 0; z-index: 6;
-  border: 0; padding: 0; margin: 0;
-  background: transparent; cursor: pointer;
-}
-.cinematic-projects .cinema.is-ended .cinema-hit { opacity: 0; pointer-events: none; }
-
 /* ── Gradient fade behind title ── */
 .cinematic-projects .cine-fade {
   position: absolute; left: 0; right: 0; bottom: 0; height: 50%;
@@ -306,151 +322,30 @@ title: Short Film Projects
   display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
 }
 .cinematic-projects .cine-film-title {
-  margin: 0; font-family: var(--cine-title-font); font-weight: 400;
-  font-size: 48px; line-height: 1; letter-spacing: 0.01em;
-  color: #f2f0eb; text-transform: uppercase;
+  margin: 0;
+  font-family: var(--cine-title-font);
+  font-weight: 400;
+  font-size: clamp(20px, 3.4vw, 48px);
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  color: #f2f0eb;
+  text-transform: uppercase;
+  -webkit-font-smoothing: antialiased;
 }
 .cinematic-projects .cine-film-desc {
-  margin: 0; max-width: 620px; font-family: var(--cine-body-font);
-  font-size: 12px; line-height: 1.6; color: #cccccc;
+  margin: 0;
+  max-width: min(620px, 90%);
+  font-family: var(--cine-body-font);
+  font-weight: 400;
+  font-size: clamp(10px, 1vw, 12px);
+  line-height: 1.55;
+  color: #cccccc;
+  -webkit-font-smoothing: antialiased;
 }
 .cinematic-projects .cine-film-desc:empty { display: none; }
 /* ── Custom controls ── */
-.cinematic-projects .cine-controls {
-  position: absolute; left: 0; right: 0; bottom: 0; z-index: 12;
-  display: flex; flex-direction: column; gap: 8px;
-  padding: 60px 20px 16px;
-  background: linear-gradient(to top, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.55) 40%, transparent 100%);
-  opacity: 0; transform: translateY(12px); pointer-events: none;
-  transition: opacity 0.35s ease, transform 0.35s ease;
-}
-.cinematic-projects .cinema.is-ui-visible .cine-controls {
-  opacity: 1; transform: translateY(0); pointer-events: auto;
-}
-.cinematic-projects .cinema.is-loading .cine-controls,
-.cinematic-projects .cinema.is-ended .cine-controls { opacity: 0 !important; pointer-events: none !important; }
 
-.cinematic-projects .cine-main-row {
-  display: flex; align-items: center; gap: 10px; width: 100%;
-}
-.cinematic-projects .cine-timeline {
-  display: flex; align-items: center; flex: 1; min-width: 0;
-}
-.cinematic-projects .cine-timeline-track {
-  position: relative; flex: 1; height: 3px; border-radius: 3px;
-  background: rgba(242, 240, 235, 0.22); transition: height 0.2s ease;
-}
-.cinematic-projects .cine-timeline:hover .cine-timeline-track { height: 5px; }
-.cinematic-projects .cine-timeline-fill {
-  position: absolute; top: 0; left: 0; height: 100%; width: 100%;
-  background: #f2f0eb; border-radius: 3px; pointer-events: none;
-  transform: scaleX(0); transform-origin: left center;
-}
-.cinematic-projects .cine-timeline-input {
-  position: absolute; inset: -6px 0; width: 100%; height: calc(100% + 12px);
-  margin: 0; padding: 0; appearance: none; -webkit-appearance: none;
-  background: transparent; cursor: pointer; outline: none; z-index: 2;
-}
-.cinematic-projects .cine-timeline-input::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 12px; height: 12px; border-radius: 50%;
-  background: #f2f0eb; cursor: pointer;
-  box-shadow: 0 0 0 4px rgba(242,240,235,0.18), 0 2px 6px rgba(0,0,0,0.5);
-}
-.cinematic-projects .cine-timeline-input::-moz-range-thumb {
-  width: 12px; height: 12px; border-radius: 50%; background: #f2f0eb;
-  cursor: pointer; border: none;
-}
-
-.cinematic-projects .cine-btn-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px;
-}
-.cinematic-projects .cine-btn-left,
-.cinematic-projects .cine-btn-right {
-  display: flex; align-items: center; gap: 4px;
-}
-.cinematic-projects .cine-btn {
-  display: inline-flex; align-items: center; justify-content: center;
-  height: 36px; min-width: 36px; padding: 0 8px;
-  border: none; border-radius: 6px; background: transparent;
-  color: #f2f0eb; cursor: pointer; font-family: var(--cine-body-font);
-  font-size: 12px; font-weight: 500;
-  transition: background 0.15s ease;
-}
-.cinematic-projects .cine-btn:hover { background: rgba(255,255,255,0.1); }
-.cinematic-projects .cine-btn-icon { width: 20px; height: 20px; fill: currentColor; }
-.cinematic-projects .cine-btn-text { opacity: 0.9; }
-
-.cinematic-projects .cine-playpause {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 40px; height: 40px; padding: 0; border: none; border-radius: 8px;
-  background: transparent; color: #f2f0eb; cursor: pointer;
-  transition: background 0.15s ease;
-}
-.cinematic-projects .cine-playpause:hover { background: rgba(255,255,255,0.1); }
-.cinematic-projects .pp-svg { width: 24px; height: 24px; fill: currentColor; }
-
-.cinematic-projects .cine-volume { display: inline-flex; align-items: center; }
-.cinematic-projects .cine-volume-slider {
-  width: 0; height: 3px; margin: 0; padding: 0;
-  appearance: none; -webkit-appearance: none;
-  background: rgba(242,240,235,0.25); border-radius: 2px; cursor: pointer;
-  outline: none; opacity: 0; pointer-events: none;
-  transition: width 0.3s ease, opacity 0.25s ease, margin 0.3s ease;
-}
-.cinematic-projects .cine-volume:hover .cine-volume-slider,
-.cinematic-projects .cine-volume-slider:focus {
-  width: 70px; margin: 0 0 0 8px; opacity: 1; pointer-events: auto;
-}
-.cinematic-projects .cine-volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none; width: 10px; height: 10px; border-radius: 50%;
-  background: #f2f0eb; cursor: pointer;
-}
-.cinematic-projects .cine-volume-slider::-moz-range-thumb {
-  width: 10px; height: 10px; border-radius: 50%; background: #f2f0eb;
-  cursor: pointer; border: none;
-}
-
-.cinematic-projects .cine-time {
-  font-family: var(--cine-body-font); font-size: 12px;
-  color: rgba(242, 240, 235, 0.75);
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap; padding: 0 4px; flex: 0 0 auto;
-}
-
-.cinematic-projects .cine-quality-wrap,
-.cinematic-projects .cine-speed-wrap { position: relative; }
-.cinematic-projects .cine-popup {
-  position: absolute; bottom: calc(100% + 8px); right: 0;
-  min-width: 90px; padding: 6px;
-  background: #050505;
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px; display: flex; flex-direction: column; gap: 2px;
-  z-index: 40;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.85), 0 0 0 1px rgba(0,0,0,0.5);
-}
-.cinematic-projects .cine-popup[hidden] { display: none; }
-.cinematic-projects .cine-popup-item {
-  position: relative;
-  background: transparent; border: none; color: #f2f0eb;
-  font-family: var(--cine-body-font); font-size: 12px; font-weight: 500;
-  padding: 6px 12px 6px 24px;
-  text-align: left; border-radius: 5px; cursor: pointer;
-  transition: background 0.12s ease, color 0.12s ease;
-}
-.cinematic-projects .cine-popup-item:hover { background: rgba(255,255,255,0.06); }
-.cinematic-projects .cine-popup-item.is-active { color: #e6c84a; }
-.cinematic-projects .cine-popup-item.is-active::before {
-  content: '';
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #ffd400;
-}
-
+/* ── Play/Pause (matches replay weight, no frame) ── */
 @media (max-width: 640px) {
   }
 
@@ -460,7 +355,6 @@ title: Short Film Projects
   .cinematic-projects .cine-film-title { font-size: 30px; }
   .cinematic-projects .cine-film-desc { font-size: 11px; }
   .cinematic-projects .cine-fade { height: 54%; }
-  .cinematic-projects .cine-shield { width: 160px; height: 60px; }
   }
 
 /* ── End card ── */
@@ -500,7 +394,6 @@ title: Short Film Projects
 /* Profile picture */
 /* Meta column (name + icons + email) */
 /* ── Bottom-left: film title + desc ── */
-/* ── Bottom-right: Vimeo logo ── */
 /* ── Replay button (small, bottom-left corner) ── */
 /* ── Responsive ── */
 @media (max-width: 640px) {
@@ -554,7 +447,8 @@ title: Short Film Projects
 /* Profile picture */
 .cinematic-projects .end-card-photo {
   position: relative;
-  width: 130px; height: 130px;
+  width: clamp(64px, 11vw, 130px);
+  height: clamp(64px, 11vw, 130px);
   border-radius: 50%;
   background: #1a1a1a;
   border: 1.5px solid rgba(255,255,255,0.12);
@@ -587,7 +481,7 @@ title: Short Film Projects
 }
 .cinematic-projects .end-card-profile-name {
   font-family: 'Oswald', 'Anton', var(--cine-body-font) !important;
-  font-size: 28px !important;
+  font-size: clamp(16px, 2.2vw, 28px) !important;
   font-weight: 400 !important;
   color: #f2f0eb !important;
   letter-spacing: 0.02em;
@@ -646,97 +540,125 @@ title: Short Film Projects
   left: 56px;
   bottom: 44px;
   right: 160px;
+  max-height: 42%;
+  overflow: hidden;
   z-index: 3;
+  -webkit-mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 82%, transparent 100%);
 }
 .cinematic-projects .end-card-film-title {
   margin: 0 0 12px 0;
   font-family: var(--cine-title-font);
   font-weight: 400;
-  font-size: 44px;
-  line-height: 1;
+  font-size: clamp(18px, 3.6vw, 52px);
+  line-height: 1.05;
   letter-spacing: 0.01em;
   color: #f2f0eb;
   text-transform: uppercase;
 }
 .cinematic-projects .end-card-film-desc {
   margin: 0;
-  max-width: 520px;
+  max-width: min(560px, 90%);
   font-family: var(--cine-body-font);
-  font-size: 13px;
+  font-size: clamp(10px, 1.1vw, 15px);
   line-height: 1.65;
   color: rgba(210, 210, 210, 0.88);
+  display: -webkit-box;
+  -webkit-line-clamp: 6;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .cinematic-projects .end-card-film-desc:empty { display: none; }
 
-/* ── Bottom-right: Vimeo logo ── */
-.cinematic-projects .end-card-vimeo-link {
-  position: absolute;
-  right: 56px;
-  bottom: 44px;
-  display: inline-flex !important;
-  align-items: center;
-  text-decoration: none;
-  transition: transform 0.25s ease, opacity 0.25s ease;
-  opacity: 0.85;
-  z-index: 3;
-  width: auto !important; height: auto !important;
-}
-.cinematic-projects .end-card-vimeo-link:hover {
-  transform: scale(1.06);
-  opacity: 1;
-}
-.cinematic-projects .end-card-vimeo-link svg {
-  display: block !important;
-  height: 40px !important;
-  width: 40px !important;
-  max-width: 40px !important;
-  max-height: 40px !important;
-  fill: #1ab7ea !important;
-  filter: drop-shadow(0 0 14px rgba(26, 183, 234, 0.28));
-}
-
 /* ── Replay button (small, bottom-left corner) ── */
-.cinematic-projects .end-card-replay {
-  position: absolute;
-  bottom: 14px; left: 14px;
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(242,240,235,0.28);
-  color: #f2f0eb;
-  cursor: pointer; padding: 0;
-  display: inline-flex; align-items: center; justify-content: center;
-  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, opacity 0.3s ease;
-  z-index: 4;
-  opacity: 0.55;
-}
-.cinematic-projects .end-card-replay:hover {
-  transform: scale(1.12);
-  background: rgba(255,255,255,0.16);
-  border-color: rgba(242,240,235,0.75);
-  opacity: 1;
-}
-.cinematic-projects .end-card-replay svg { width: 13px; height: 13px; }
-
 /* ── Responsive ── */
+
+
+/* ── Tablet (≤ 900px) ── */
+@media (max-width: 900px) {
+  .cinematic-projects .end-card-top {
+    top: 40px; left: 32px; right: 32px;
+    gap: 14px;
+  }
+  .cinematic-projects .end-card-photo {
+    width: clamp(72px, 12vw, 100px);
+    height: clamp(72px, 12vw, 100px);
+  }
+  .cinematic-projects .end-card-initials { font-size: clamp(18px, 3vw, 26px); }
+  .cinematic-projects .end-card-meta { gap: 9px; padding-top: 4px; }
+  .cinematic-projects .end-card-profile-name { font-size: clamp(18px, 2.6vw, 24px) !important; }
+  .cinematic-projects .end-card-icons { gap: 10px; }
+  .cinematic-projects .end-card-icons a { width: 34px !important; height: 34px !important; }
+  .cinematic-projects .end-card-icons svg { width: 14px !important; height: 14px !important; }
+  .cinematic-projects .end-card-email { font-size: clamp(10px, 1.3vw, 12px) !important; }
+
+  .cinematic-projects .end-card-film { left: 32px; bottom: 28px; right: 110px; }
+  .cinematic-projects .end-card-film-title { font-size: clamp(20px, 4vw, 36px); margin-bottom: 8px; }
+  .cinematic-projects .end-card-film-desc { font-size: clamp(10px, 1.3vw, 13px); max-width: min(420px, 80%); }
+
+  }
+
+/* ── Mobile (≤ 640px) ── */
 @media (max-width: 640px) {
-  .cinematic-projects .end-card-top { top: 32px; left: 22px; right: 22px; gap: 12px; }
-  .cinematic-projects .end-card-photo { width: 78px; height: 78px; }
-  .cinematic-projects .end-card-initials { font-size: 22px; }
-  .cinematic-projects .end-card-meta { gap: 8px; padding-top: 4px; }
-  .cinematic-projects .end-card-profile-name { font-size: 20px !important; }
-  .cinematic-projects .end-card-icons { gap: 8px; }
-  .cinematic-projects .end-card-icons a { width: 30px !important; height: 30px !important; }
-  .cinematic-projects .end-card-icons svg { width: 13px !important; height: 13px !important; }
-  .cinematic-projects .end-card-email { font-size: 10px !important; }
-  .cinematic-projects .end-card-film { left: 22px; bottom: 24px; right: 90px; }
-  .cinematic-projects .end-card-film-title { font-size: 26px; }
-  .cinematic-projects .end-card-film-desc { font-size: 11px; max-width: 100%; }
-  .cinematic-projects .end-card-vimeo-link { right: 22px; bottom: 24px; }
-  .cinematic-projects .end-card-vimeo-link svg { height: 28px !important; width: 28px !important; }
-  .cinematic-projects .end-card-replay { width: 26px; height: 26px; bottom: 10px; left: 10px; }
-  .cinematic-projects .end-card-replay svg { width: 11px; height: 11px; }
+  .cinematic-projects .end-card-top {
+    top: 14px; left: 14px; right: 14px;
+    gap: 8px;
+  }
+  .cinematic-projects .end-card-photo {
+    width: clamp(54px, 16vw, 72px);
+    height: clamp(54px, 16vw, 72px);
+  }
+  .cinematic-projects .end-card-initials { font-size: clamp(15px, 4vw, 20px); }
+  .cinematic-projects .end-card-meta { gap: 6px; padding-top: 2px; }
+  .cinematic-projects .end-card-profile-name { font-size: clamp(14px, 3.6vw, 18px) !important; letter-spacing: 0.01em; }
+  .cinematic-projects .end-card-icons { gap: 6px; }
+  .cinematic-projects .end-card-icons a { width: 28px !important; height: 28px !important; }
+  .cinematic-projects .end-card-icons svg { width: 12px !important; height: 12px !important; }
+  .cinematic-projects .end-card-email { font-size: 9px !important; }
+
+  .cinematic-projects .end-card-film { 
+    left: 14px; bottom: 14px; right: 60px; 
+    max-height: 36%; 
+  }
+  .cinematic-projects .end-card-film-desc { -webkit-line-clamp: 4; font-size: 10px; }
+  .cinematic-projects .end-card-film { max-height: 38%; }
+  .cinematic-projects .end-card-film-desc { -webkit-line-clamp: 4; font-size: 10px; }
+  .cinematic-projects .end-card-film-title { font-size: clamp(15px, 4.5vw, 22px); margin-bottom: 6px; }
+  .cinematic-projects .end-card-film-desc { font-size: clamp(9px, 2.4vw, 11px); max-width: 100%; line-height: 1.5; }
+
+  /* Film title overlay داخل الفيديو */
+  .cinematic-projects .cine-title-stage { left: 16px; right: 16px; bottom: 14px; }
+  .cinematic-projects .cine-film-title { font-size: clamp(16px, 4.8vw, 22px); }
+  .cinematic-projects .cine-film-desc { font-size: clamp(9px, 2.4vw, 11px); max-width: 100%; }
+
+  /* Controls bar */
+  /* Section heading */
+  .cinematic-projects .section-heading { font-size: clamp(20px, 6vw, 28px); margin-bottom: 24px; }
+
+  /* الفاصل */
+  .cinematic-projects .film-divider { margin: 28px 0 0 0; }
 }
+
+/* ── Small mobile (≤ 400px) ── */
+@media (max-width: 400px) {
+  .cinematic-projects .end-card-top { top: 16px; left: 12px; right: 12px; gap: 8px; }
+  .cinematic-projects .end-card-photo { width: 48px; height: 48px; }
+  .cinematic-projects .end-card-initials { font-size: 13px; }
+  .cinematic-projects .end-card-meta { gap: 5px; }
+  .cinematic-projects .end-card-profile-name { font-size: 13px !important; }
+  .cinematic-projects .end-card-icons { gap: 5px; }
+  .cinematic-projects .end-card-icons a { width: 26px !important; height: 26px !important; }
+  .cinematic-projects .end-card-icons svg { width: 11px !important; height: 11px !important; }
+  .cinematic-projects .end-card-email { font-size: 8px !important; }
+
+  .cinematic-projects .end-card-film { left: 12px; bottom: 12px; right: 60px; }
+  .cinematic-projects .end-card-film-title { font-size: 13px; }
+  .cinematic-projects .end-card-film-desc { font-size: 8px; }
+
+  .cinematic-projects .cine-film-title { font-size: 13px; }
+  .cinematic-projects .cine-film-desc { font-size: 8px; }
+
+  }
 
 @media (prefers-reduced-motion: reduce) {
   .cinematic-projects *, .cinematic-projects *::before, .cinematic-projects *::after {
@@ -745,15 +667,682 @@ title: Short Film Projects
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ═══ Native video player ═══ */
+.cinematic-projects .cinema-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: #000; display: block;
+  object-fit: contain;
+}
+
+/* ═══ Quality picker ═══ */
+/* ═══ Fade title + gradient on play ═══ */
+.cinematic-projects .cinema.is-playing .cine-title-stage,
+.cinematic-projects .cinema.is-ended .cine-title-stage {
+  opacity: 0; transform: translateY(20px); pointer-events: none;
+}
+.cinematic-projects .cinema.is-playing .cine-fade,
+.cinematic-projects .cinema.is-ended .cine-fade { opacity: 0; }
+
+
+@media (max-width: 640px) {
+  }
+
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM VIDEO PLAYER — clean rebuild v3
+   ═══════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cinema-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: #000; display: block;
+  object-fit: contain;
+}
+
+/* ── Big play (only before first play) ── */
+/* Hide bigplay once started playing */
+/* ── Loading dots (visible during first 2s of loading) ── */
+/* ── Controls container ── */
+/* ── Time row (above timeline) ── */
+/* ── Timeline ── */
+/* ── Bottom row ── */
+/* ── Generic icon button (no frame) ── */
+/* ── Play / Pause button (thin, no frame) ── */
+/* ── Rewind ── */
+/* ── Volume ── */
+/* ── Text buttons + menus ── */
+/* ── Hide cursor when UI hidden ── */
+.cinematic-projects .cinema.is-playing:not(.is-ui-visible) { cursor: none; }
+
+/* ── End-card replay (top-right, bigger) ── */
+@media (max-width: 640px) {
+  }
+
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM VIDEO PLAYER — v9 (clean, no native controls, no big play)
+   ═══════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cinema-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: #000; display: block;
+  object-fit: contain;
+}
+
+/* ── Loading dots (first 2s only) ── */
+/* ── Controls container ── */
+/* ── Show controls when: has-started AND (ui-visible OR paused) ── */
+/* ── Hide during loading / ended ── */
+/* ── Pause-sync: after 3s → hide controls + show title ── */
+/* ── Pause-sync: show title + fade ── */
+.cinematic-projects .cinema.is-showing-title .cine-title-stage {
+  opacity: 1 !important;
+  transform: translateY(0) !important;
+  pointer-events: none;
+}
+.cinematic-projects .cinema.is-showing-title .cine-fade {
+  opacity: 1 !important;
+}
+.cinematic-projects .cinema.is-showing-title {
+  cursor: default;
+}
+/* Show only when: has started AND (UI visible OR paused) */
+/* Force hide during loading and ended */
+/* ── Time row (above timeline, right-aligned) ── */
+/* ── Timeline ── */
+/* ── Bottom row ── */
+/* ── All icon buttons (no frame, match replay style) ── */
+/* ── Play/Pause — bigger, same weight as replay (no frame) ── */
+/* ── Rewind (clean thin circular arrow with 5) ── */
+/* ── Volume ── */
+/* ── Text buttons + menus ── */
+/* ── Hide cursor when UI hidden ── */
+.cinematic-projects .cinema.is-playing:not(.is-ui-visible) { cursor: none; }
+
+/* ── End-card replay (top-right) ── */
+@media (max-width: 640px) {
+  }
+
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM VIDEO PLAYER — v10 (red timeline, centered time)
+   ═══════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cinema-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: #000; display: block;
+  object-fit: contain;
+}
+
+/* ── Loading dots ── */
+/* ═══════════════════════════════════════════════════════════
+   PROGRESS BAR — red, thin, flush to bottom edge
+   ═══════════════════════════════════════════════════════════ */
+/* ═══════════════════════════════════════════════════════════
+   CONTROLS ROW — floats above progress bar
+   ═══════════════════════════════════════════════════════════ */
+/* ── Time (center) ── */
+/* ── Generic icon button ── */
+/* ── Play/Pause (larger) ── */
+/* ── Rewind ── */
+/* ── Volume ── */
+/* ── Text buttons (Quality / Speed) ── */
+/* ── Menus ── */
+/* ── Hide cursor when UI hidden ── */
+.cinematic-projects .cinema.is-playing:not(.is-ui-visible) { cursor: none; }
+
+/* ── End-card replay (top-right) ── */
+@media (max-width: 640px) {
+  }
+
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM VIDEO PLAYER — v11 (right cluster, vertical volume)
+   ═══════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cinema-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: #000; display: block;
+  object-fit: contain;
+}
+
+/* ── Loading dots ── */
+/* ── Progress bar (red, at bottom edge) ── */
+/* ═══════════════════════════════════════════════════════════
+   CONTROLS — centered time, right-side cluster
+   ═══════════════════════════════════════════════════════════ */
+/* ── Time ── */
+/* ── Generic button ── */
+/* ── Menu button (three dots) ── */
+/* ── Play/Pause ── */
+/* ── Rewind ── */
+/* ── Volume with VERTICAL slider ── */
+/* ── Combined menu (settings) ── */
+/* ── Hide cursor when UI hidden ── */
+.cinematic-projects .cinema.is-playing:not(.is-ui-visible) { cursor: none; }
+
+/* ── End-card replay ── */
+@media (max-width: 640px) {
+  }
+
+
+/* ═══════════════════════════════════════════════════════════
+   CUSTOM VIDEO PLAYER — v12 (right cluster, submenus, no pause gradient)
+   ═══════════════════════════════════════════════════════════ */
+
+.cinematic-projects .cinema-video {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  background: #000; display: block;
+  object-fit: contain;
+}
+
+/* ── Loading dots ── */
+.cinematic-projects .cine-dots {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  background: rgba(0,0,0,0.3);
+  z-index: 25;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+.cinematic-projects .cinema.is-loading .cine-dots { opacity: 1; }
+.cinematic-projects .cine-dots span {
+  display: block;
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: #f2f0eb;
+  box-shadow: 0 0 6px rgba(242,240,235,0.45);
+  animation: cine-dots-pulse 1.2s ease-in-out infinite;
+}
+.cinematic-projects .cine-dots span:nth-child(2) { animation-delay: 0.15s; }
+.cinematic-projects .cine-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes cine-dots-pulse {
+  0%, 80%, 100% { opacity: 0.3; transform: scale(0.75); }
+  40% { opacity: 1; transform: scale(1); }
+}
+
+/* ── Progress bar (red) ── */
+.cinematic-projects .cine-progress {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  height: 3px; z-index: 22;
+  cursor: pointer;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, height 0.12s ease;
+}
+.cinematic-projects .cinema.has-started:not(.is-loading):not(.is-ended) .cine-progress {
+  opacity: 1; pointer-events: auto;
+}
+.cinematic-projects .cine-progress:hover { height: 5px; }
+.cinematic-projects .cine-progress-track {
+  position: relative; width: 100%; height: 100%;
+  background: rgba(255,255,255,0.18);
+  overflow: hidden;
+}
+.cinematic-projects .cine-progress-buffer {
+  position: absolute; top: 0; left: 0;
+  height: 100%; width: 0;
+  background: rgba(255,255,255,0.28);
+  transition: width 0.3s ease;
+}
+.cinematic-projects .cine-progress-fill {
+  position: absolute; top: 0; left: 0;
+  height: 100%; width: 0;
+  background: #e53935;
+}
+.cinematic-projects .cine-progress-input {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+  margin: 0; padding: 0;
+  -webkit-appearance: none; appearance: none;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   CONTROLS — center time, right cluster
+   ═══════════════════════════════════════════════════════════ */
+.cinematic-projects .cine-controls {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  z-index: 20;
+  padding: 80px 0 14px;
+  background: linear-gradient(to top,
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.28) 45%,
+    rgba(0,0,0,0.06) 75%,
+    transparent 100%);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.2s ease, background 0.3s ease;
+  font-family: var(--cine-body-font);
+  color: #f2f0eb;
+  user-select: none;
+}
+/* Show only via is-ui-visible (hover-driven) */
+.cinematic-projects .cinema.has-started.is-ui-visible .cine-controls {
+  opacity: 1; pointer-events: auto;
+}
+/* Hide completely */
+.cinematic-projects .cinema.is-loading .cine-controls,
+.cinematic-projects .cinema.is-ended .cine-controls,
+.cinematic-projects .cinema.is-showing-title .cine-controls {
+  opacity: 0 !important; pointer-events: none !important;
+}
+/* NO gradient when paused */
+.cinematic-projects .cinema.is-paused .cine-controls {
+  background: none;
+}
+
+.cinematic-projects .cine-controls-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+}
+.cinematic-projects .cine-center-group {
+  grid-column: 2;
+  display: flex; justify-content: center;
+}
+.cinematic-projects .cine-right-group {
+  grid-column: 3;
+  display: flex; align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+/* ── Time ── */
+.cinematic-projects .cine-time {
+  font-family: var(--cine-body-font);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: rgba(242,240,235,0.92);
+  letter-spacing: 0.03em;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 0 6px;
+}
+
+/* ── Generic button ── */
+.cinematic-projects .cine-ctrl-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px;
+  border: none; background: transparent;
+  border-radius: 50%;
+  color: #f2f0eb; cursor: pointer; padding: 0;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.cinematic-projects .cine-ctrl-btn:hover { background: rgba(255,255,255,0.12); }
+.cinematic-projects .cine-ctrl-btn:active { transform: scale(0.94); }
+.cinematic-projects .cine-ctrl-btn svg {
+  width: 20px; height: 20px;
+  display: block;
+}
+
+/* ── Menu button (three dots) ── */
+.cinematic-projects .cine-menu-btn svg { width: 22px; height: 22px; }
+
+/* ── Play/Pause ── */
+.cinematic-projects .cine-pp-btn { width: 44px; height: 44px; }
+.cinematic-projects .cine-pp-btn svg { width: 26px; height: 26px; }
+.cinematic-projects .cine-pp-play { margin-left: 2px; }
+
+/* ── Rewind: 5 + small arrow ── */
+
+
+
+
+/* ── Volume (vertical slider on hover) ── */
+.cinematic-projects .cine-volume-wrap {
+  position: relative;
+  display: flex; align-items: center;
+}
+.cinematic-projects .cine-volume-slider-wrap {
+  position: absolute;
+  bottom: 46px;
+  left: 50%;
+  width: 26px;
+  height: 0;
+  margin-left: -13px;
+  background: rgba(15,15,15,0.94);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 13px;
+  padding: 10px 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transition: height 0.2s ease, opacity 0.15s ease;
+  z-index: 40;
+  display: flex; align-items: center; justify-content: center;
+}
+.cinematic-projects .cine-volume-wrap:hover .cine-volume-slider-wrap,
+.cinematic-projects .cine-volume-slider-wrap:focus-within {
+  height: 100px;
+  opacity: 1;
+  pointer-events: auto;
+}
+.cinematic-projects .cine-volume-slider {
+  writing-mode: vertical-lr;
+  direction: rtl;
+  width: 4px;
+  height: 80px;
+  -webkit-appearance: slider-vertical;
+  appearance: slider-vertical;
+  background: rgba(255,255,255,0.22);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+}
+.cinematic-projects .cine-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #f2f0eb; cursor: pointer;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.3);
+}
+.cinematic-projects .cine-volume-slider::-moz-range-thumb {
+  width: 12px; height: 12px; border-radius: 50%;
+  background: #f2f0eb; cursor: pointer; border: none;
+  box-shadow: 0 0 0 2px rgba(0,0,0,0.3);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   MENU + SUBMENUS
+   ═══════════════════════════════════════════════════════════ */
+.cinematic-projects .cine-menu-wrap { position: relative; }
+.cinematic-projects .cine-menu {
+  position: absolute;
+  bottom: calc(100% + 10px);
+  right: 0;
+  min-width: 160px;
+  background: rgba(15,15,15,0.96);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 10px;
+  padding: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+  z-index: 40;
+}
+.cinematic-projects .cine-menu[hidden] { display: none; }
+
+/* ── Submenu (accordion on hover) ── */
+.cinematic-projects .cine-submenu-wrap {
+  border-radius: 6px;
+  overflow: hidden;
+}
+.cinematic-projects .cine-submenu-trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 5px;
+  color: #f2f0eb;
+  font-family: var(--cine-body-font);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s ease;
+}
+.cinematic-projects .cine-submenu-trigger:hover {
+  background: rgba(255,255,255,0.08);
+}
+.cinematic-projects .cine-submenu-arrow {
+  opacity: 0.5;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+.cinematic-projects .cine-submenu-wrap:hover .cine-submenu-arrow {
+  transform: rotate(180deg);
+}
+.cinematic-projects .cine-submenu {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.25s ease;
+  background: rgba(255,255,255,0.02);
+  border-radius: 5px;
+  margin: 0 4px;
+}
+.cinematic-projects .cine-submenu-wrap:hover .cine-submenu {
+  max-height: 250px;
+  margin: 2px 4px 6px;
+}
+.cinematic-projects .cine-submenu button {
+  display: block;
+  width: 100%;
+  padding: 7px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  color: rgba(242,233,216,0.85);
+  font-family: var(--cine-body-font);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.1s ease, color 0.1s ease;
+}
+.cinematic-projects .cine-submenu button:hover {
+  background: rgba(255,255,255,0.1);
+  color: #ffffff;
+}
+.cinematic-projects .cine-submenu button.is-active {
+  background: rgba(242,240,235,0.1);
+  color: #ffffff;
+}
+
+/* ── Hide cursor when UI hidden ── */
+.cinematic-projects .cinema.is-playing:not(.is-ui-visible) { cursor: none; }
+
+/* ── End-card replay ── */
+/* ── Double-tap feedback (left: rewind 5s) ── */
+.cinematic-projects .cine-dtap-feedback {
+  position: absolute;
+  top: 50%;
+  left: 12%;
+  transform: translate(-50%, -50%) scale(0.85);
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.55);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  opacity: 0;
+  z-index: 30;
+  transition: opacity 0.35s ease, transform 0.35s ease;
+}
+.cinematic-projects .cine-dtap-feedback.is-active {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+.cinematic-projects .cine-dtap-feedback svg {
+  width: 34px;
+  height: 34px;
+  color: #f2f0eb;
+  display: block;
+}
+.cinematic-projects .cine-dtap-feedback span {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--cine-body-font);
+  font-size: 11px;
+  font-weight: 600;
+  color: #f2f0eb;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+
+
+/* ═══════════════════════════════════════════════════════════
+   FULLSCREEN: reduce timeline opacity while playing
+   ═══════════════════════════════════════════════════════════ */
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress {
+  opacity: 0.3;
+  transition: opacity 0.3s ease;
+}
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress:hover,
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress:active {
+  opacity: 1;
+}
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress-track {
+  background: rgba(255,255,255,0.1);
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   Dim the red progress fill while playing
+   - Normal mode: 35% reduction (brightness 0.65)
+   - Fullscreen mode: 55% reduction (brightness 0.45)
+   - Hover restores full brightness (1.0)
+   ═══════════════════════════════════════════════════════════ */
+.cinematic-projects .cinema.is-playing .cine-progress-fill {
+  filter: brightness(0.65);
+  transition: filter 0.3s ease;
+}
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress-fill {
+  filter: brightness(0.45);
+}
+.cinematic-projects .cinema.is-playing .cine-progress:hover .cine-progress-fill {
+  filter: brightness(1);
+}
+.cinematic-projects .cinema.is-playing .cine-progress-track {
+  background: rgba(255,255,255,0.14);
+}
+
+
+@media (max-width: 640px) {
+  }
+
+
+/* Buttons — bottom-right */
+.cinematic-projects .end-card-buttons {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 25;
+}
+
+.cinematic-projects .end-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  border-radius: 50%;
+  color: #f2f0eb;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.cinematic-projects .end-card-btn:hover {
+  background: rgba(255,255,255,0.16);
+  transform: scale(1.08);
+}
+.cinematic-projects .end-card-btn:active {
+  transform: scale(0.94);
+}
+
+/* Play + Fullscreen: 40px */
+.cinematic-projects .end-card-btn-play,
+.cinematic-projects .end-card-btn-fullscreen {
+  width: 40px;
+  height: 40px;
+}
+.cinematic-projects .end-card-btn-play svg,
+.cinematic-projects .end-card-btn-fullscreen svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.cinematic-projects .end-card-btn-play svg {
+  margin-left: 2px;
+}
+
+/* Replay: BIGGER 54px + rotation on hover */
+.cinematic-projects .end-card-btn-replay {
+  width: 54px;
+  height: 54px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(242,240,235,0.2);
+}
+.cinematic-projects .end-card-btn-replay:hover {
+  background: rgba(255,255,255,0.14);
+  border-color: rgba(242,240,235,0.4);
+}
+.cinematic-projects .end-card-replay-svg {
+  width: 26px;
+  height: 26px;
+  display: block;
+  transition: transform 0.55s ease-in-out;
+}
+.cinematic-projects .end-card-btn-replay:hover .end-card-replay-svg {
+  transform: rotate(180deg);
+}
+
+@media (max-width: 640px) {
+  .cinematic-projects .end-card-buttons {
+    right: 12px;
+    bottom: 12px;
+    gap: 6px;
+  }
+  .cinematic-projects .end-card-btn-play,
+  .cinematic-projects .end-card-btn-fullscreen {
+    width: 34px;
+    height: 34px;
+  }
+  .cinematic-projects .end-card-btn-play svg,
+  .cinematic-projects .end-card-btn-fullscreen svg {
+    width: 15px;
+    height: 15px;
+  }
+  .cinematic-projects .end-card-btn-replay {
+    width: 46px;
+    height: 46px;
+  }
+  .cinematic-projects .end-card-replay-svg {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cinematic-projects .cine-time { font-size: 11px; padding: 0 3px; }
+  .cinematic-projects .cine-ctrl-btn { width: 34px; height: 34px; }
+  .cinematic-projects .cine-ctrl-btn svg { width: 18px; height: 18px; }
+  .cinematic-projects .cine-pp-btn { width: 40px; height: 40px; }
+  .cinematic-projects .cine-pp-btn svg { width: 22px; height: 22px; }
+  
+
 </style>
 
 <script>
 (function () {
   'use strict';
 
-  // ═══════════════════════════════════════════════════════════════
-  // 1. Soft scroll reveal
-  // ═══════════════════════════════════════════════════════════════
+  // ═══ Reveal on scroll ═══
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) entry.target.classList.add('is-visible');
@@ -762,564 +1351,536 @@ title: Short Film Projects
   }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
   document.querySelectorAll('.label-reveal').forEach(el => observer.observe(el));
 
-  // ═══════════════════════════════════════════════════════════════
-  // 2. Remove first markdown paragraph
-  // ═══════════════════════════════════════════════════════════════
+  // Remove first markdown paragraph
   document.querySelectorAll('[data-film-markdown]').forEach(el => {
-    const firstP = el.querySelector('p');
-    if (firstP) firstP.remove();
+    const p = el.querySelector('p');
+    if (p) p.remove();
   });
 
-  // ═══════════════════════════════════════════════════════════════
-  // 3. Vimeo oEmbed — single fetch per video (title + desc + author)
-  // ═══════════════════════════════════════════════════════════════
-  const vimeoInfoCache = new Map();
-
+  // ═══ Vimeo metadata ═══
+  const vimeoCache = new Map();
   function fetchVimeoInfo(id) {
     if (!id) return Promise.resolve(null);
-    if (vimeoInfoCache.has(id)) return Promise.resolve(vimeoInfoCache.get(id));
-
+    if (vimeoCache.has(id)) return Promise.resolve(vimeoCache.get(id));
     return new Promise(resolve => {
-      const cbName = 'vimeoInfo_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-      const script = document.createElement('script');
+      const cb = 'vi_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const s = document.createElement('script');
       let done = false;
-
       const cleanup = () => {
-        if (done) return;
-        done = true;
-        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-        if (script.parentNode) script.parentNode.removeChild(script);
+        if (done) return; done = true;
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
       };
-
-      window[cbName] = (data) => {
-        const payload = data || null;
-        if (payload && payload.description) {
-          payload.description = String(payload.description)
-            .replace(/<[^>]*>/g, ' ')
-            .replace(/\s+/g, ' ')
-            .trim();
+      window[cb] = (data) => {
+        const p = data || null;
+        if (p && p.description) {
+          p.description = String(p.description).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
         }
-        vimeoInfoCache.set(id, payload);
-        resolve(payload);
+        vimeoCache.set(id, p);
+        resolve(p);
         cleanup();
       };
-
-      script.src = 'https://vimeo.com/api/oembed.json?url=' +
-        encodeURIComponent('https://vimeo.com/' + id) +
-        '&callback=' + cbName;
-      script.async = true;
-      script.onerror = () => {
-        vimeoInfoCache.set(id, null);
-        resolve(null);
-        cleanup();
-      };
-      document.head.appendChild(script);
-
-      setTimeout(() => {
-        if (!done) { resolve(null); cleanup(); }
-      }, 6000);
+      s.src = 'https://vimeo.com/api/oembed.json?url=' +
+        encodeURIComponent('https://vimeo.com/' + id) + '&callback=' + cb;
+      s.async = true;
+      s.onerror = () => { vimeoCache.set(id, null); resolve(null); cleanup(); };
+      document.head.appendChild(s);
+      setTimeout(() => { if (!done) { resolve(null); cleanup(); } }, 6000);
     });
   }
 
-  // Populate description + author for every video
+  const avatarCache = new Map();
+  function fetchAvatar(username) {
+    if (!username) return Promise.resolve('');
+    if (avatarCache.has(username)) return Promise.resolve(avatarCache.get(username));
+    return new Promise(resolve => {
+      const cb = 'va_' + Date.now() + '_' + Math.random().toString(36).slice(2);
+      const s = document.createElement('script');
+      let done = false;
+      const cleanup = () => {
+        if (done) return; done = true;
+        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        if (s.parentNode) s.parentNode.removeChild(s);
+      };
+      window[cb] = (data) => {
+        const url = (data && (data.portrait_large || data.portrait_medium || data.portrait_small)) || '';
+        avatarCache.set(username, url);
+        resolve(url);
+        cleanup();
+      };
+      s.src = 'https://vimeo.com/api/v2/' + encodeURIComponent(username) + '/info.json?callback=' + cb;
+      s.async = true;
+      s.onerror = () => { avatarCache.set(username, ''); resolve(''); cleanup(); };
+      document.head.appendChild(s);
+      setTimeout(() => { if (!done) { resolve(''); cleanup(); } }, 5000);
+    });
+  }
+
   document.querySelectorAll('[data-cinema]').forEach(cinema => {
+    const vimeoId = cinema.dataset.vimeoId;
+    if (!vimeoId) return;
     const descEl = cinema.querySelector('[data-film-desc]');
     const endDescEl = cinema.querySelector('[data-end-desc]');
     const endAuthorEl = cinema.querySelector('[data-end-author]');
-    const vimeoId = cinema.dataset.videoId || '';
-    if (!vimeoId) return;
-
     fetchVimeoInfo(vimeoId).then(info => {
       if (!info) return;
       if (info.description) {
         if (descEl) descEl.textContent = info.description;
         if (endDescEl) endDescEl.textContent = info.description;
       }
-      if (info.author_name && endAuthorEl) {
-        endAuthorEl.textContent = info.author_name;
-      }
-      // Extract username from author_url → fetch avatar from Vimeo v2 API
-      const authorUrl = info.author_url || '';
-      const usernameMatch = authorUrl.match(/vimeo\.com\/([^\/?#]+)/);
-      if (usernameMatch) {
-        const username = usernameMatch[1];
-        const avatarImg = cinema.querySelector('[data-vimeo-avatar]');
-        if (avatarImg && !avatarImg.dataset.fetched) {
-          avatarImg.dataset.fetched = '1';
-          fetchVimeoAvatar(username).then(url => {
+      if (info.author_name && endAuthorEl) endAuthorEl.textContent = info.author_name;
+      const m = (info.author_url || '').match(/vimeo\.com\/([^\/?#]+)/);
+      if (m) {
+        const img = cinema.querySelector('[data-vimeo-avatar]');
+        if (img && !img.dataset.fetched) {
+          img.dataset.fetched = '1';
+          fetchAvatar(m[1]).then(url => {
             if (!url) return;
-            avatarImg.src = url;
-            avatarImg.onload = () => avatarImg.classList.add('is-loaded');
-            avatarImg.onerror = () => { avatarImg.removeAttribute('src'); };
+            img.src = url;
+            img.onload = () => img.classList.add('is-loaded');
+            img.onerror = () => img.removeAttribute('src');
           });
         }
       }
     }).catch(() => {});
   });
 
-  // ── Vimeo avatar (v2 API, JSONP) ──
-  const avatarCache = new Map();
-  function fetchVimeoAvatar(username) {
-    if (!username) return Promise.resolve('');
-    if (avatarCache.has(username)) return Promise.resolve(avatarCache.get(username));
-    return new Promise(resolve => {
-      const cbName = 'vimeoAvatar_' + Date.now() + '_' + Math.random().toString(36).slice(2);
-      const script = document.createElement('script');
-      let done = false;
-      const cleanup = () => {
-        if (done) return; done = true;
-        try { delete window[cbName]; } catch (e) { window[cbName] = undefined; }
-        if (script.parentNode) script.parentNode.removeChild(script);
-      };
-      window[cbName] = (data) => {
-        const url = (data && (data.portrait_large || data.portrait_medium || data.portrait_small)) || '';
-        avatarCache.set(username, url);
-        resolve(url);
-        cleanup();
-      };
-      script.src = 'https://vimeo.com/api/v2/' + encodeURIComponent(username) + '/info.json?callback=' + cbName;
-      script.async = true;
-      script.onerror = () => { avatarCache.set(username, ''); resolve(''); cleanup(); };
-      document.head.appendChild(script);
-      setTimeout(() => { if (!done) { resolve(''); cleanup(); } }, 5000);
-    });
+  // ═══ Format time ═══
+  function fmt(s) {
+    s = Math.max(0, Math.floor(Number(s) || 0));
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    const mm = String(m).padStart(2, '0');
+    const ss = String(sec).padStart(2, '0');
+    return h ? h + ':' + mm + ':' + ss : mm + ':' + ss;
   }
 
-  // ═══════════════════════════════════════════════════════════════
-  // 4. Vimeo SDK loader
-  // ═══════════════════════════════════════════════════════════════
-  let sdkPromise;
-  function loadVimeoSDK() {
-    if (window.Vimeo && window.Vimeo.Player) return Promise.resolve(window.Vimeo);
-    if (sdkPromise) return sdkPromise;
-    sdkPromise = new Promise(function (resolve, reject) {
-      const s = document.createElement('script');
-      s.src = 'https://player.vimeo.com/api/player.js';
-      s.async = true;
-      s.onload = () => (window.Vimeo && window.Vimeo.Player) ? resolve(window.Vimeo) : reject(new Error('missing'));
-      s.onerror = () => reject(new Error('load failed'));
-      document.head.appendChild(s);
-    });
-    return sdkPromise;
-  }
-
-  // ═══════════════════════════════════════════════════════════════
-  // 5. Utilities
-  // ═══════════════════════════════════════════════════════════════
-  function fmtTime(s) {
-    const v = Math.max(0, Math.floor(Number(s) || 0));
-    const h = Math.floor(v / 3600);
-    const m = Math.floor((v % 3600) / 60);
-    const sec = v % 60;
-    const str = String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
-    return h ? h + ':' + str : str;
-  }
-
-  const MIN_LOADING_MS = 700;
-
-  // ═══════════════════════════════════════════════════════════════
-  // 6. Per-section initialization
-  // ═══════════════════════════════════════════════════════════════
-  function initSection(root) {
+  // ═══════════════════════════════════════════════════════
+  // Init each player
+  // ═══════════════════════════════════════════════════════
+  document.querySelectorAll('[data-cinema]').forEach(root => {
     if (root.dataset.initialized) return;
     root.dataset.initialized = 'true';
 
-    const layer = root.querySelector('[data-video-layer]');
-    const hit = root.querySelector('[data-play-hit]');
-    const shield = root.querySelector('[data-shield]');
-    const playpauseBtn = root.querySelector('[data-playpause-btn]');
-    const ppPath = root.querySelector('.pp-path');
-    const volumeBtn = root.querySelector('[data-volume-btn]');
-    const volumeSlider = root.querySelector('[data-volume-slider]');
-    const speedBtn = root.querySelector('[data-speed-btn]');
-    const speedMenu = root.querySelector('[data-speed-menu]');
-    const qualityBtn = root.querySelector('[data-quality-btn]');
-    const qualityMenu = root.querySelector('[data-quality-menu]');
-    const fullscreenBtn = root.querySelector('[data-fullscreen-btn]');
-    const replayBtn = root.querySelector('[data-replay-btn]');
-    const timeEl = root.querySelector('[data-time]');
-    const progress = root.querySelector('[data-progress]');
+    const video = root.querySelector('[data-video]');
+    if (!video) return;
+
+    const screenEl = root.querySelector('.cinema-screen') || root;
+    const progressWrap = root.querySelector('[data-progress-wrap]');
+    const progressInput = root.querySelector('[data-progress]');
     const progressFill = root.querySelector('[data-progress-fill]');
+    const progressBuffer = root.querySelector('[data-progress-buffer]');
+    const playBtn = root.querySelector('[data-playpause]');
+    const iconPlay = root.querySelector('.cine-pp-play');
+    const iconPause = root.querySelector('.cine-pp-pause');
+    const volumeBtn = root.querySelector('[data-volume]');
+    const iconVolOn = root.querySelector('.cine-icon-vol-on');
+    const iconVolOff = root.querySelector('.cine-icon-vol-off');
+    const volumeSlider = root.querySelector('[data-volume-slider]');
+    const timeEl = root.querySelector('[data-time]');
+    const settingsTrigger = root.querySelector('[data-settings-trigger]');
+    const settingsMenu = root.querySelector('[data-settings-menu]');
+    const replayBtn = root.querySelector('[data-replay]');
 
-    const vimeoId = root.dataset.videoId;
-    const videoSrc = root.dataset.videoSrc;
-    if (!layer) return;
-
-    let player = null;
-    let prepared = false;
-    let preparing = false;
-    let duration = 0;
-    let current = 0;
-    let isSeeking = false;
-    let isMuted = false;
-    let currentQuality = 'auto';
-    let firstPlayHandled = false;
     let idleTimer = null;
+    let isSeeking = false;
+    let lastVolume = 1;
 
-    function setPlayPauseIcon(playing) {
-      if (!ppPath) return;
-      ppPath.setAttribute('d', playing ? 'M6 19h4V5H6v14zm8-14v14h4V5h-4z' : 'M8 5v14l11-7z');
-      if (playpauseBtn) playpauseBtn.setAttribute('aria-label', playing ? 'Pause' : 'Play');
-    }
+    // ═══════════════════════════════════════════════════
+    // UI visibility — hover-driven only
+    // ═══════════════════════════════════════════════════
+    function showUI() {
+      if (!root.classList.contains('has-started')) return;
+      if (root.classList.contains('is-loading')) return;
+      if (root.classList.contains('is-ended')) return;
 
-    function updateTime() {
-      const pct = duration > 0 ? (current / duration) : 0;
-      if (!isSeeking) {
-        if (progress) progress.value = Math.round(pct * 1000);
-        if (progressFill) progressFill.style.transform = 'scaleX(' + pct + ')';
-      }
-      if (timeEl) timeEl.textContent = fmtTime(current) + ' / ' + fmtTime(duration);
-    }
-
-    function showControls() {
+      root.classList.remove('is-showing-title');
       root.classList.add('is-ui-visible');
       if (idleTimer) clearTimeout(idleTimer);
-      idleTimer = setTimeout(() => root.classList.remove('is-ui-visible'), 3200);
-    }
 
-    function revealVideo() {
-      root.classList.remove('is-loading');
-      root.classList.add('is-started');
-      root.dataset.state = 'playing';
-      if (player) {
-        player.setCurrentTime(0).catch(() => {});
-        player.play().catch(() => {});
-      } else if (videoSrc) {
-        const v = layer.querySelector('video');
-        if (v) { v.currentTime = 0; v.play().catch(() => {}); }
-      }
-      showControls();
-    }
-
-    function prepare() {
-      if (prepared) return Promise.resolve();
-      if (preparing) return;
-      preparing = true;
-
-      if (videoSrc) {
-        const v = document.createElement('video');
-        v.playsInline = true; v.preload = 'auto'; v.controls = false;
-        v.muted = true;
-        v.src = videoSrc;
-        v.addEventListener('ended', () => { root.classList.add('is-ended'); });
-        v.addEventListener('timeupdate', () => {
-          current = v.currentTime; duration = v.duration || 0; updateTime();
-        });
-        v.addEventListener('volumechange', () => {
-          isMuted = v.muted || v.volume === 0;
-          if (volumeSlider) volumeSlider.value = v.muted ? 0 : v.volume;
-        });
-        v.addEventListener('play', () => {
-          if (!firstPlayHandled) {
-            firstPlayHandled = true;
-            v.pause();
-            v.currentTime = 0;
-            const startAt = parseInt(root.dataset.loadingStart || '0', 10);
-            const wait = Math.max(0, MIN_LOADING_MS - (Date.now() - startAt));
-            setTimeout(revealVideo, wait);
-          } else {
-            setPlayPauseIcon(true);
-            root.dataset.state = 'playing';
+      if (!video.paused) {
+        // Playing: hide after 3s
+        idleTimer = setTimeout(() => {
+          if (!video.paused && !video.ended) {
+            root.classList.remove('is-ui-visible');
           }
-        });
-        v.addEventListener('pause', () => {
-          if (root.classList.contains('is-loading')) return;
-          if (root.dataset.state === 'ended') return;
-          setPlayPauseIcon(false);
-          root.dataset.state = 'paused';
-        });
-        layer.appendChild(v);
-        prepared = true; preparing = false;
-        return Promise.resolve();
-      }
-
-      return loadVimeoSDK().then(Vimeo => {
-        const iframe = document.createElement('iframe');
-        iframe.src = 'https://player.vimeo.com/video/' + vimeoId +
-          '?autoplay=0&muted=1&controls=0&byline=0&title=0&portrait=0&dnt=1&playsinline=1';
-        iframe.title = 'Film';
-        iframe.allow = 'autoplay; fullscreen; picture-in-picture; encrypted-media';
-        iframe.allowFullscreen = true;
-        iframe.tabIndex = -1;
-        layer.appendChild(iframe);
-        player = new Vimeo.Player(iframe);
-
-        player.on('play', () => {
-          if (!firstPlayHandled) {
-            firstPlayHandled = true;
-            player.pause().catch(() => {});
-            player.setCurrentTime(0).catch(() => {});
-            const startAt = parseInt(root.dataset.loadingStart || '0', 10);
-            const wait = Math.max(0, MIN_LOADING_MS - (Date.now() - startAt));
-            setTimeout(revealVideo, wait);
-          } else {
-            setPlayPauseIcon(true);
-            root.dataset.state = 'playing';
-            root.classList.remove('is-ended');
+        }, 3000);
+      } else if (video.paused && !video.ended) {
+        // Paused: after 3s show title, hide controls
+        idleTimer = setTimeout(() => {
+          if (video.paused && !video.ended && !root.classList.contains('is-loading')) {
+            root.classList.add('is-showing-title');
+            root.classList.remove('is-ui-visible');
           }
-        });
-        player.on('pause', () => {
-          if (root.classList.contains('is-loading')) return;
-          if (root.dataset.state === 'ended') return;
-          setPlayPauseIcon(false);
-          root.dataset.state = 'paused';
-        });
-        player.on('ended', () => {
-          root.classList.add('is-ended');
-          root.classList.remove('is-loading');
-        });
-        player.on('timeupdate', (e) => {
-          current = Number(e.seconds) || 0;
-          duration = Number(e.duration) || duration;
-          updateTime();
-        });
-        player.on('durationchange', (e) => {
-          duration = Number(e.duration) || 0;
-          updateTime();
-        });
-        player.on('volumechange', (e) => {
-          isMuted = Boolean(e.muted) || e.volume === 0;
-          if (volumeSlider) volumeSlider.value = e.volume;
-        });
-        player.on('qualitychange', (e) => {
-          if (e && e.id) {
-            currentQuality = e.id;
-            if (qualityBtn) qualityBtn.textContent = e.id === 'auto' ? 'Auto' : (parseInt(e.id, 10) + 'p');
-          }
-        });
-
-        return player.ready().then(() => {
-          prepared = true; preparing = false;
-          player.getDuration().then(d => { duration = Number(d) || 0; updateTime(); }).catch(() => {});
-          player.getQualities().then(list => {
-            if (!qualityMenu) return;
-            qualityMenu.innerHTML = '';
-            list.forEach(q => {
-              const b = document.createElement('button');
-              b.className = 'cine-popup-item' + (q.id === currentQuality ? ' is-active' : '');
-              b.dataset.qualityValue = q.id;
-              b.textContent = q.id === 'auto' ? 'Auto' : (parseInt(q.id, 10) + 'p');
-              qualityMenu.appendChild(b);
-            });
-          }).catch(() => {});
-        });
-      }).catch(err => {
-        preparing = false;
-        console.warn('[Cinema] prepare failed', err);
-      });
-    }
-
-    function play() {
-      if (root.classList.contains('is-started')) {
-        if (player) player.play().catch(() => {});
-        else if (videoSrc) {
-          const v = layer.querySelector('video');
-          if (v) v.play().catch(() => {});
-        }
-        return;
-      }
-
-      root.dataset.loadingStart = String(Date.now());
-      root.classList.add('is-loading');
-
-      const safety = setTimeout(() => {
-        if (root.classList.contains('is-loading')) revealVideo();
-      }, 5000);
-
-      if (prepared && player) {
-        player.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
-        return;
-      }
-      if (prepared && videoSrc) {
-        const v = layer.querySelector('video');
-        if (v) v.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
-        return;
-      }
-      prepare().then(() => {
-        if (player) player.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
-        else if (videoSrc) {
-          const v = layer.querySelector('video');
-          if (v) v.play().catch(() => { clearTimeout(safety); root.classList.remove('is-loading'); });
-        }
-      }).catch(() => {
-        clearTimeout(safety);
-        root.classList.remove('is-loading');
-      });
-    }
-
-    function pause() {
-      if (player) player.pause().catch(() => {});
-      else if (videoSrc) {
-        const v = layer.querySelector('video');
-        if (v) v.pause();
+        }, 3000);
       }
     }
 
+    function hideUI(showTitle) {
+      root.classList.remove('is-ui-visible');
+      if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
+      if (showTitle) {
+        root.classList.add('is-showing-title');
+      }
+    }
+
+    // ── Hover on video area ──
+    screenEl.addEventListener('mousemove', showUI);
+    screenEl.addEventListener('mouseenter', showUI);
+
+    // ── Mouse leaves video area → hide controls ──
+    screenEl.addEventListener('mouseleave', () => {
+      if (video.ended) return;
+      // Hide controls immediately
+      // If paused → also show title (idle state)
+      hideUI(video.paused && root.classList.contains('has-started'));
+    });
+
+    // ═══════════════════════════════════════════════════
+    // Play/Pause icon toggle
+    // ═══════════════════════════════════════════════════
+    function updatePlayIcon() {
+      if (!iconPlay || !iconPause) return;
+      if (video.paused) {
+        iconPlay.style.display = '';
+        iconPause.style.display = 'none';
+        root.classList.add('is-paused');
+        root.classList.remove('is-playing');
+        if (playBtn) playBtn.setAttribute('aria-label', 'Play');
+      } else {
+        iconPlay.style.display = 'none';
+        iconPause.style.display = '';
+        root.classList.remove('is-paused');
+        root.classList.add('is-playing');
+        if (playBtn) playBtn.setAttribute('aria-label', 'Pause');
+      }
+    }
+
+    // ═══════════════════════════════════════════════════
+    // Play / Pause
+    // ═══════════════════════════════════════════════════
     function togglePlay() {
-      if (root.dataset.state === 'playing') pause();
-      else play();
+      if (video.paused || video.ended) {
+        if (video.ended) {
+          root.classList.remove('is-ended');
+          video.currentTime = 0;
+        }
+        video.play().catch(() => {});
+      } else {
+        video.pause();
+      }
     }
 
-    function prewarm() {
-      if (!prepared && !preparing) prepare();
+    function firstPlay() {
+      if (root.classList.contains('has-played-once')) {
+        togglePlay();
+        return;
+      }
+      root.classList.add('has-played-once', 'is-loading');
+      const hideDots = () => root.classList.remove('is-loading');
+      video.addEventListener('playing', hideDots, { once: true });
+      setTimeout(hideDots, 2000);
+      video.play().catch(() => hideDots());
     }
 
-    if (hit) hit.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (root.classList.contains('is-loading')) return;
-      if (!root.classList.contains('is-started')) { play(); return; }
-      if (root.classList.contains('is-ui-visible')) {
-        root.classList.remove('is-ui-visible');
-        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
-      } else {
-        showControls();
-      }
-    });
-    if (hit) hit.addEventListener('mouseenter', prewarm, { passive: true });
-
-    if (shield) shield.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (root.classList.contains('is-loading')) return;
-      if (!root.classList.contains('is-started')) { play(); return; }
-      if (root.classList.contains('is-ui-visible')) {
-        root.classList.remove('is-ui-visible');
-        if (idleTimer) { clearTimeout(idleTimer); idleTimer = null; }
-      } else {
-        showControls();
-      }
-    });
-    if (shield) shield.addEventListener('mouseenter', prewarm, { passive: true });
-
-    if (playpauseBtn) playpauseBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      if (root.classList.contains('is-loading')) return;
-      togglePlay();
+    video.addEventListener('play', () => {
+      root.classList.add('has-started');
+      root.classList.remove('is-ended', 'is-showing-title');
+      updatePlayIcon();
+      showUI();
     });
 
-    if (replayBtn) replayBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
+    video.addEventListener('pause', () => {
+      if (root.classList.contains('is-ended')) return;
+      updatePlayIcon();
+      root.classList.remove('is-showing-title');
+      root.classList.add('is-ui-visible');
+      if (idleTimer) clearTimeout(idleTimer);
+      // After 3s: show title + hide controls
+      idleTimer = setTimeout(() => {
+        if (video.paused && !video.ended && !root.classList.contains('is-loading')) {
+          root.classList.add('is-showing-title');
+          root.classList.remove('is-ui-visible');
+        }
+      }, 3000);
+    });
+
+    video.addEventListener('ended', () => {
+      root.classList.add('is-ended');
+      root.classList.remove('is-playing', 'is-showing-title');
+      updatePlayIcon();
+      hideUI(false);
+    });
+
+    video.addEventListener('loadedmetadata', () => {
       root.classList.remove('is-ended');
-      root.dataset.state = 'playing';
-      if (player) {
-        player.setCurrentTime(0).then(() => player.play()).catch(() => {});
-      } else if (videoSrc) {
-        const v = layer.querySelector('video');
-        if (v) { v.currentTime = 0; v.play().catch(() => {}); }
-      }
+      updatePlayIcon();
+      updateTime();
     });
 
-    if (volumeBtn) volumeBtn.addEventListener('click', (e) => {
+    if (playBtn) playBtn.addEventListener('click', e => {
       e.stopPropagation();
-      if (player) {
-        if (isMuted) player.setMuted(false).catch(() => {});
-        else player.setMuted(true).catch(() => {});
+      if (!root.classList.contains('has-played-once') && (video.paused || video.ended)) {
+        firstPlay();
       } else {
-        const v = layer.querySelector('video');
-        if (v) v.muted = !v.muted;
+        togglePlay();
       }
     });
 
-    if (volumeSlider) volumeSlider.addEventListener('input', (e) => {
-      e.stopPropagation();
-      const val = Number(volumeSlider.value);
-      if (player) { player.setVolume(val).catch(() => {}); if (val > 0) player.setMuted(false).catch(() => {}); }
-      else { const v = layer.querySelector('video'); if (v) { v.volume = val; v.muted = val === 0; } }
+    video.addEventListener('click', () => {
+      if (!root.classList.contains('has-played-once')) {
+        firstPlay();
+      } else if (video.paused || video.ended) {
+        togglePlay();
+      } else {
+        video.pause();
+      }
     });
 
-    if (speedBtn && speedMenu) {
-      speedBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        speedMenu.hidden = !speedMenu.hidden;
-        if (qualityMenu) qualityMenu.hidden = true;
-      });
-      speedMenu.querySelectorAll('[data-speed-value]').forEach(b => {
-        b.addEventListener('click', (e) => {
+    
+
+    // ═══════════════════════════════════════════════════
+    // Double-tap on left side → rewind 5s
+    // ═══════════════════════════════════════════════════
+    const dtapFeedback = root.querySelector('[data-dtap-feedback]');
+    let lastTapTime = 0;
+    let lastTapX = 0;
+    let lastTapY = 0;
+    let tapFeedbackTimer = null;
+
+    function showDtapFeedback() {
+      if (!dtapFeedback) return;
+      dtapFeedback.classList.add('is-active');
+      if (tapFeedbackTimer) clearTimeout(tapFeedbackTimer);
+      tapFeedbackTimer = setTimeout(() => {
+        dtapFeedback.classList.remove('is-active');
+      }, 650);
+    }
+
+    screenEl.addEventListener('click', (e) => {
+      // Ignore if click is on controls
+      if (e.target.closest('.cine-controls') ||
+          e.target.closest('.cine-progress') ||
+          e.target.closest('.cine-menu-wrap') ||
+          e.target.closest('.end-card-replay')) return;
+
+      const now = Date.now();
+      const rect = screenEl.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const relX = x / rect.width;
+
+      const isDoubleTap = (now - lastTapTime < 320);
+      const samePosition = Math.abs(x - lastTapX) < 60 && Math.abs(y - lastTapY) < 60;
+
+      if (isDoubleTap && samePosition) {
+        // Left side → rewind 5s
+        if (relX < 0.4) {
           e.stopPropagation();
-          const v = Number(b.dataset.speedValue);
-          if (player) player.setPlaybackRate(v).catch(() => {});
-          else { const vid = layer.querySelector('video'); if (vid) vid.playbackRate = v; }
-          speedBtn.textContent = v + 'x';
-          speedMenu.querySelectorAll('[data-speed-value]').forEach(x => x.classList.toggle('is-active', x === b));
-          speedMenu.hidden = true;
+          e.preventDefault();
+          video.currentTime = Math.max(0, video.currentTime - 5);
+          showDtapFeedback();
+          lastTapTime = 0;
+          return;
+        }
+      }
+
+      lastTapTime = now;
+      lastTapX = x;
+      lastTapY = y;
+    }, true); // capture phase so we get it before play/pause toggle
+
+    // ── Time + progress ──
+    function updateTime() {
+      const d = video.duration || 0;
+      const c = video.currentTime || 0;
+      if (timeEl) timeEl.textContent = fmt(c) + ' / ' + fmt(d);
+      if (!isSeeking) {
+        const pct = d > 0 ? (c / d) : 0;
+        if (progressFill) progressFill.style.width = (pct * 100) + '%';
+        if (progressInput) progressInput.value = Math.round(pct * 1000);
+      }
+    }
+    video.addEventListener('timeupdate', updateTime);
+    video.addEventListener('durationchange', updateTime);
+
+    function updateBuffer() {
+      if (!progressBuffer || !video.buffered.length || !video.duration) return;
+      const end = video.buffered.end(video.buffered.length - 1);
+      progressBuffer.style.width = (end / video.duration * 100) + '%';
+    }
+    video.addEventListener('progress', updateBuffer);
+    video.addEventListener('loadeddata', updateBuffer);
+
+    if (progressWrap && progressInput) {
+      progressInput.addEventListener('input', () => {
+        isSeeking = true;
+        const pct = Number(progressInput.value) / 1000;
+        if (progressFill) progressFill.style.width = (pct * 100) + '%';
+        if (timeEl) timeEl.textContent = fmt(pct * (video.duration || 0)) + ' / ' + fmt(video.duration || 0);
+      });
+      progressInput.addEventListener('change', () => {
+        video.currentTime = (Number(progressInput.value) / 1000) * (video.duration || 0);
+        isSeeking = false;
+      });
+    }
+
+    // ── Volume ──
+    function updateVolumeIcon() {
+      const muted = video.muted || video.volume === 0;
+      if (iconVolOn) iconVolOn.style.display = muted ? 'none' : '';
+      if (iconVolOff) iconVolOff.style.display = muted ? '' : 'none';
+      if (volumeBtn) volumeBtn.setAttribute('aria-label', muted ? 'Unmute' : 'Mute');
+    }
+    if (volumeSlider) {
+      volumeSlider.addEventListener('input', () => {
+        const v = Number(volumeSlider.value);
+        video.volume = v;
+        video.muted = v === 0;
+        if (v > 0) lastVolume = v;
+      });
+    }
+    if (volumeBtn) volumeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (video.muted || video.volume === 0) {
+        video.volume = lastVolume || 1;
+        video.muted = false;
+      } else {
+        lastVolume = video.volume;
+        video.muted = true;
+      }
+      updateVolumeIcon();
+      if (volumeSlider) volumeSlider.value = video.muted ? 0 : video.volume;
+    });
+    video.addEventListener('volumechange', () => {
+      updateVolumeIcon();
+      if (volumeSlider && !volumeSlider.matches(':active')) {
+        volumeSlider.value = video.muted ? 0 : video.volume;
+      }
+    });
+    updateVolumeIcon();
+
+    // ── Settings menu ──
+    if (settingsTrigger && settingsMenu) {
+      settingsTrigger.addEventListener('click', e => {
+        e.stopPropagation();
+        settingsMenu.hidden = !settingsMenu.hidden;
+      });
+
+      // Quality buttons
+      settingsMenu.querySelectorAll('[data-quality-value]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const q = btn.dataset.qualityValue;
+          let targetSrc = '';
+          video.querySelectorAll('source').forEach(s => {
+            if (s.dataset.quality === q) targetSrc = s.src;
+          });
+          if (!targetSrc || video.src === targetSrc) return;
+          const wasPlaying = !video.paused;
+          const t = video.currentTime;
+          video.src = targetSrc;
+          video.load();
+          video.addEventListener('loadedmetadata', () => {
+            video.currentTime = t;
+            if (wasPlaying) video.play().catch(() => {});
+          }, { once: true });
+          settingsMenu.querySelectorAll('[data-quality-value]').forEach(x =>
+            x.classList.toggle('is-active', x === btn));
         });
       });
+
+      // Speed buttons
+      settingsMenu.querySelectorAll('[data-speed-value]').forEach(btn => {
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          const v = Number(btn.dataset.speedValue);
+          video.playbackRate = v;
+          settingsMenu.querySelectorAll('[data-speed-value]').forEach(x =>
+            x.classList.toggle('is-active', x === btn));
+        });
+      });
+
+      // Default actives
+      const firstQ = settingsMenu.querySelector('[data-quality-value]');
+      if (firstQ) firstQ.classList.add('is-active');
+      const first1x = settingsMenu.querySelector('[data-speed-value="1"]');
+      if (first1x) first1x.classList.add('is-active');
     }
 
-    if (qualityBtn && qualityMenu) {
-      qualityBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        qualityMenu.hidden = !qualityMenu.hidden;
-        if (speedMenu) speedMenu.hidden = true;
-      });
-      qualityMenu.addEventListener('click', (e) => {
-        const b = e.target.closest('[data-quality-value]');
-        if (!b) return;
-        e.stopPropagation();
-        const q = b.dataset.qualityValue;
-        if (player && !videoSrc) {
-          player.setQuality(q).then(() => {
-            currentQuality = q;
-            qualityBtn.textContent = q === 'auto' ? 'Auto' : (parseInt(q, 10) + 'p');
-            qualityMenu.querySelectorAll('.cine-popup-item').forEach(x => x.classList.toggle('is-active', x === b));
-          }).catch(() => {});
-        }
-        qualityMenu.hidden = true;
-      });
-    }
+    // Close menu on outside click
+    document.addEventListener('click', e => {
+      if (!root.contains(e.target)) return;
+      if (settingsMenu && !e.target.closest('.cine-menu-wrap')) settingsMenu.hidden = true;
+    });
 
-    if (fullscreenBtn) fullscreenBtn.addEventListener('click', (e) => {
+    // ── Fullscreen ──
+    const fullscreenBtn = root.querySelector('[data-fullscreen]');
+    if (fullscreenBtn) fullscreenBtn.addEventListener('click', e => {
       e.stopPropagation();
-      if (!document.fullscreenElement) root.requestFullscreen().catch(() => {});
+      const target = root.querySelector('.cinema-screen') || root;
+      if (!document.fullscreenElement) target.requestFullscreen().catch(() => {});
       else document.exitFullscreen().catch(() => {});
     });
 
-    if (progress) {
-      progress.addEventListener('input', (e) => {
-        e.stopPropagation();
-        isSeeking = true;
-        const pct = Number(progress.value) / 1000;
-        if (progressFill) progressFill.style.transform = 'scaleX(' + pct + ')';
-        if (timeEl) timeEl.textContent = fmtTime(duration * pct) + ' / ' + fmtTime(duration);
-      });
-      progress.addEventListener('change', (e) => {
-        e.stopPropagation();
-        const target = duration * Number(progress.value) / 1000;
-        if (player) player.setCurrentTime(target).catch(() => {}).finally(() => { isSeeking = false; });
-        else { const v = layer.querySelector('video'); if (v) v.currentTime = target; isSeeking = false; }
-      });
-      progress.addEventListener('blur', () => { isSeeking = false; });
-    }
-
-    document.addEventListener('click', (e) => {
-      if (!root.contains(e.target)) return;
-      if (speedMenu && !e.target.closest('.cine-speed-wrap')) speedMenu.hidden = true;
-      if (qualityMenu && !e.target.closest('.cine-quality-wrap')) qualityMenu.hidden = true;
+    // ── Replay (end card) ──
+    if (replayBtn) replayBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      root.classList.remove('is-ended', 'is-playing', 'is-showing-title');
+      video.currentTime = 0;
+      video.play().catch(() => {});
     });
-  }
 
-  // ═══════════════════════════════════════════════════════════════
-  // 7. Boot
-  // ═══════════════════════════════════════════════════════════════
-  loadVimeoSDK().catch(() => {});
+    // End-card mini controls
+    const endVolumeBtn = root.querySelector('[data-end-volume]');
+    const endPlayBtn = root.querySelector('[data-end-play]');
+    const endFullscreenBtn = root.querySelector('[data-end-fullscreen]');
 
-  function boot() {
-    document.querySelectorAll('[data-cinema]').forEach(initSection);
-    setTimeout(() => {
-      document.querySelectorAll('[data-cinema]').forEach(root => {
-        if (root.dataset.prewarmed) return;
-        if (!root.dataset.videoId && !root.dataset.videoSrc) return;
-        if (root.classList.contains('is-started')) return;
-        const hit = root.querySelector('[data-play-hit]');
-        if (hit) hit.dispatchEvent(new MouseEvent('mouseenter'));
-        root.dataset.prewarmed = 'true';
-      });
-    }, 300);
-  }
+    if (endVolumeBtn) endVolumeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (video.muted || video.volume === 0) {
+        video.volume = lastVolume || 1;
+        video.muted = false;
+      } else {
+        lastVolume = video.volume;
+        video.muted = true;
+      }
+      updateVolumeIcon();
+      if (volumeSlider) volumeSlider.value = video.muted ? 0 : video.volume;
+    });
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', boot, { once: true });
-  } else {
-    boot();
-  }
+    if (endPlayBtn) endPlayBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      root.classList.remove('is-ended', 'is-showing-title');
+      video.currentTime = 0;
+      video.play().catch(() => {});
+    });
+
+    if (endFullscreenBtn) endFullscreenBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      const target = root.querySelector('.cinema-screen') || root;
+      if (!document.fullscreenElement) target.requestFullscreen().catch(() => {});
+      else document.exitFullscreen().catch(() => {});
+    });
+    // ═══════════════════════════════════════════════════
+    // Fullscreen change listener
+    // ═══════════════════════════════════════════════════
+    function handleFullscreenChange() {
+      const fsEl = document.fullscreenElement || document.webkitFullscreenElement;
+      if (fsEl && (fsEl === screenEl || root.contains(fsEl))) {
+        root.classList.add('is-fullscreen');
+      } else {
+        root.classList.remove('is-fullscreen');
+      }
+    }
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+    document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+    document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+    // ═══════════════════════════════════════════════════
+    updatePlayIcon();
+  });
 })();
 </script>

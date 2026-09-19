@@ -1,6 +1,7 @@
 ---
 layout: layouts/project.njk
 title: Palestine is free 
+videoSlug: palestine
 section: Short Film Projects
 date: 2022-10-15
 tools: [ibisPaint X,Video Maker]

@@ -1,6 +1,7 @@
 ---
 layout: layouts/project.njk
 title: Admiral predicta TV
+videoSlug: admiral
 section: Short Film Projects
 date: 2025-08-07
 tools: Krita, Darktable, DaVinci Resolve, Natron

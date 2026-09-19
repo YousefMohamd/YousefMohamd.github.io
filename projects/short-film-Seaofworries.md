@@ -1,6 +1,7 @@
 ---
 layout: layouts/project.njk
 title: SEA OF WORRIES
+videoSlug: sea-of-worries
 section: Short Film Projects
 date: 2022-10-18
 tools: [ibisPaint X,Video Maker,snapseed]
