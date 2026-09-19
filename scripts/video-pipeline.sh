@@ -101,7 +101,7 @@ download() {
     --retries 10 --fragment-retries 10 \
     --socket-timeout 30 \
     --concurrent-fragments 4 \
-    -o "${slug}-raw.%(ext)s" "$url" > "$dl_log" 2>&1; then
+    -o "$WORK/${slug}-raw.%(ext)s" "$url" > "$dl_log" 2>&1; then
     [ -f "$raw" ] && return 0
   fi
   err "[$slug] download فشل — آخر 15 سطر من yt-dlp:"
