@@ -97,12 +97,15 @@ download() {
   local dl_log="$WORK/$slug-download.log"
   if yt-dlp "${ck[@]}" --no-playlist \
     --format "bestvideo[height<=1080]+bestaudio/best[height<=1080]/best" \
-    --merge-output-format mp4 --no-part --no-warnings \
+    --merge-output-format mp4 --no-warnings \
+    --retries 10 --fragment-retries 10 \
+    --socket-timeout 30 \
+    --concurrent-fragments 4 \
     -o "${slug}-raw.%(ext)s" "$url" > "$dl_log" 2>&1; then
     [ -f "$raw" ] && return 0
   fi
   err "[$slug] download فشل — آخر 15 سطر من yt-dlp:"
-  tail -15 "$dl_log" | sed 's/^/    /'
+  tail -40 "$dl_log" | sed 's/^/    /'
   return 1
 }
 
