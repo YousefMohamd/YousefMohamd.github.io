@@ -11,7 +11,9 @@ title: Short Film Projects
 <link rel="preconnect" href="https://i.vimeocdn.com" crossorigin>
 
 <div class="w3-padding-64 w3-content cinematic-projects">
-  <h2 class="section-heading">Short Film Projects</h2>
+  <div class="section-heading-wrap">
+    <h2 class="section-heading">Short Film<br>Projects</h2>
+  </div>
 
   {% for p in (collections.project or []) | reverse %}
     {% if (p.data.section or '').toLowerCase() == 'short film projects' %}
@@ -40,7 +42,7 @@ title: Short Film Projects
                 {% endif %}
               </video>
               <!-- Double-tap feedback -->
-              <div class="cine-dtap-feedback" data-dtap-feedback aria-hidden="true">
+              <div class="cine-dtap-feedback" data-dtap-feedback aria-hidden="true" style="display:none">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <polyline points="1 7 1 10 4 10"></polyline>
                   <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
@@ -54,12 +56,12 @@ title: Short Film Projects
               
 
               <!-- Loading dots (first play only) -->
-              <div class="cine-dots" data-cine-dots aria-hidden="true">
+              <div class="cine-dots" data-cine-dots aria-hidden="true" style="display:none">
                 <span></span><span></span><span></span>
               </div>
 
               <!-- Progress bar: red, thin, at bottom edge -->
-              <div class="cine-progress" data-progress-wrap>
+              <div class="cine-progress" data-progress-wrap style="display:none">
                 <div class="cine-progress-track">
                   <div class="cine-progress-buffer" data-progress-buffer></div>
                   <div class="cine-progress-fill" data-progress-fill></div>
@@ -68,7 +70,7 @@ title: Short Film Projects
               </div>
 
               <!-- Controls row: left | time | right -->
-              <div class="cine-controls" data-controls>
+              <div class="cine-controls" data-controls style="display:none">
                 <div class="cine-controls-row">
 
                   <!-- CENTER: time -->
@@ -172,14 +174,14 @@ title: Short Film Projects
 
               <div class="cine-fade" data-fade aria-hidden="true"></div>
 
-              <div class="cine-title-stage" data-title-stage>
+              <div class="cine-title-stage" data-title-stage style="display:none">
                 <div class="cine-title-inner label-reveal">
                   <h3 class="cine-film-title">{{ p.data.title | escape }}</h3>
                   <p class="cine-film-desc" data-film-desc></p>
                 </div>
               </div>
 
-              <div class="cine-end-card" data-end-card aria-hidden="true">
+              <div class="cine-end-card" data-end-card aria-hidden="true" style="display:none">
                 <div class="end-card-glow" aria-hidden="true"></div>
                 <div class="end-card-top">
                   <div class="end-card-photo">
@@ -255,17 +257,6 @@ title: Short Film Projects
   transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .label-reveal.is-visible { opacity: 1; transform: translateY(0); }
-
-.cinematic-projects .section-heading {
-  font-family: var(--cine-body-font);
-  font-size: 38px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: normal;
-  color: #f2e9d8;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  margin-bottom: 44px;
-}
 
 .cinematic-projects .film-project { margin-bottom: 56px; }
 .cinematic-projects .film-description {
@@ -350,7 +341,6 @@ title: Short Film Projects
   }
 
 @media (max-width: 640px) {
-  .cinematic-projects .section-heading { font-size: 28px; }
   .cinematic-projects .cine-title-stage { left: 18px; right: 18px; bottom: 20px; }
   .cinematic-projects .cine-film-title { font-size: 30px; }
   .cinematic-projects .cine-film-desc { font-size: 11px; }
@@ -633,8 +623,6 @@ title: Short Film Projects
 
   /* Controls bar */
   /* Section heading */
-  .cinematic-projects .section-heading { font-size: clamp(20px, 6vw, 28px); margin-bottom: 24px; }
-
   /* الفاصل */
   .cinematic-projects .film-divider { margin: 28px 0 0 0; }
 }
@@ -1328,6 +1316,26 @@ title: Short Film Projects
   }
 }
 
+
+/* ═══════════════════════════════════════════════════════════
+   FULLSCREEN: dim the buffered (gray) portion by 45%
+   ═══════════════════════════════════════════════════════════ */
+
+
+
+
+/* Fullscreen + PLAYING: dim buffer (gray) by 65% */
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress-buffer {
+  filter: brightness(0.35);
+  transition: filter 0.3s ease;
+}
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress:hover .cine-progress-buffer {
+  filter: brightness(1);
+}
+.cinematic-projects .cinema.is-fullscreen.is-playing .cine-progress:hover .cine-progress-buffer {
+  filter: brightness(1);
+}
+
 @media (max-width: 640px) {
   .cinematic-projects .cine-time { font-size: 11px; padding: 0 3px; }
   .cinematic-projects .cine-ctrl-btn { width: 34px; height: 34px; }
@@ -1335,6 +1343,78 @@ title: Short Film Projects
   .cinematic-projects .cine-pp-btn { width: 40px; height: 40px; }
   .cinematic-projects .cine-pp-btn svg { width: 22px; height: 22px; }
   
+
+
+}
+
+/* Remove overflow-x restriction from containers so pseudo-elements
+   can extend to viewport edges. HTML-level clip will handle scroll */
+
+/* ═══════════════════════════════════════════════════════════
+   Sticky Section Heading — full viewport width
+   ═══════════════════════════════════════════════════════════ */
+main#main,
+main.container,
+.w3-content.cinematic-projects {
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SECTION HEADING — Sticky full-width strip
+   ═══════════════════════════════════════════════════════════ */
+
+/* Wrapper — sticky, full viewport width via negative margins */
+.cinematic-projects .section-heading-wrap {
+  position: sticky;
+  top: 0;
+  z-index: 9999;
+  background: #0b0b0b;
+  padding: 20px 24px 0;
+  /* Full-bleed: extends to viewport edges */
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  padding-left: 62px;
+  padding-right: 62px;
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* h2 — full-width of wrapper (aligns with the strip ends) */
+.cinematic-projects .section-heading {
+  display: block;
+  width: 100%;
+  font-family: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  line-height: 1.1;
+  color: #EDE4CB;
+  text-shadow:
+    0 0 1.5px rgba(237, 228, 203, 0.4),
+    0 1px 3px rgba(0, 0, 0, 0.3);
+  padding: 0 0 5mm 0;
+  border-bottom: 1px solid rgba(200, 195, 175, 0.25);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .cinematic-projects .section-heading {
+    font-size: 28px;
+  }
+}
+@media (max-width: 640px) {
+  .cinematic-projects .section-heading-wrap {
+    padding-top: 14px;
+    margin-bottom: 16px;
+  }
+  .cinematic-projects .section-heading {
+    font-size: 22px;
+    padding-bottom: 3mm;
+  }
+}
 
 </style>
 
@@ -1353,8 +1433,20 @@ title: Short Film Projects
 
   // Remove first markdown paragraph
   document.querySelectorAll('[data-film-markdown]').forEach(el => {
-    const p = el.querySelector('p');
-    if (p) p.remove();
+    el.querySelectorAll('p').forEach(p => {
+      const strong = p.querySelector('strong');
+      // Case 1: no <strong> → remove whole paragraph
+      if (!strong) { p.remove(); return; }
+      // Case 2: leading text before <strong> → strip it
+      const toRemove = [];
+      let found = false;
+      p.childNodes.forEach(node => {
+        if (found) return;
+        if (node === strong) { found = true; return; }
+        toRemove.push(node);
+      });
+      toRemove.forEach(n => n.remove());
+    });
   });
 
   // ═══ Vimeo metadata ═══
@@ -1368,7 +1460,7 @@ title: Short Film Projects
       let done = false;
       const cleanup = () => {
         if (done) return; done = true;
-        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        window[cb] = function () {};  // no-op (Vimeo may still call it late)
         if (s.parentNode) s.parentNode.removeChild(s);
       };
       window[cb] = (data) => {
@@ -1399,7 +1491,7 @@ title: Short Film Projects
       let done = false;
       const cleanup = () => {
         if (done) return; done = true;
-        try { delete window[cb]; } catch (e) { window[cb] = undefined; }
+        window[cb] = function () {};  // no-op (Vimeo may still call it late)
         if (s.parentNode) s.parentNode.removeChild(s);
       };
       window[cb] = (data) => {
@@ -1880,6 +1972,13 @@ title: Short Film Projects
     document.addEventListener('MSFullscreenChange', handleFullscreenChange);
 
     // ═══════════════════════════════════════════════════
+    // ── FOUC fix: clear inline display:none now that CSS is loaded ──
+    ['[data-end-card]', '[data-cine-dots]', '[data-controls]',
+     '[data-dtap-feedback]', '[data-title-stage]', '[data-progress-wrap]'].forEach(sel => {
+      const el = root.querySelector(sel);
+      if (el) el.style.display = '';
+    });
+
     updatePlayIcon();
   });
 })();

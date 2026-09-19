@@ -40,3 +40,4 @@ ffprobe
 docs/
 backups/root-cleanup/
 *.tar.gz
+*.broken-*
