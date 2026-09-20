@@ -34,7 +34,7 @@ title: Short Film Projects
                 playsinline
                 preload="metadata"
                 {% if p.data.poster %}poster="{{ p.data.poster }}"{% endif %}
-              >
+                disablePictureInPicture oncontextmenu="return false;">
                 {% if p.data.videoSlug and site.videoCdn %}
                   <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-1080.mp4" data-quality="1080" type="video/mp4">
                   <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-720.mp4" data-quality="720" type="video/mp4">
@@ -1982,4 +1982,25 @@ main.container,
     updatePlayIcon();
   });
 })();
+
+  // ── Video Protection ──
+  document.addEventListener('keydown', function(e) {
+    // Ctrl+S / Cmd+S (تنزيل)
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+      e.preventDefault();
+      return false;
+    }
+    // Ctrl+U (view source)
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'u') {
+      e.preventDefault();
+      return false;
+    }
+  });
+  
+  // منع سحب الفيديو (drag)
+  document.querySelectorAll('video[data-video]').forEach(function(v) {
+    v.addEventListener('dragstart', function(e) { e.preventDefault(); });
+    v.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+  });
+
 </script>
