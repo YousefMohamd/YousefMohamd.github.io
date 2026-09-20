@@ -3,6 +3,12 @@
 # Video Pipeline — for GitHub Actions + Local
 # Reads .md files → downloads from source → transcodes → uploads to B2
 # ═══════════════════════════════════════════════════════════════
+# ⚠️  SECURITY WARNING
+#     NEVER add "rclone purge" or "rclone delete" to this script.
+#     Reason: A previous purge wiped B2 bucket when QUALITIES changed.
+#     Recovery required manual re-upload of 24 files.
+#     Rule: rclone copy overwrites by name — no deletion needed.
+# ═══════════════════════════════════════════════════════════════
 set -u
 
 # ── CONFIG (env-overridable) ──
@@ -191,10 +197,10 @@ process_video() {
     return 0
   fi
 
-  # إذا الملفات موجودة لكن المصدر تغير → حذف القديم أولًا
+  # إذا الملفات موجودة لكن المصدر تغيّر → حذف الملفات المحلية فقط
+  # ⚠️  B2 آمن: لا نحذف منه — rclone copy يستبدل بنفس الاسم تلقائيًا
   if rclone lsf "$B2_BUCKET/$slug/" 2>/dev/null | grep -q "\.mp4$"; then
-    warn "[$slug] المصدر تغيّر — حذف النسخة القديمة من B2"
-    rclone purge "$B2_BUCKET/$slug/" >> "$LOG" 2>&1
+    warn "[$slug] المصدر تغيّر — حذف الملفات المحلية (B2 آمن)"
     rm -rf "$WORK/$slug" "$WORK/$slug-raw.mp4" 2>/dev/null
   fi
 
