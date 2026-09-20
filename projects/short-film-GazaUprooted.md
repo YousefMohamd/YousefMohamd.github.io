@@ -8,7 +8,7 @@ tools: [Photoshop, Video Maker]
 thumb: /img/optimized/projects/Gaza Uprooted/thumb.webp
 tags: [project]
 vimeoId: 882921893
-poster: "https://i.vimeocdn.com/video/2051785897-c5e8a5ea1722e5497d425447312e125ab65a63a30c2b5ededbe06cfd0b65401f-d_1280x720?region=us"
+poster: "https://i.vimeocdn.com/video/2051785897-c5e8a5ea1722e5497d425447312e125ab65a63a30c2b5ededbe06cfd0b65401f-d_1280?region=us"
 
 ---
 

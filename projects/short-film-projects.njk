@@ -32,7 +32,7 @@ title: Short Film Projects
                 class="cinema-video"
                 data-video
                 playsinline
-                preload="metadata"
+                preload="none"
                 {% if p.data.poster %}poster="{{ p.data.poster }}"{% endif %}
                 disablePictureInPicture oncontextmenu="return false;">
                 {% if p.data.videoSlug and site.videoCdn %}

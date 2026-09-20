@@ -8,7 +8,7 @@ tools: Krita, Darktable, DaVinci Resolve, Natron
 thumb: /img/optimized/projects/TV series models/thumb.webp
 tags: [project]
 vimeoId: 1113220066
-poster: "https://i.vimeocdn.com/video/2051666436-f01e5c08d7782db9135e6e2c7b2a425d85d0e45a318b144f256407ff75e15346-d_1280x720?region=us"
+poster: "https://i.vimeocdn.com/video/2051666436-f01e5c08d7782db9135e6e2c7b2a425d85d0e45a318b144f256407ff75e15346-d_1280?region=us"
 
 ---
 This series shows how the TV transitions from the complex piece to a simple piece, and also

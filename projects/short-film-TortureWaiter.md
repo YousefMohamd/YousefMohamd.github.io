@@ -8,7 +8,7 @@ tools: ibisPaint X, Video Maker
 thumb: /img/optimized/projects/TortureWaiter/thumb.webp
 tags: [project]
 vimeoId: 864165498
-poster: "https://i.vimeocdn.com/video/1723582064-95e52c6f783dd46cea8ed5e57e3d4ada448533ac0af3764d4013a1e255a3c6e1-d_1280x720?region=us"
+poster: "https://i.vimeocdn.com/video/1723582064-95e52c6f783dd46cea8ed5e57e3d4ada448533ac0af3764d4013a1e255a3c6e1-d_1280?region=us"
 
 ---
 

@@ -8,7 +8,7 @@ tools: Krita, Darktable, DaVinci Resolve, Natron
 thumb: /img/optimized/projects/Philco Vintage/thumb.webp
 tags: [project]
 vimeoId: 1113241849
-poster: "https://i.vimeocdn.com/video/2051696985-a9a22a9deba43f3b92313aa3a5bbf84a3113fe45edfda381304c4dfed8f4d44c-d_1280x720?region=us"
+poster: "https://i.vimeocdn.com/video/2051696985-a9a22a9deba43f3b92313aa3a5bbf84a3113fe45edfda381304c4dfed8f4d44c-d_1280?region=us"
 
 ---
 Philco 13” Vintage Television B423QWH model 1984
