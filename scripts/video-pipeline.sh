@@ -254,6 +254,26 @@ main() {
   [ ${#failed[@]} -gt 0 ] && err "فشل: ${failed[*]}" || ok "كل الفيديوهات نجحت"
   echo ""
   rclone size "$B2_BUCKET/"
+
+  # ── macOS Notification (only on local Mac) ──
+  if [[ "$OSTYPE" == "darwin"* ]] && command -v osascript &>/dev/null; then
+    if [ ${#failed[@]} -eq 0 ]; then
+      osascript -e "display notification \"اكتملت معالجة ${#entries[@]} فيديو في ${dur} دقيقة\" with title \"Video Pipeline ✅\" sound name \"Glass\"" 2>/dev/null || true
+    else
+      osascript -e "display notification \"فشل ${#failed[@]} من ${#entries[@]} فيديو\" with title \"Video Pipeline ❌\" sound name \"Basso\"" 2>/dev/null || true
+    fi
+  fi
+
+  # ── GitHub Actions Summary ──
+  if [ -n "${GITHUB_STEP_SUMMARY:-}" ]; then
+    {
+      echo "## 🎬 Video Pipeline — النتيجة"
+      echo ""
+      echo "- **عدد الفيديوهات:** ${#entries[@]}"
+      echo "- **فشل:** ${#failed[@]}"
+      echo "- **المدة:** ${dur} دقيقة"
+    } >> "$GITHUB_STEP_SUMMARY"
+  fi
 }
 
 main "$@"
