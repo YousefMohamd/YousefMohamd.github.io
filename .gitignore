@@ -40,3 +40,10 @@ ffprobe
 backups/root-cleanup/
 *.tar.gz
 *.broken-*
+
+# ── Documentation (local only — do NOT commit) ──
+docs/
+!docs/design-refs/
+
+# ── Private Identifiers ──
+PRIVATE-IDS.md
