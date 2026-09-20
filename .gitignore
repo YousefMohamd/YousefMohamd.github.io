@@ -37,7 +37,6 @@ ffmpeg
 ffprobe
 
 # Design reference screenshots (not needed in production)
-docs/
 backups/root-cleanup/
 *.tar.gz
 *.broken-*
