@@ -1,0 +1,190 @@
+{
+  "generated": "2026-09-20T17:52:23Z",
+  "cdn": "https://b2-video.mohamedyou1357.workers.dev",
+  "videos": {
+    "admiral": {
+      "title": "Admiral Predicta TV",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/admiral/admiral-1080.mp4",
+          "size": 9974557
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/admiral/admiral-720.mp4",
+          "size": 6739018
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/admiral/admiral-360.mp4",
+          "size": 3670698
+        }
+      ]
+    },
+    "philco": {
+      "title": "Philco Vintage",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/philco/philco-1080.mp4",
+          "size": 37743734
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/philco/philco-720.mp4",
+          "size": 20148325
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/philco/philco-360.mp4",
+          "size": 9592935
+        }
+      ]
+    },
+    "caricature": {
+      "title": "Caricature Aya Araffa",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/caricature/caricature-1080.mp4",
+          "size": 2683080
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/caricature/caricature-720.mp4",
+          "size": 1266964
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/caricature/caricature-360.mp4",
+          "size": 425607
+        }
+      ]
+    },
+    "gaza": {
+      "title": "Gaza Uprooted",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/gaza/gaza-1080.mp4",
+          "size": 48596146
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/gaza/gaza-720.mp4",
+          "size": 25143653
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/gaza/gaza-360.mp4",
+          "size": 10086064
+        }
+      ]
+    },
+    "palestine": {
+      "title": "Palestine is Free",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/palestine/palestine-1080.mp4",
+          "size": 17984751
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/palestine/palestine-720.mp4",
+          "size": 9459194
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/palestine/palestine-360.mp4",
+          "size": 3097556
+        }
+      ]
+    },
+    "sea-of-worries": {
+      "title": "Sea of Worries",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/sea-of-worries/sea-of-worries-1080.mp4",
+          "size": 5660605
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/sea-of-worries/sea-of-worries-720.mp4",
+          "size": 3041347
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/sea-of-worries/sea-of-worries-360.mp4",
+          "size": 1221715
+        }
+      ]
+    },
+    "tv-series": {
+      "title": "TV Series Models",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/tv-series/tv-series-1080.mp4",
+          "size": 12312105
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/tv-series/tv-series-720.mp4",
+          "size": 6036623
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/tv-series/tv-series-360.mp4",
+          "size": 2352252
+        }
+      ]
+    },
+    "torture-waiter": {
+      "title": "Torture Waiter",
+      "sources": [
+        {
+          "label": "1080p",
+          "height": 1080,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/torture-waiter/torture-waiter-1080.mp4",
+          "size": 2553267
+        },
+        {
+          "label": "720p",
+          "height": 720,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/torture-waiter/torture-waiter-720.mp4",
+          "size": 1266865
+        },
+        {
+          "label": "360p",
+          "height": 360,
+          "url": "https://b2-video.mohamedyou1357.workers.dev/torture-waiter/torture-waiter-360.mp4",
+          "size": 396990
+        }
+      ]
+    }
+  }
+}

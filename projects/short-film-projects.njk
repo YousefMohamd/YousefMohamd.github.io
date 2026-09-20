@@ -36,8 +36,8 @@ title: Short Film Projects
                 {% if p.data.poster %}poster="{{ p.data.poster }}"{% endif %}
               >
                 {% if p.data.videoSlug and site.videoCdn %}
+                  <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-1080.mp4" data-quality="1080" type="video/mp4">
                   <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-720.mp4" data-quality="720" type="video/mp4">
-                  <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-480.mp4" data-quality="480" type="video/mp4">
                   <source src="{{ site.videoCdn }}/{{ p.data.videoSlug }}/{{ p.data.videoSlug }}-360.mp4" data-quality="360" type="video/mp4">
                 {% endif %}
               </video>
@@ -97,8 +97,8 @@ title: Short Film Projects
                             <svg class="cine-submenu-arrow" viewBox="0 0 24 24" fill="currentColor" width="12" height="12"><path d="M7 10l5 5 5-5z"/></svg>
                           </button>
                           <div class="cine-submenu">
+                            <button type="button" data-quality-value="1080">1080p</button>
                             <button type="button" data-quality-value="720">720p</button>
-                            <button type="button" data-quality-value="480">480p</button>
                             <button type="button" data-quality-value="360">360p</button>
                           </div>
                         </div>
